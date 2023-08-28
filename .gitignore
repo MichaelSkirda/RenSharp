@@ -1,0 +1,7 @@
+.vs/
+bin/
+obj/
+RenSharp/bin/
+RenSharp/obj/
+RenSharpClient/bin/
+RenSharpClient/obj/
