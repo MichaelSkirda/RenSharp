@@ -4,8 +4,7 @@ using System.Text;
 
 namespace RenSharp
 {
-	internal class RenSharpContext
+	internal static class AttributeParser
 	{
-		internal int Level { get; set; } = 1; // Tabulation level
 	}
 }

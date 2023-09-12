@@ -1,7 +1,4 @@
-﻿
-
-
-using RenSharp;
+﻿using RenSharp.Core;
 using RenSharp.Models;
 using RenSharpClient;
 

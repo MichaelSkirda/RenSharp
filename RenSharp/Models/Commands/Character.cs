@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using RenSharp.Core;
 
 namespace RenSharp.Models.Commands
 {
-	public class Character : Command
+    public class Character : Command
 	{
 		public string Name { get; set; }
 		public List<string> Styles { get; set; }

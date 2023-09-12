@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using RenSharp.Core;
 
 namespace RenSharp.Models.Commands
 {
-	public class Goto : Command
+    public class Goto : Command
 	{
 		public string LabelName { get; set; }
 
