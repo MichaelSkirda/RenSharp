@@ -1,0 +1,7 @@
+character Eliz name=Элизабет
+
+label main
+
+"Hello, world!"
+"Test"
+goto main

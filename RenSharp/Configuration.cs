@@ -5,25 +5,26 @@ using System.Text;
 
 namespace RenSharp
 {
-	internal class Configuration
+	public class Configuration
 	{
 		private List<Type> SkipCommands = new List<Type>();
 
-		public void Skip<T>() where T : Command
+		public void Skip<T>()
 		{
 			Type type = typeof(T);
 			SkipCommands.Add(type);
 		}
 
-		public bool IsSkip<T>() where T : Command
+		public bool IsSkip<T>()
 		{
 			Type type = typeof(T);
 			return SkipCommands.Contains(type);
 		}
 
-		public bool IsSkip<T>(T command) where T : Command
+		public bool IsSkip<T>(T command)
 		{
-			return IsSkip<T>();
+			Type type = command.GetType();
+			return SkipCommands.Contains(type);
 		}
 	}
 }

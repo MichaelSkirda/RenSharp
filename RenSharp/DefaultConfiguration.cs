@@ -10,6 +10,7 @@ namespace RenSharp
 		public static void UseDefaultSkips(this Configuration config)
 		{
 			config.Skip<Label>();
+			config.Skip<Goto>();
 		}
 	}
 }

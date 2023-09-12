@@ -4,10 +4,10 @@ using System.Text;
 
 namespace RenSharp.Models.Commands
 {
-	internal class Character : Command
+	public class Character : Command
 	{
-		internal string Name { get; set; }
-		internal List<string> Styles { get; set; }
+		public string Name { get; set; }
+		public List<string> Styles { get; set; }
 
 		public Character(string name, List<string> styles = null)
 		{

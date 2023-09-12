@@ -4,9 +4,10 @@ using System.Text;
 
 namespace RenSharp.Models
 {
-	internal abstract class Command
+	public abstract class Command
 	{
-		internal int Level { get; set; }
+		public int Level { get; set; }
+		public int Line { get; set; }
 		internal abstract void Execute(RenSharpCore renSharpCore);
 	}
 }

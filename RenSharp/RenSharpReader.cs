@@ -22,19 +22,20 @@ namespace RenSharp
 			List<Command> commands = new List<Command>();
 			RenSharpContext context = new RenSharpContext();
 
-			int line = 1;
+			int line = 0;
 			for(int i = 0; i < code.Count; i++)
 			{
 				string codeLine = code[i];
-				if (NoCommand(codeLine))
+				if (NotCommand(codeLine))
 					continue;
 				line++;
 
 				try
 				{
-					Command command = ParseCommand(codeLine);
+					Command command = ParseCommand(codeLine, commands);
 					Validate(command, context, codeLine);
 					context.Level = command.Level;
+					command.Line = line;
 					commands.Add(command);
 				}
 				catch(Exception ex)
@@ -46,17 +47,17 @@ namespace RenSharp
 			return commands;
 		}
 
-		internal static Command ParseCommand(string line)
+		internal static Command ParseCommand(string line, List<Command> commands)
 		{
 			string[] words = line.Trim().Split(' ');
 			string keyword = "";
-			string argument = "";
+			string firstArgument = "";
 			List<string> args = new List<string>();
 
 			try
 			{
 				keyword = words[0];
-				argument = words[1];
+				firstArgument = words[1];
 				args = words.Skip(1).ToList();
 			}
 			catch
@@ -66,13 +67,27 @@ namespace RenSharp
 
 			Command command = null;
 
-			if(keyword == "label")
+			if (keyword == "label")
 			{
-				command = new Label(argument);
+				command = new Label(firstArgument);
 			}
-			else if(keyword == "character")
+			else if (keyword == "character")
 			{
-				command = new Character(argument, args);
+				command = new Character(firstArgument, args);
+			}
+			else if (line.Trim().StartsWith('"'))
+			{
+				string message = line.GetStringBetween("\"", "\"");
+				command = new Message(message, character: "", effects: args);
+			}
+			else if(keyword == "goto")
+			{
+				command = new Goto(firstArgument);
+			}
+			else if (IsCharacter(commands, keyword))
+			{
+				string message = line.GetStringBetween("\"", "\"");
+				command = new Message(message, character: keyword, effects: args);
 			}
 
 			if (command == null)
@@ -81,6 +96,12 @@ namespace RenSharp
 			command.Level = GetCommandLevel(line);
 
 			return command;
+		}
+
+		private static bool IsCharacter(List<Command> commands, string name)
+		{
+			IEnumerable<Character> characters = commands.OfType<Character>();
+			return characters.Any(x => x.Name == name);
 		}
 
 		private static void Validate(Command command, RenSharpContext context, string codeLine)
@@ -109,7 +130,7 @@ namespace RenSharp
 			code.ForEach(x => x = x.DeleteAfter("//"));
 		}
 
-		private static bool NoCommand(string str)
+		private static bool NotCommand(string str)
 		{
 			return String.IsNullOrEmpty(str.Trim());
 		}

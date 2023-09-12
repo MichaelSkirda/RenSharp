@@ -2,26 +2,37 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using RenSharp.Interfaces;
 using RenSharp.Models;
 using RenSharp.Models.Commands;
 
 namespace RenSharp
 {
-	internal class RenSharpCore
+	public class RenSharpCore
 	{
 		private RenSharpProgram Program;
 		public Configuration Configuration { get; set; }
+		public IWriter Writer { get; set; }
 
-		public RenSharpCore(List<string> code)
+		public RenSharpCore(string path)
 		{
-			Program = new RenSharpProgram(RenSharpReader.ParseCode(code));
+			var program = RenSharpReader.ParseCode(path);
+			Program = new RenSharpProgram(program);
 			Configuration = new Configuration();
 			Configuration.UseDefaultSkips();
 		}
 
-		public void ReadNext()
+		public RenSharpCore(List<string> code)
 		{
-			Command command = null;
+			var program = RenSharpReader.ParseCode(code);
+			Program = new RenSharpProgram(program);
+			Configuration = new Configuration();
+			Configuration.UseDefaultSkips();
+		}
+
+		public Command ReadNext()
+		{
+			Command command;
 
 			do
 			{
@@ -33,21 +44,21 @@ namespace RenSharp
 				command.Execute(this);
 			}
 			while (Configuration.IsSkip(command));
+
+			return command;
 		}
 
-		public void GotoLabel(string name)
+		public void GotoLabel(string labelName) => Program.Goto(labelName);
+		public List<string> GetCharacterAttributes(string characterName)
 		{
-			Label label = GetLabel(name);
-			Program.Goto(label);
-		}
+			Character character = Program.Code
+				.OfType<Character>()
+				.FirstOrDefault(x => x.Name == characterName);
 
-		public Label GetLabel(string name)
-		{
-			Label label = Program.GetLabel(name);
-			if (label == null)
-				throw new ArgumentException($"Label '{name}' not found!");
+			if(character == null)
+				return new List<string>();
 
-			return label;
+			return character.Styles;
 		}
 	}
 }

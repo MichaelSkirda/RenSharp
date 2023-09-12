@@ -40,8 +40,7 @@ namespace RenSharp
 		{
 			CacheLabels();
 
-			Label main = GetLabel("main");
-			Position = main.Line;
+			Goto("main");
 		}
 
 		private void CacheLabels()
@@ -67,13 +66,10 @@ namespace RenSharp
 				return false;
 		}
 
-		public void Goto(Label label) => Goto(label.Line);
+		public void Goto(string label) => Goto(GetLabel(label).Line);
 		public void Goto(int line)
 		{
 			Position = line - 1;
-			bool success = MoveNext();
-			if (!success)
-				throw new ArgumentException($"Can not go to line '{line}'");
 		}
 
 		public Label GetLabel(string name)

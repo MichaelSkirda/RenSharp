@@ -4,9 +4,14 @@ using System.Text;
 
 namespace RenSharp.Models.Commands
 {
-	internal class Goto : Command
+	public class Goto : Command
 	{
-		internal string LabelName { get; set; }
+		public string LabelName { get; set; }
+
+		public Goto(string labelName)
+		{
+			LabelName = labelName;
+		}
 
 		internal override void Execute(RenSharpCore renSharpCore)
 		{
