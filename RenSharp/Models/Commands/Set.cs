@@ -1,24 +1,24 @@
-﻿using System;
+﻿using RenSharp.Core;
+using System;
 using System.Collections.Generic;
 using System.Text;
-using RenSharp.Core;
 
 namespace RenSharp.Models.Commands
 {
-    public class Character : Command
+	public class Set : Command
 	{
 		public string Name { get; set; }
-		public Attributes Attributes { get; set; }
+		public string Value { get; set; }
 
-		public Character(string name, IEnumerable<string> attributes = null)
+		public Set(string name, string value)
 		{
 			Name = name;
-			Attributes = new Attributes(attributes);
+			Value = value;
 		}
 
 		internal override void Execute(RenSharpCore renSharpCore, RenSharpContext context)
 		{
-
+			context.Variables[Name] = Value;
 		}
 	}
 }

@@ -19,7 +19,7 @@ namespace RenSharp.Models.Commands
 			Attributes = new Attributes(attributes);
 		}
 
-		internal override void Execute(RenSharpCore renSharpCore)
+		internal override void Execute(RenSharpCore renSharpCore, RenSharpContext context)
 		{
 			Attributes attributes = renSharpCore.GetCharacterAttributes(Character);
 			Attributes.AddAttributes(attributes);

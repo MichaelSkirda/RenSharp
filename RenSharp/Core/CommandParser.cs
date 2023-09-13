@@ -11,6 +11,41 @@ namespace RenSharp.Core
 	{
 		internal static Label ParseLabel(string[] args) => new Label(args[1]);
 		internal static Goto ParseGoto(string[] args) => new Goto(args[1]);
+		internal static Load ParseLoad(string[] args) => new Load(String.Join(" ", args.Skip(1)).GetStringBetween("\""));
+		internal static If ParseIf(string[] args)
+		{
+			string expression = String.Join(" ", args.Skip(1));
+
+			If command = new If(expression);
+			return command;
+		}
+			internal static Set ParseSet(string[] args)
+		{
+			// Example:
+			// set foo=42 ->   foo=42
+			// set foo =42 ->  foo =42
+			// set foo= 42 ->  foo= 42
+			// set foo = 42 -> foo = 42
+			// set bar = "Hello world!" -> bar = "Hello world!"
+			string command = String.Join(" ", args.Skip(1));
+
+			string[] keyValue = command.Split("=");
+			if (keyValue.Length != 2)
+				throw new ArgumentException($"Can not parse string {command}.");
+
+			string name = keyValue[0].Trim();
+			string value = keyValue[1].Trim();
+
+			if (name.Contains(" "))
+				throw new ArgumentException($"Can not parse command {command}");
+
+			if (value.Contains("\""))
+				value = value.GetStringBetween("\"");
+
+			Set set = new Set(name, value);
+			return set;
+		}
+
 		internal static Character ParseCharacter(string[] args)
 		{
 			string name = args[1];
@@ -40,11 +75,13 @@ namespace RenSharp.Core
 			List<string> defaultAttributes = new List<string>()
 			{
 				config.GetDefault("delay"),
+				config.GetDefault("name")
 			};
 			message.Attributes.AddAttributes(defaultAttributes);
 
 			return message;
 		}
+
 		
 	}
 }

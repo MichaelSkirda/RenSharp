@@ -8,6 +8,7 @@ namespace RenSharp
 {
     public static class StringManipulator
     {
+        public static string GetStringBetween(this string str, string value) => GetStringBetween(str, value, value);
         public static string GetStringBetween(this string str, string left, string right)
         {
             int start = str.IndexOf(left) + left.Length;

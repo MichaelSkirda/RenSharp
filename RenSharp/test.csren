@@ -1,7 +1,11 @@
 character Eliz name=Элизабет
 
 label main
-
 "Hello, world!"
 "Test"
+goto foobar
+
+label foobar
+"foo"
+"bar"
 goto main

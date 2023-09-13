@@ -7,5 +7,6 @@ namespace RenSharp.Core
     internal class RenSharpContext
     {
         internal int Level { get; set; } = 1; // Tabulation level
+        internal Dictionary<string, string> Variables { get; set; } = new Dictionary<string, string>();
     }
 }

@@ -14,7 +14,7 @@ namespace RenSharp.Models.Commands
 			Name = name;
 		}
 
-		internal override void Execute(RenSharpCore renSharpCore)
+		internal override void Execute(RenSharpCore renSharpCore, RenSharpContext context)
 		{
 
 		}

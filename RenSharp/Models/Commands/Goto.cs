@@ -14,7 +14,7 @@ namespace RenSharp.Models.Commands
 			LabelName = labelName;
 		}
 
-		internal override void Execute(RenSharpCore renSharpCore)
+		internal override void Execute(RenSharpCore renSharpCore, RenSharpContext context)
 		{
 			renSharpCore.GotoLabel(LabelName);
 		}

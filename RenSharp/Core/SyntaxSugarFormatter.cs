@@ -28,6 +28,23 @@ namespace RenSharp.Core
 			return line;
 		}
 
+		internal static string SetSugar(string line)
+		{
+			// x = 123 -> ['x ', ' 123']
+			// y=42 -> ['y', '42']
+			string[] keyValue = line.Split("=");
+			if (keyValue.Length != 2)
+				return line;
+
+			string key = keyValue[0].Trim();
+			string value = keyValue[1].Trim();
+
+			if (key.Contains(" "))
+				return line;
+
+			return $"set {line}";
+		}
+
 		private static bool IsCharacter(List<Command> commands, string name)
 		{
 			IEnumerable<Character> characters = commands.OfType<Character>();

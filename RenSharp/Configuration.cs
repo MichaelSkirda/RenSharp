@@ -10,6 +10,7 @@ namespace RenSharp
 	{
 		private List<Type> SkipCommands = new List<Type>();
 		private Dictionary<string, string> DefaultAttributes = new Dictionary<string, string>();
+		internal List<string> ReadedFiles = new List<string>();
 		public Dictionary<string, Func<string[], Configuration, Command>> Commands { get; set; }
 			= new Dictionary<string, Func<string[], Configuration, Command>>();
 

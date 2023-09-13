@@ -27,32 +27,35 @@ namespace RenSharp.Core
             List<Command> commands = new List<Command>();
             RenSharpContext context = new RenSharpContext();
 
-            int line = 0;
+            int line = 1;
             for (int i = 0; i < code.Count; i++)
             {
                 string codeLine = code[i];
                 if (NotCommand(codeLine))
                     continue;
-                line++;
 
                 try
                 {
-                    Command command = ParseCommand(codeLine, commands);
-                    Validate(command, context, codeLine);
-                    context.Level = command.Level;
-                    command.Line = line;
-                    commands.Add(command);
+                    List<Command> parsed = ParseCommand(codeLine, commands);
+                    foreach(Command command in parsed)
+                    {
+						Validate(command, context, codeLine);
+						context.Level = command.Level;
+						command.Line = line;
+						line++;
+						commands.AddRange(parsed);
+					}
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception($" at line {line}", ex);
+                    throw new Exception($"at line {line}", ex);
                 }
             }
 
             return commands;
         }
 
-        internal Command ParseCommand(string line, List<Command> commands)
+        internal List<Command> ParseCommand(string line, List<Command> commands)
         {
             int level = GetCommandLevel(line);
             line = line.Trim();
@@ -68,18 +71,19 @@ namespace RenSharp.Core
 
             command.Level = level;
 
-            return command;
+            return new List<Command>() { command };
         }
 
         private static string ApplySyntaxSugar(string line, List<Command> commands)
         {
             line = SyntaxSugarFormatter.CharacterSugar(line);
             line = SyntaxSugarFormatter.MessageSugar(line, commands);
+            line = SyntaxSugarFormatter.SetSugar(line);
 
             return line;
 		}
 
-        private static void Validate(Command command, RenSharpContext context, string codeLine)
+		private static void Validate(Command command, RenSharpContext context, string codeLine)
         {
             if (command.Level <= 0)
                 throw new Exception($"Command '{codeLine}' not valid. Tabulation can not be less than zero.");

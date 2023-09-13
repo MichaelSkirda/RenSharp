@@ -14,17 +14,21 @@ namespace RenSharp.Core
         private RenSharpProgram Program;
         public Configuration Configuration { get; set; }
         public IWriter Writer { get; set; }
+        private RenSharpContext Context { get; set; }
 
         public RenSharpCore(string path, Configuration config = null) => SetupProgram(File.ReadAllLines(path), config);
         public RenSharpCore(IEnumerable<string> code, Configuration config = null) => SetupProgram(code, config);
         private void SetupProgram(IEnumerable<string> code, Configuration config)
         {
+            Context = new RenSharpContext();
 			if (config == null)
             {
 				config = new Configuration();
                 config.UseDefault();
 			}
-            Configuration = config;
+			config.UseCoreCommands();
+
+			Configuration = config;
             RenSharpReader reader = new RenSharpReader(config);
 
 			var program = reader.ParseCode(code.ToList());
@@ -34,17 +38,27 @@ namespace RenSharp.Core
         public Command ReadNext()
         {
             Command command;
+			bool skip;
 
-            do
-            {
+			do
+			{
+                skip = false;
                 bool hasNext = Program.MoveNext();
                 if (!hasNext)
                     throw new Exception("Unexpected end of game");
 
                 command = Program.Current;
-                command.Execute(this);
-            }
-            while (Configuration.IsSkip(command));
+                if (command.Level > Context.Level)
+                {
+                    skip = true;
+					continue;
+				}
+				else
+                    Context.Level = command.Level;
+
+				command.Execute(this, Context);
+			}
+			while (Configuration.IsSkip(command) || skip);
 
             return command;
         }

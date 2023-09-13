@@ -9,6 +9,6 @@ namespace RenSharp.Models
 	{
 		public int Level { get; set; }
 		public int Line { get; set; }
-		internal abstract void Execute(RenSharpCore renSharpCore);
+		internal abstract void Execute(RenSharpCore renSharpCore, RenSharpContext context);
 	}
 }

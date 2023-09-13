@@ -12,6 +12,8 @@ namespace RenSharpClient
 	{
 		public void Write(Message message)
 		{
+			string speaker = message.Attributes.GetSpeaker();
+            Console.Write($"{speaker}: ");
             Console.WriteLine(message.Speech);
         }
 	}

@@ -36,5 +36,11 @@ namespace RenSharp.Models
 			values[pair.Key] = pair.Value;
 		}
 
+		public int GetDelay()
+		{
+			string delay = GetAttributeValue("delay");
+			return Int32.Parse(delay);
+		}
+		public string GetSpeaker() => GetAttributeValue("name");
 	}
 }

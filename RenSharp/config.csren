@@ -1,0 +1,4 @@
+label foobar
+"foo"
+"bar"
+goto main

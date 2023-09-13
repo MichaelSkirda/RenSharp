@@ -1,7 +1,14 @@
 character Eliz name=Элизабет
 
-label main
 
+label main
+x = 12
+label foobar
 "Hello, world!"
+if x = 5
+	"x is 5!"
+	"It is amazing!"
+	"I love this!"
 "Test"
-goto main
+x = 5
+goto foobar
