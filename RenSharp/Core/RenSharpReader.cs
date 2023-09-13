@@ -8,15 +8,20 @@ using System.Text;
 
 namespace RenSharp.Core
 {
-    internal class RenSharpReader
+    public class RenSharpReader
     {
-        internal static List<Command> ParseCode(string path)
+        private Dictionary<string, Func<string[], Configuration, Command>> Commands
+            = new Dictionary<string, Func<string[], Configuration, Command>>();
+
+        private Configuration Config { get; set; }
+
+        public RenSharpReader(Configuration config)
         {
-            var lines = File.ReadAllLines(path).ToList();
-            return ParseCode(lines);
+            Config = config;
+            Commands = Config.Commands;
         }
 
-        internal static List<Command> ParseCode(List<string> code)
+        internal List<Command> ParseCode(List<string> code)
         {
             RemoveComments(code);
             List<Command> commands = new List<Command>();
@@ -40,77 +45,47 @@ namespace RenSharp.Core
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception($" at line {i}", ex);
+                    throw new Exception($" at line {line}", ex);
                 }
             }
 
             return commands;
         }
 
-        internal static Command ParseCommand(string line, List<Command> commands)
+        internal Command ParseCommand(string line, List<Command> commands)
         {
-            string[] words = line.Trim().Split(' ');
-            string keyword = "";
-            string firstArgument = "";
-            List<string> args = new List<string>();
+            int level = GetCommandLevel(line);
+            line = line.Trim();
+			line = ApplySyntaxSugar(line, commands);
 
-            try
-            {
-                keyword = words[0];
-                firstArgument = words[1];
-                args = words.Skip(1).ToList();
-            }
-            catch
-            {
+            string[] words = line.Split(' ');
+            string keyword = words.FirstOrDefault();
 
-            }
-
-            Command command = null;
-
-            if (keyword == "label")
-            {
-                command = new Label(firstArgument);
-            }
-            else if (keyword == "character")
-            {
-                command = new Character(firstArgument, args);
-            }
-            else if (line.Trim().StartsWith('"'))
-            {
-                string message = line.GetStringBetween("\"", "\"");
-                command = new Message(message, character: "", effects: args);
-            }
-            else if (keyword == "goto")
-            {
-                command = new Goto(firstArgument);
-            }
-            else if (IsCharacter(commands, keyword))
-            {
-                string message = line.GetStringBetween("\"", "\"");
-                command = new Message(message, character: keyword, effects: args);
-            }
+            Command command = Commands[keyword](words, Config);
 
             if (command == null)
                 throw new Exception($"Cannot parse command '{line}'");
 
-            command.Level = GetCommandLevel(line);
+            command.Level = level;
 
             return command;
         }
 
-        private static bool IsCharacter(List<Command> commands, string name)
+        private static string ApplySyntaxSugar(string line, List<Command> commands)
         {
-            IEnumerable<Character> characters = commands.OfType<Character>();
-            return characters.Any(x => x.Name == name);
-        }
+            line = SyntaxSugarFormatter.CharacterSugar(line);
+            line = SyntaxSugarFormatter.MessageSugar(line, commands);
+
+            return line;
+		}
 
         private static void Validate(Command command, RenSharpContext context, string codeLine)
         {
             if (command.Level <= 0)
-                throw new Exception($"Command '{codeLine}' not valid! Tabulation can not be less than zero!");
+                throw new Exception($"Command '{codeLine}' not valid. Tabulation can not be less than zero.");
 
             if (command.Level >= context.Level + 2)
-                throw new Exception($"Command '{codeLine}' not valid! Tabulation can not be higher by two then previous!");
+                throw new Exception($"Command '{codeLine}' not valid. Tabulation can not be higher by two then previous.");
         }
 
         internal static int GetCommandLevel(string command)
@@ -124,16 +99,7 @@ namespace RenSharp.Core
             }
             return level;
         }
-
-        internal static void RemoveComments(List<string> code)
-        {
-            code.ForEach(x => x = x.DeleteAfter("//"));
-        }
-
-        private static bool NotCommand(string str)
-        {
-            return string.IsNullOrEmpty(str.Trim());
-        }
-
+        internal static void RemoveComments(List<string> code) => code.ForEach(x => x = x.DeleteAfter("//"));
+        private static bool NotCommand(string str) => string.IsNullOrEmpty(str.Trim());
     }
 }

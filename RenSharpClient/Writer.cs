@@ -1,4 +1,5 @@
 ﻿using RenSharp.Interfaces;
+using RenSharp.Models.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +10,9 @@ namespace RenSharpClient
 {
 	internal class Writer : IWriter
 	{
-		public void Write(string speech)
+		public void Write(Message message)
 		{
-            Console.WriteLine(speech);
+            Console.WriteLine(message.Speech);
         }
 	}
 }

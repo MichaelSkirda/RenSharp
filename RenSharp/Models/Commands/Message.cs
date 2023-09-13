@@ -10,23 +10,23 @@ namespace RenSharp.Models.Commands
 	{
 		public string Speech { get; set; }
 		public string Character { get; set; }
-		public List<string> Effects { get; set; }
+		public Attributes Attributes { get; set; }
 
-		public Message(string speech, string character, List<string> effects = null)
+		public Message(string speech, string character, IEnumerable<string> attributes = null)
 		{
 			Speech = speech;
 			Character = character;
-			Effects = effects;
+			Attributes = new Attributes(attributes);
 		}
 
 		internal override void Execute(RenSharpCore renSharpCore)
 		{
-			var CharEffects = renSharpCore.GetCharacterAttributes(Character);
-			Effects.AddRange(CharEffects);
+			Attributes attributes = renSharpCore.GetCharacterAttributes(Character);
+			Attributes.AddAttributes(attributes);
 
 			IWriter writer = renSharpCore.Writer;
 			if (writer != null)
-				writer.Write(Speech);
+				writer.Write(this);
 		}
 	}
 }

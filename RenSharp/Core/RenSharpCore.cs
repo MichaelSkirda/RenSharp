@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using RenSharp.Interfaces;
@@ -14,21 +15,21 @@ namespace RenSharp.Core
         public Configuration Configuration { get; set; }
         public IWriter Writer { get; set; }
 
-        public RenSharpCore(string path)
+        public RenSharpCore(string path, Configuration config = null) => SetupProgram(File.ReadAllLines(path), config);
+        public RenSharpCore(IEnumerable<string> code, Configuration config = null) => SetupProgram(code, config);
+        private void SetupProgram(IEnumerable<string> code, Configuration config)
         {
-            var program = RenSharpReader.ParseCode(path);
-            Program = new RenSharpProgram(program);
-            Configuration = new Configuration();
-            Configuration.UseDefaultSkips();
-        }
+			if (config == null)
+            {
+				config = new Configuration();
+                config.UseDefault();
+			}
+            Configuration = config;
+            RenSharpReader reader = new RenSharpReader(config);
 
-        public RenSharpCore(List<string> code)
-        {
-            var program = RenSharpReader.ParseCode(code);
-            Program = new RenSharpProgram(program);
-            Configuration = new Configuration();
-            Configuration.UseDefaultSkips();
-        }
+			var program = reader.ParseCode(code.ToList());
+			Program = new RenSharpProgram(program);
+		}
 
         public Command ReadNext()
         {
@@ -49,16 +50,16 @@ namespace RenSharp.Core
         }
 
         public void GotoLabel(string labelName) => Program.Goto(labelName);
-        public List<string> GetCharacterAttributes(string characterName)
+        public Attributes GetCharacterAttributes(string characterName)
         {
             Character character = Program.Code
                 .OfType<Character>()
                 .FirstOrDefault(x => x.Name == characterName);
 
             if (character == null)
-                return new List<string>();
+                return new Attributes(new string[0]);
 
-            return character.Styles;
+            return character.Attributes;
         }
     }
 }
