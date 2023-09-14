@@ -81,7 +81,7 @@ namespace RenSharp.Core
             return line;
 		}
 
-		private static void Validate(Command command, Command previousCmd, string codeLine)
+		private void Validate(Command command, Command previousCmd, string codeLine)
         {
             if (command.Level <= 0)
                 throw new Exception($"Command '{codeLine}' not valid. Tabulation can not be less than zero.");
@@ -89,8 +89,14 @@ namespace RenSharp.Core
             if (previousCmd == null)
                 return;
 
+            if(Config.CanPush(previousCmd) == false)
+            {
+                if (previousCmd.Level < command.Level)
+                    throw new Exception($"Command '{codeLine}' can not use tabulation.");
+            }
+
             if (command.Level >= previousCmd.Level + 2)
-                throw new Exception($"Command '{codeLine}' not valid. Tabulation can not be higher by two then previous.");
+                throw new Exception($"Command '{codeLine.Trim()}' not valid. Tabulation can not be higher by two then previous.");
         }
 
         internal static int GetCommandLevel(string command)

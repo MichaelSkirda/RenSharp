@@ -2,6 +2,18 @@ character Eliz name=Элизабет
 label main
 x = 3
 y = 4
+if x * y > 42
+	"If"
+	"{x * y} > 42"
+else
+	"Else"
+	"{x * y} < 42"
+
+
+
+label reapetExmpl
+x = 3
+y = 4
 times = 1
 "Example of repeat"
 repeat x
@@ -15,7 +27,9 @@ repeat x
 "End of example"
 goto main
 
-
+if x = 3
+	label some
+	"helloworld"
 
 label test1
 x = 1

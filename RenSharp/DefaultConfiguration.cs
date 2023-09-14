@@ -17,6 +17,9 @@ namespace RenSharp
 			config.Skip<Set>();
 			config.Skip<Repeat>();
 
+			config.AllowToPushStack<If>();
+			config.AllowToPushStack<Repeat>();
+
 			config.SetDefault("delay", "30");
 			config.SetDefault("no-clear", "false");
 			config.SetDefault("loop", "false");

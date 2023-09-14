@@ -74,7 +74,20 @@ namespace RenSharp.Core
             return command;
         }
 
-        public void GotoLabel(string labelName) => Program.Goto(labelName);
+        public void GotoLabel(string labelName)
+        {
+            Label label = Program.GetLabel(labelName);
+            GotoClearStack(label);
+            Program.Goto(label);
+        }
+        
+        private void GotoClearStack(Label label)
+        {
+			Context.Stack.Clear();
+			while (Context.Level < label.Level)
+				Context.Stack.Push(0);
+		}
+
         public Attributes GetCharacterAttributes(string characterName)
         {
             Character character = Program.Code

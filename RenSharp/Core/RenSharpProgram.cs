@@ -66,6 +66,7 @@ namespace RenSharp.Core
                 return false;
         }
 
+        public void Goto(Label label) => Goto(label.Line);
         public void Goto(string label) => Goto(GetLabel(label).Line);
         public void Goto(int line)
         {
