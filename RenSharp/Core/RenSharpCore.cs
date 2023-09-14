@@ -30,8 +30,8 @@ namespace RenSharp.Core
 
 			Configuration = config;
             RenSharpReader reader = new RenSharpReader(config);
-
 			var program = reader.ParseCode(code.ToList());
+
 			Program = new RenSharpProgram(program);
 		}
 

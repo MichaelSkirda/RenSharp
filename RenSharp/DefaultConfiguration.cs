@@ -36,7 +36,9 @@ namespace RenSharp
 			config.AddCommand("goto", (words, config) => CommandParser.ParseGoto(words));
 			config.AddCommand("load", (words, config) => CommandParser.ParseLoad(words));
 			config.AddCommand("set", (words, config) => CommandParser.ParseSet(words));
+			config.AddCommand("else", (words, config) => CommandParser.ParseIf(words));
 			config.AddCommand("if", (words, config) => CommandParser.ParseIf(words));
+			config.AddCommand("", (words, config) => CommandParser.ParseNop());
 		}
 	}
 }

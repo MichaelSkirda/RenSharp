@@ -45,6 +45,13 @@ namespace RenSharp.Core
 			return $"set {line}";
 		}
 
+		internal static string ElseSugar(string line)
+		{
+			if (line.Trim() == "else")
+				return "else if true";
+			return line;
+		}
+
 		private static bool IsCharacter(List<Command> commands, string name)
 		{
 			IEnumerable<Character> characters = commands.OfType<Character>();

@@ -42,6 +42,8 @@ namespace RenSharp
 			clearedExpression = clearedExpression.Replace("*", "");
 			clearedExpression = clearedExpression.Replace("/", "");
 			clearedExpression = clearedExpression.Replace("%", "");
+			clearedExpression = clearedExpression.Replace("true", "");
+			clearedExpression = clearedExpression.Replace("false", "");
 
 
 			while (true)

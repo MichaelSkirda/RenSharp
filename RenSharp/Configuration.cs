@@ -15,6 +15,7 @@ namespace RenSharp
 
 		internal List<Type> AllowedToPushStack = new List<Type>();
 
+
 		public bool CanPush(Command command) => AllowedToPushStack.Contains(command.GetType());
 		public void AddCommand(string command, Func<string[], Configuration, Command> Parser) => Commands[command] = Parser;
 		public void SetDefault(string key, string value) => DefaultAttributes[key] = value;

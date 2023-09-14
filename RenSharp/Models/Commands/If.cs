@@ -10,17 +10,20 @@ namespace RenSharp.Models.Commands
 	public class If : Command
 	{
 		public string Expression { get; set; }
+		public int EndIfLine { get; set; }
+		public bool IsRoot { get; set; }
 
-		public If(string expression)
+		public If(string expression, bool isRoot)
 		{
 			Expression = expression;
+			IsRoot = isRoot;
 		}
 
 		internal override void Execute(RenSharpCore renSharpCore, RenSharpContext context)
 		{
 			bool result = context.ExecuteExpression<bool>(Expression);
 			if (result)
-				context.Stack.Push(0);
+				context.Stack.Push(EndIfLine);
 		}
 	}
 }

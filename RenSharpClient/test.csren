@@ -2,12 +2,22 @@ character Eliz name=Элизабет
 label main
 x = 3
 y = 4
-if x * y > 42
-	"If"
+if x * y < 42
+	Eliz "If"
 	"{x * y} > 42"
 else
 	"Else"
-	"{x * y} < 42"
+	Eliz "{x * y} < 42"
+
+// (if x) ()
+if x > 1000
+	"x"
+else if y > 1000
+	"y"
+else if y + 100 > 1000
+	"z"
+else
+	"other"
 
 
 
@@ -18,7 +28,7 @@ times = 1
 "Example of repeat"
 repeat x
 	"I will repeat this {x} times"
-	repeat y
+	repeat 10 
 		"I will repeat this {x} * {y} = {x * y} times"
 		y = y + 1
 	"Y repeat ended"
