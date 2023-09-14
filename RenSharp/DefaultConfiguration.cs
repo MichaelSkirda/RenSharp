@@ -15,6 +15,7 @@ namespace RenSharp
 			config.Skip<Goto>();
 			config.Skip<If>();
 			config.Skip<Set>();
+			config.Skip<Repeat>();
 
 			config.SetDefault("delay", "30");
 			config.SetDefault("no-clear", "false");
@@ -27,6 +28,7 @@ namespace RenSharp
 			config.AddCommand("say", (words, config) => CommandParser.ParseMessage(words, config));
 			config.AddCommand("character", (words, config) => CommandParser.ParseCharacter(words));
 			config.AddCommand("callback", (words, config) => CommandParser.ParseCallback(words));
+			config.AddCommand("repeat", (words, config) => CommandParser.ParseRepeat(words));
 			config.AddCommand("label", (words, config) => CommandParser.ParseLabel(words));
 			config.AddCommand("goto", (words, config) => CommandParser.ParseGoto(words));
 			config.AddCommand("load", (words, config) => CommandParser.ParseLoad(words));

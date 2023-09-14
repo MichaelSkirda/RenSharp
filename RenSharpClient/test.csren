@@ -1,7 +1,23 @@
 character Eliz name=Элизабет
-
-
 label main
+x = 3
+y = 4
+times = 1
+"Example of repeat"
+repeat x
+	"I will repeat this {x} times"
+	repeat y
+		"I will repeat this {x} * {y} = {x * y} times"
+		y = y + 1
+	"Y repeat ended"
+	x = x + 1
+
+"End of example"
+goto main
+
+
+
+label test1
 x = 1
 z = "foo bar"
 label foobar

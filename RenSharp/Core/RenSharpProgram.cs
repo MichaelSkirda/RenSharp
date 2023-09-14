@@ -69,7 +69,7 @@ namespace RenSharp.Core
         public void Goto(string label) => Goto(GetLabel(label).Line);
         public void Goto(int line)
         {
-            Position = line - 1;
+            Position = line - 2;
         }
 
         public Label GetLabel(string name)

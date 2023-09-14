@@ -9,7 +9,15 @@ namespace RenSharp.Core
 {
     public class RenSharpContext
     {
-        internal int Level { get; set; } = 1; // Tabulation level
+		internal Stack<int> Stack = new Stack<int>();
+        internal int Level
+		{
+			get
+			{
+				// Tabulation level
+				return Stack.Count + 1;
+			}
+		}
         internal Dictionary<string, string> Variables { get; set; } = new Dictionary<string, string>();
 
 		internal object GetValue(string var)
@@ -40,17 +48,17 @@ namespace RenSharp.Core
 			return result;
 		}
 
-		internal string ReplaceVars(string line)
+		internal string MessageExecuteVars(string line, RenSharpContext context)
 		{
 			while (true)
 			{
 				if (line.Contains("{") == false || line.Contains("}") == false)
 					break;
 
-				string name = line.GetStringBetween("{", "}");
-				string value = Variables[name];
+				string expression = line.GetStringBetween("{", "}");
+				string value = context.ExecuteExpression<object>(expression).ToString();
 
-				line = line.Replace("{" + name + "}", value);
+				line = line.Replace("{" + expression + "}", value);
 			}
 			return line;
 		}

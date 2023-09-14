@@ -80,6 +80,11 @@ namespace RenSharp.Core
 			return message;
 		}
 
-		
+		internal static Repeat ParseRepeat(string[] words)
+		{
+			string expression = String.Join(" ", words.Skip(1));
+
+			return new Repeat(expression);
+		}
 	}
 }

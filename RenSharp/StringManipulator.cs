@@ -41,6 +41,7 @@ namespace RenSharp
 			clearedExpression = clearedExpression.Replace("-", "");
 			clearedExpression = clearedExpression.Replace("*", "");
 			clearedExpression = clearedExpression.Replace("/", "");
+			clearedExpression = clearedExpression.Replace("%", "");
 
 
 			while (true)
@@ -59,5 +60,10 @@ namespace RenSharp
 
             return vars;
 		}
+
+        public static bool IsNumber(this string str)
+        {
+            return Int32.TryParse(str, out _);
+        }
     }
 }

@@ -23,9 +23,8 @@ namespace RenSharp.Core
 
         internal List<Command> ParseCode(List<string> code)
         {
-            RemoveComments(code);
+            code = RemoveComments(code);
             List<Command> commands = new List<Command>();
-            RenSharpContext context = new RenSharpContext();
 
             int line = 1;
             for (int i = 0; i < code.Count; i++)
@@ -39,8 +38,7 @@ namespace RenSharp.Core
                     List<Command> parsed = ParseCommand(codeLine, commands);
                     foreach(Command command in parsed)
                     {
-						Validate(command, context, codeLine);
-						context.Level = command.Level;
+						Validate(command, commands.LastOrDefault(), codeLine);
 						command.Line = line;
 						line++;
 						commands.AddRange(parsed);
@@ -83,12 +81,15 @@ namespace RenSharp.Core
             return line;
 		}
 
-		private static void Validate(Command command, RenSharpContext context, string codeLine)
+		private static void Validate(Command command, Command previousCmd, string codeLine)
         {
             if (command.Level <= 0)
                 throw new Exception($"Command '{codeLine}' not valid. Tabulation can not be less than zero.");
 
-            if (command.Level >= context.Level + 2)
+            if (previousCmd == null)
+                return;
+
+            if (command.Level >= previousCmd.Level + 2)
                 throw new Exception($"Command '{codeLine}' not valid. Tabulation can not be higher by two then previous.");
         }
 
@@ -103,7 +104,12 @@ namespace RenSharp.Core
             }
             return level;
         }
-        internal static void RemoveComments(List<string> code) => code.ForEach(x => x = x.DeleteAfter("//"));
+        internal static List<string> RemoveComments(List<string> code)
+        {
+            return code
+                .Select(x => x.DeleteAfter("//"))
+                .ToList();
+        }
         private static bool NotCommand(string str) => string.IsNullOrEmpty(str.Trim());
     }
 }

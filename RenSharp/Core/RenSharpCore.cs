@@ -53,12 +53,23 @@ namespace RenSharp.Core
                     skip = true;
 					continue;
 				}
-				else
-                    Context.Level = command.Level;
 
-				command.Execute(this, Context);
-			}
-			while (Configuration.IsSkip(command) || skip);
+                int circleStart = 0;
+				while (command.Level < Context.Level)
+                {
+                    circleStart = Context.Stack.Pop();
+                    if (circleStart != 0)
+                        break;
+				}
+                if (circleStart != 0)
+                {
+                    Program.Goto(circleStart);
+                    skip = true;
+                    continue;
+                }
+
+                command.Execute(this, Context);
+			} while (Configuration.IsSkip(command) || skip);
 
             return command;
         }
