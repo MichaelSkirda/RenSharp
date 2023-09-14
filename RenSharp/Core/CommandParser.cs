@@ -16,6 +16,7 @@ namespace RenSharp.Core
 		internal static If ParseIf(string[] args)
 		{
 			string expression = String.Join(" ", args.Skip(1));
+			expression = expression.Replace("==", "=");
 
 			If command = new If(expression);
 			return command;
