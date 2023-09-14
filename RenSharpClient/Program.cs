@@ -1,4 +1,5 @@
-﻿using RenSharp.Core;
+﻿using RenSharp;
+using RenSharp.Core;
 using RenSharp.Models;
 using RenSharpClient;
 
@@ -17,4 +18,11 @@ internal class Program
 			Console.ReadKey();
 		}
 	}
+
+	[Callback]
+	public static void TestMethod(RenSharpCore renSharp, RenSharpContext context)
+	{
+		renSharp.GotoLabel("foobar");
+        Console.WriteLine("OMG THIS FUNC WAS CALLED!!!");
+    }
 }

@@ -2,13 +2,15 @@ character Eliz name=Элизабет
 
 
 label main
-x = 12
+x = 1
+z = "foo bar"
 label foobar
 "Hello, world!"
-if x = 5
-	"x is 5!"
-	"It is amazing!"
-	"I love this!"
+callback TestMethod
+if x > 5
+	"x greater than 5!"
+	"X equals to {x}"
+	"z is {z}"
 "Test"
-x = 5
+x = x + 1
 goto foobar

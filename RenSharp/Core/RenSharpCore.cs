@@ -75,5 +75,11 @@ namespace RenSharp.Core
 
             return character.Attributes;
         }
+
+        public void Callback(string funcName, RenSharpCore renSharpCore, RenSharpContext context)
+        {
+			CallbackAttribute.CallMethod(funcName, renSharpCore, context);
+		}
+        
     }
 }

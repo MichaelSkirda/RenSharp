@@ -12,6 +12,7 @@ namespace RenSharp.Core
 		internal static Label ParseLabel(string[] args) => new Label(args[1]);
 		internal static Goto ParseGoto(string[] args) => new Goto(args[1]);
 		internal static Load ParseLoad(string[] args) => new Load(String.Join(" ", args.Skip(1)).GetStringBetween("\""));
+		internal static Callback ParseCallback(string[] args) => new Callback(String.Join(" ", args.Skip(1)));
 		internal static If ParseIf(string[] args)
 		{
 			string expression = String.Join(" ", args.Skip(1));
@@ -34,15 +35,12 @@ namespace RenSharp.Core
 				throw new ArgumentException($"Can not parse string {command}.");
 
 			string name = keyValue[0].Trim();
-			string value = keyValue[1].Trim();
+			string expression = keyValue[1].Trim();
 
 			if (name.Contains(" "))
 				throw new ArgumentException($"Can not parse command {command}");
 
-			if (value.Contains("\""))
-				value = value.GetStringBetween("\"");
-
-			Set set = new Set(name, value);
+			Set set = new Set(name, expression);
 			return set;
 		}
 
