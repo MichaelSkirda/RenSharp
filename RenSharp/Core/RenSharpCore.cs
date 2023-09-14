@@ -54,16 +54,16 @@ namespace RenSharp.Core
 					continue;
 				}
 
-                int circleStart = 0;
+                int cycleStart = 0;
 				while (command.Level < Context.Level)
                 {
-                    circleStart = Context.Stack.Pop();
-                    if (circleStart != 0)
+                    cycleStart = Context.Stack.Pop();
+                    if (cycleStart != 0)
                         break;
 				}
-                if (circleStart != 0)
+                if (cycleStart != 0)
                 {
-                    Program.Goto(circleStart);
+                    Program.Goto(cycleStart);
                     skip = true;
                     continue;
                 }
