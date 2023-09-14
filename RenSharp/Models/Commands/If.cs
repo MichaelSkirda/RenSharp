@@ -18,22 +18,8 @@ namespace RenSharp.Models.Commands
 
 		internal override void Execute(RenSharpCore renSharpCore, RenSharpContext context)
 		{
-			string clearedExpression = Expression.Replace("=", "");
-			clearedExpression = clearedExpression.Replace(">", "");
-			clearedExpression = clearedExpression.Replace("<", "");
-
-			while(true)
-			{
-				if (clearedExpression.Contains("\"") == false)
-					break;
-				string substring = $"\"{clearedExpression.GetStringBetween("\"")}\"";
-				clearedExpression.Replace(substring, "");
-			}
-
-			string[] vars = clearedExpression
-				.Split(" ")
-				.Where(x => string.IsNullOrEmpty(x) == false)
-				.ToArray();
+			// 'x + 12 == y || x == "hello"' -> ['x', 'y']
+			List<string> vars = StringManipulator.GetVars(Expression);
 
 			ExpressionContext exp = new ExpressionContext();
 			

@@ -31,5 +31,33 @@ namespace RenSharp
 
             return str;
         }
+
+        public static List<string> GetVars(string expression)
+        {
+			string clearedExpression = expression.Replace("=", "");
+			clearedExpression = clearedExpression.Replace(">", "");
+			clearedExpression = clearedExpression.Replace("<", "");
+			clearedExpression = clearedExpression.Replace("+", "");
+			clearedExpression = clearedExpression.Replace("-", "");
+			clearedExpression = clearedExpression.Replace("*", "");
+			clearedExpression = clearedExpression.Replace("/", "");
+
+
+			while (true)
+			{
+				if (clearedExpression.Contains("\"") == false)
+					break;
+				string substring = $"\"{clearedExpression.GetStringBetween("\"")}\"";
+				clearedExpression = clearedExpression.Replace(substring, "");
+			}
+
+			List<string> vars = clearedExpression
+				.Split(" ")
+				.Where(x => string.IsNullOrEmpty(x) == false)
+                .Where(x => Int32.TryParse(x, out _) == false)
+				.ToList();
+
+            return vars;
+		}
     }
 }
