@@ -16,6 +16,7 @@ namespace RenSharp
 			config.Skip<If>();
 			config.Skip<Set>();
 			config.Skip<Repeat>();
+			config.Skip<Nop>();
 
 			config.AllowToPushStack<If>();
 			config.AllowToPushStack<Repeat>();

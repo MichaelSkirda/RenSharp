@@ -8,6 +8,7 @@ if x * y < 42
 else
 	"Else"
 	Eliz "{x * y} < 42"
+"afterif1"
 
 // (if x) ()
 if x > 1000
@@ -18,7 +19,7 @@ else if y + 100 > 1000
 	"z"
 else
 	"other"
-
+"afterif2"
 
 
 label reapetExmpl
