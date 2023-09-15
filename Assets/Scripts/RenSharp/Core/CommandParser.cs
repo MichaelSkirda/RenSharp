@@ -14,6 +14,7 @@ namespace RenSharp.Core
 		internal static Goto ParseGoto(string[] args) => new Goto(args[1]);
 		internal static Load ParseLoad(string[] args) => new Load(String.Join(" ", args.Skip(1)).GetStringBetween("\""));
 		internal static Callback ParseCallback(string[] args) => new Callback(String.Join(" ", args.Skip(1)));
+		internal static While ParseWhile(string[] args) => new While(String.Join(" ", args.Skip(1)));
 		internal static If ParseIf(string[] args)
 		{
 			bool isRoot;

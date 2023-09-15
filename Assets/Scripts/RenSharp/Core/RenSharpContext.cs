@@ -10,14 +10,11 @@ namespace RenSharp.Core
     public class RenSharpContext
     {
 		internal Stack<int> Stack = new Stack<int>();
-        internal int Level
-		{
-			get
-			{
-				// Tabulation level
-				return Stack.Count + 1;
-			}
-		}
+
+		/// <summary>
+		/// Tabulation level
+		/// </summary>
+        internal int Level => Stack.Count + 1;
         internal Dictionary<string, string> Variables { get; set; } = new Dictionary<string, string>();
 
 		internal object GetValue(string var)

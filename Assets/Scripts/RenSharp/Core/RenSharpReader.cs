@@ -63,6 +63,7 @@ namespace RenSharp.Core
 
         private Command ParseCommand(ReaderContext ctx)
         {
+            ctx.Line++;
 			int level = GetCommandLevel(ctx);
 
 			string line = ctx.LineText;
@@ -77,7 +78,7 @@ namespace RenSharp.Core
 			if (command == null)
 				throw new Exception($"Cannot parse command '{line}'");
 
-			command.Line = ctx.Line++;
+			command.Line = ctx.Line;
 			command.Level = level;
 
 			return command;
@@ -133,7 +134,7 @@ namespace RenSharp.Core
             if(Config.CanPush(previousCmd) == false)
             {
                 if (previousCmd.Level < command.Level)
-                    throw new Exception($"Command '{command.GetType()}' can not use tabulation.");
+                    throw new Exception($"Command '{previousCmd.GetType()}' can not push tabulation.");
             }
 
             if (command.Level >= previousCmd.Level + 2)

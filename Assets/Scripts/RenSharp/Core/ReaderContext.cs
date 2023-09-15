@@ -9,7 +9,7 @@ namespace RenSharp.Core
 	{
 		internal List<string> SourceCode = new List<string>();
 		internal List<Command> Commands = new List<Command>();
-		internal int Line { get; set; } = 1;
+		internal int Line { get; set; }
 		internal string LineText => SourceCode[Line - 1];
 	}
 }
