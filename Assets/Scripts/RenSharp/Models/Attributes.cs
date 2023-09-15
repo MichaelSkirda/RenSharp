@@ -41,6 +41,12 @@ namespace RenSharp.Models
 			string delay = GetAttributeValue("delay");
 			return Int32.Parse(delay);
 		}
+
+		public bool IsClear()
+		{
+			string str = GetAttributeValue("no-clear");
+			return !bool.Parse(str);
+		}
 		public string GetSpeaker() => GetAttributeValue("name");
 	}
 }
