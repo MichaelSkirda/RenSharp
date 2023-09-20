@@ -17,21 +17,25 @@ namespace RenSharp.Core
         public RenSharpReader(Configuration config)
         {
             Config = config;
-            Commands = Config.Commands;
+            Commands = Config.CommandParsers;
         }
 
         internal List<Command> ParseCode(List<string> codeLines)
         {
 			ReaderContext ctx = new ReaderContext();
 
-			ctx.SourceCode = codeLines;
+            ctx.ParseFunc = ParseCommands;
+            ctx.ParseSingleFunc = ParseCommand;
+			ctx.SourceCode = codeLines
+                .Where(x => string.IsNullOrWhiteSpace(x) == false)
+                .ToList();
 			ctx.SourceCode = RemoveComments(ctx.SourceCode);
 
             while (ctx.Line < ctx.SourceCode.Count)
             {
                 try
                 {
-                    List<Command> parsed = ParseCommands(ctx);
+                    List<Command> parsed = ctx.ParseCommands();
                     foreach(Command command in parsed)
                     {
 						Validate(command, ctx.Commands.LastOrDefault());
@@ -51,10 +55,11 @@ namespace RenSharp.Core
         {
 			Command command = ParseCommand(ctx);
 
-            if(command is If)
+            if(Config.IsComplex(command))
             {
-				List<Command> parsed = new List<Command>() { command };
-				parsed.AddRange(ParseIf(ctx, command as If));
+                List<Command> parsed = new List<Command>() { command };
+                Type type = command.GetType();
+                parsed.AddRange(Config.ComplexCommandParsers[type](ctx, command));
                 return parsed;
             }
 
@@ -83,35 +88,6 @@ namespace RenSharp.Core
 
 			return command;
 		}
-
-		private List<Command> ParseIf(ReaderContext ctx, If rootIf)
-        {
-            List<Command> commands = new List<Command>();
-            int endIfLine;
-            while(true)
-            {
-                Command command = ParseCommand(ctx);
-                if (command.IsNot<Nop>() && command.IsNot<If>() && command.Level <= rootIf.Level)
-                {
-                    endIfLine = command.Line;
-                    ctx.Line--;
-					break;
-				}
-                if(command.Is<If>() && (command as If).IsRoot)
-                {
-                    endIfLine = command.Line;
-					ctx.Line--;
-					break;
-                }
-				commands.Add(command);
-			}
-			commands
-                .OfType<If>()
-                .ToList()
-                .ForEach(x => x.EndIfLine = endIfLine);
-            rootIf.EndIfLine = endIfLine;
-            return commands;
-        }
 
         private static string ApplySyntaxSugar(string line, List<Command> commands)
         {

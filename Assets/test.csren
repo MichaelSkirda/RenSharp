@@ -7,5 +7,10 @@ while x < 5
 	"{x} < 5"
 	x = x + 1
 "End of while"
+callback gotoLine 13
+
+"line11"
+"line12"
+"line13"
 
 goto main

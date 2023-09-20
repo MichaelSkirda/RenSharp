@@ -1,11 +1,8 @@
-character Eliz name=Элизабет
+
 label main
-
-x = 0
-"Before while"
-while x < 5
-	"{x} < 5"
-	x = x + 1
-"End of while"
-
-goto main
+set x = 2
+label test
+"Hello world! {x}"
+"Test"
+x = x + 1
+goto test

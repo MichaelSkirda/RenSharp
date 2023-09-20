@@ -45,6 +45,17 @@ namespace RenSharp.Core
 			return $"set {line}";
 		}
 
+		internal static string ShortenMathSugar(string line)
+        {
+			string[] words = line.Split(' ');
+			if (words[0] != "set")
+				return line;
+
+			// set x++
+			// set y--
+			return line;
+        }
+
 		internal static string ElseSugar(string line)
 		{
 			if (line.Trim() == "else")

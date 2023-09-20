@@ -15,14 +15,10 @@ public class DialogController : MonoBehaviour
 
     private IEnumerator Coroutine { get; set; }
 
-    void Start()
-    {
-        ClearDialog();
-	}
-	void Update()
-	{
-		TextField.text = DisplayText;
-	}
+    void Start() => ClearDialog();
+	
+	void Update() => TextField.text = DisplayText;
+	
 
 	public bool HasAnimationFinished()
 	{
@@ -30,31 +26,32 @@ public class DialogController : MonoBehaviour
 			return true;
 		if (Text == Message.Speech)
 			return true;
+		Debug.Log("Not finished!");
 		return false;
 	}
 
 	public void SkipAnimation()
 	{
-		if (Coroutine != null)
-			StopCoroutine(Coroutine);
+		TryStopCoroutine();
 
-		if(Message != null)
+		if (Message == null)
+			return;
+
+		try
 		{
-			try
-			{
-				int drawedTextLength = Text.Length;
-				string notDrawedText = Message.Speech.Substring(drawedTextLength);
+			int drawedTextLength = Text.Length;
+			string notDrawedText = Message.Speech.Substring(drawedTextLength);
 
-				DisplayText += notDrawedText;
-				Text = Message.Speech;
-			}
-			catch
-			{
-				Debug.LogError("CANNOT SKIP ANIMATION");
-				DisplayText = Message.Speech;
-				Text = Message.Speech;
-			}
+			DisplayText += notDrawedText;
+			Text = Message.Speech;
 		}
+		catch
+		{
+			Debug.LogError("CANNOT SKIP ANIMATION");
+			DisplayText = Message.Speech;
+			Text = Message.Speech;
+		}
+		
 	}
 
 	public void ClearDialog()

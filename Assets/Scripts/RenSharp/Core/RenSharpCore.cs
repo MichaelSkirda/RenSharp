@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using RenSharp.Interfaces;
 using RenSharp.Models;
@@ -100,10 +101,17 @@ namespace RenSharp.Core
             return character.Attributes;
         }
 
-        public void Callback(string funcName, RenSharpCore renSharpCore, RenSharpContext context)
+        public void Callback(string funcName, RenSharpCore renSharpCore, string[] args)
         {
-			CallbackAttribute.CallMethod(funcName, renSharpCore, context);
+			CallbackAttribute.CallMethod(funcName, renSharpCore, args);
 		}
+
+        public void RegisterCallback(string name, MethodInfo method, object obj = null)
+        {
+            CallbackAttribute.RegisterMethod(name, method, obj);
+        }
+
+        public void Goto(int line) => Program.Goto(line);
         
     }
 }

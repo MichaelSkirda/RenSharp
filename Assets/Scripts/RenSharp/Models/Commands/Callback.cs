@@ -8,15 +8,17 @@ namespace RenSharp.Models.Commands
 	internal class Callback : Command
 	{
 		public string FunctionName { get; set; }
+		public string[] Args { get; set; }
 
-		public Callback(string funcName)
+		public Callback(string funcName, string[] args)
 		{
 			FunctionName = funcName;
+			Args = args;
 		}
 
 		internal override void Execute(RenSharpCore renSharpCore, RenSharpContext context)
 		{
-			renSharpCore.Callback(FunctionName, renSharpCore, context);
+			renSharpCore.Callback(FunctionName, renSharpCore, Args);
 		}
 	}
 }

@@ -16,8 +16,8 @@ namespace RenSharp
 			config.Skip<If>();
 			config.Skip<Set>();
 			config.Skip<Repeat>();
-			config.Skip<Nop>();
 			config.Skip<While>();
+			config.Skip<Callback>();
 
 			config.AllowToPushStack<If>();
 			config.AllowToPushStack<Repeat>();
@@ -45,7 +45,7 @@ namespace RenSharp
 			config.AddCommand("repeat", (words, config) => CommandParser.ParseRepeat(words));
 			config.AddCommand("while", (words, config) => CommandParser.ParseWhile(words));
 
-			config.AddCommand("", (words, config) => CommandParser.ParseNop());
+			config.AddComplex(typeof(If), (ctx, rootCmd) => ComplexParser.ComplexIfParser(ctx, rootCmd as If));
 		}
 	}
 }
