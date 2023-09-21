@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace RenSharp
@@ -34,20 +35,11 @@ namespace RenSharp
 
         public static List<string> GetVars(string expression)
         {
-			string clearedExpression = expression.Replace("=", "");
-			clearedExpression = clearedExpression.Replace(">", "");
-			clearedExpression = clearedExpression.Replace("<", "");
-			clearedExpression = clearedExpression.Replace("+", "");
-			clearedExpression = clearedExpression.Replace("-", "");
-			clearedExpression = clearedExpression.Replace("*", "");
-			clearedExpression = clearedExpression.Replace("/", "");
-			clearedExpression = clearedExpression.Replace("%", "");
-			clearedExpression = clearedExpression.Replace("true", "");
-			clearedExpression = clearedExpression.Replace("false", "");
-
+            string clearedExpression = Regex.Replace(expression, "(=|>|<|\\+|-|\\*|\\/|\\%|true|false)", "");
 
 			while (true)
 			{
+                // Delete constant strings "like this"
 				if (clearedExpression.Contains("\"") == false)
 					break;
 				string substring = $"\"{clearedExpression.GetStringBetween("\"")}\"";

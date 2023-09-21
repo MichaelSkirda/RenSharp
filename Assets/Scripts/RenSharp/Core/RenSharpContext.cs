@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Linq;
 using System.Text;
+using System.Reflection;
 
 namespace RenSharp.Core
 {
@@ -30,13 +31,22 @@ namespace RenSharp.Core
 		}
         internal T ExecuteExpression<T>(string expression)
         {
-			List<string> names = StringManipulator.GetVars(expression);
+			//[a-zA-Z]+\([^\)]*\)
+			List<string> names = StringManipulator.GetVars(expression)
+				.Distinct()
+				.ToList();
+			List<MethodInfo> methods = CallbackAttribute.MethodsList;
+
 			var exp = new ExpressionContext();
 
 			foreach (string name in names)
 			{
 				object value = GetValue(name);
 				exp.Variables[name] = value;
+			}
+			foreach (MethodInfo method in methods)
+			{
+				exp.Imports.AddMethod(method, method.DeclaringType.Namespace);
 			}
 
 			IGenericExpression<T> e = exp.CompileGeneric<T>(expression);

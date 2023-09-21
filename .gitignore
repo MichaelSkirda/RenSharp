@@ -70,3 +70,9 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+RenSharpConsole/RenSharpConsole/obj/
+RenSharpConsole/RenSharpConsole/bin/
+
+Assets/Scripts/RenSharp/obj/
+Assets/Scripts/RenSharp/bin/

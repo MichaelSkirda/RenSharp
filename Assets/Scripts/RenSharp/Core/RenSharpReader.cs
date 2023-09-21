@@ -95,6 +95,7 @@ namespace RenSharp.Core
             line = SyntaxSugarFormatter.MessageSugar(line, commands);
             line = SyntaxSugarFormatter.SetSugar(line);
             line = SyntaxSugarFormatter.ElseSugar(line);
+            line = SyntaxSugarFormatter.ShortenMathSugar(line);
 
             return line;
 		}

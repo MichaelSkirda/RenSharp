@@ -1,9 +1,9 @@
 
 label main
-set x = somefunc()
-y = 1
+set x = 10
+y = x + x -2
 label test
-"Hello world! {y}"
+"{time()}"
 "Test {x}"
 x--
 y++

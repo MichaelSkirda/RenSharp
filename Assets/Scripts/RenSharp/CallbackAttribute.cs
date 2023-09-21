@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
-using UnityEngine;
 
 namespace RenSharp
 {
@@ -14,25 +13,43 @@ namespace RenSharp
 	{
 		private static Dictionary<string, (object, MethodInfo)> Callbacks { get; set; }
 			= new Dictionary<string, (object, MethodInfo)>();
-		public static List<MethodInfo> MethodsList { get; set; }
+		public static List<MethodInfo> MethodsList { get; set; } = new List<MethodInfo>();
 
 		public CallbackAttribute(string name = "", [CallerMemberName] string memberName = default!)
 		{
-			if (MethodsList == null)
-			{
-				MethodsList = Assembly.GetAssembly(typeof(RenSharpCore))
-				  .GetTypes()
-				  .SelectMany(t => t.GetMethods(BindingFlags.Static | BindingFlags.Public))
-				  .ToList();
-			}
-
 			if (name == "")
 				name = memberName;
-			MethodInfo method = MethodsList.FirstOrDefault(m => m.Name == memberName);
+
+			List<MethodInfo> methods = MethodsList
+				.Where(x => x.Name == memberName && x.IsDefined(typeof(CallbackAttribute)))
+				.ToList();
+
+			if (methods.Count() > 1)
+				throw new Exception($"There are more than one method with name {memberName} ({name})");
+
+			MethodInfo method = methods.First();
+
 			if (method == null || method.DeclaringType == null)
-				return;
+				throw new Exception($"Can not parse method with name {memberName} ({name})");
 
 			Callbacks.Add(name, (null, method));
+		}
+
+		public static void Init()
+		{
+			if (MethodsList == null || MethodsList.Count <= 0)
+			{
+				// Load ALL methods with attribute in ALL assembilies from Domain
+				MethodsList = AppDomain.CurrentDomain.GetAssemblies()
+					.SelectMany(x => x.GetTypes())
+					.SelectMany(x => x.GetMethods(BindingFlags.Static | BindingFlags.Public))
+					.Where(x => x.IsDefined(typeof(CallbackAttribute)))
+					.ToList();
+
+				// Call contructors
+				MethodsList
+					.ForEach(x => x.GetCustomAttributes(typeof(CallbackAttribute), false));
+			}
 		}
 
 		public static void RegisterMethod(string name, MethodInfo method, object obj = null)
@@ -40,16 +57,6 @@ namespace RenSharp
 
 		public static void CallMethod(string name, RenSharpCore renSharp, string[] args)
 		{
-			if (MethodsList == null || MethodsList.Count <= 0)
-			{
-				_ = Assembly.GetAssembly(typeof(RenSharpCore))
-					  .GetTypes()
-					  .SelectMany(t => t.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
-					  .Where(m => m.GetCustomAttributes(typeof(CallbackAttribute), false).Length > 0)
-					  .ToList();
-			}
-
-
 			(object, MethodInfo) objMethod;
 
 			bool exist = Callbacks.TryGetValue(name, out objMethod);

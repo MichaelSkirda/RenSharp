@@ -34,6 +34,7 @@ namespace RenSharp.Core
 			var program = reader.ParseCode(code.ToList());
 
 			Program = new RenSharpProgram(program);
+            CallbackAttribute.Init();
 		}
 
         public Command ReadNext()

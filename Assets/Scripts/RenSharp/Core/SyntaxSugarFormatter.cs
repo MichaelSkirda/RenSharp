@@ -3,7 +3,9 @@ using RenSharp.Models.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace RenSharp.Core
 {
@@ -48,13 +50,56 @@ namespace RenSharp.Core
 		internal static string ShortenMathSugar(string line)
         {
 			string[] words = line.Split(' ');
-			if (words[0] != "set")
-				return line;
 
 			// set x++
 			// set y--
+			if(words.Length == 1)
+			{
+				bool parsed = TryParseIncrement(words[0], out string result);
+				if (parsed)
+					return result;
+				else
+					return line;
+			}
+
+
+
 			return line;
         }
+
+		private static bool TryParseIncrement(string expression, out string result)
+		{
+			string name = expression.Replace("--", "").Replace("++", "");
+
+			var increment = new Regex("^[a-zA-Z]+\\+\\+$");
+			var decrement = new Regex("^[a-zA-Z]+--$");
+
+			var incMatches = increment.Matches(expression).Count;
+			var decMatches = decrement.Matches(expression).Count;
+
+			if (incMatches > 1 || decMatches > 1)
+				throw new ArgumentException("Not allowed to use more than one '++' or '--' at same line.");
+
+			if (incMatches > 0 && decMatches > 0)
+				throw new ArgumentException("Not allowed to use '++' and '--' at same line.");
+
+			if(incMatches > 0)
+			{
+				result = $"set {name} = {name} + 1";
+				return true;
+			}
+			else if(decMatches > 0)
+			{
+				result = $"set {name} = {name} - 1";
+				return true;
+			}
+			else
+			{
+				result = "";
+				return false;
+			}
+		}
+
 
 		internal static string ElseSugar(string line)
 		{
