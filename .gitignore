@@ -71,8 +71,10 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
-RenSharpConsole/RenSharpConsole/obj/
-RenSharpConsole/RenSharpConsole/bin/
+RenSharpConsole/obj/
+RenSharpConsole/bin/
 
 Assets/Scripts/RenSharp/obj/
 Assets/Scripts/RenSharp/bin/
+
+!RenSharpConsole/*.csproj
