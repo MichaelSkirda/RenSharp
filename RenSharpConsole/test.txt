@@ -3,7 +3,7 @@ label main
 set x = 10
 y = x + x -2
 label test
-"{time()}"
+"{Time()}"
 "Test {x}"
 x--
 y++

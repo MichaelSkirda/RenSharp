@@ -11,28 +11,25 @@ namespace RenSharp
 	[AttributeUsage(AttributeTargets.Method)]
 	public class CallbackAttribute : Attribute
 	{
-		private static Dictionary<string, (object, MethodInfo)> Callbacks { get; set; }
+		public static Dictionary<string, (object, MethodInfo)> Callbacks { get; set; }
 			= new Dictionary<string, (object, MethodInfo)>();
 		public static List<MethodInfo> MethodsList { get; set; } = new List<MethodInfo>();
 
-		public CallbackAttribute(string name = "", [CallerMemberName] string memberName = default!)
+		public CallbackAttribute([CallerMemberName] string memberName = default!)
 		{
-			if (name == "")
-				name = memberName;
-
 			List<MethodInfo> methods = MethodsList
 				.Where(x => x.Name == memberName && x.IsDefined(typeof(CallbackAttribute)))
 				.ToList();
 
 			if (methods.Count() > 1)
-				throw new Exception($"There are more than one method with name {memberName} ({name})");
+				throw new Exception($"There are more than one method with name {memberName}");
 
 			MethodInfo method = methods.First();
 
 			if (method == null || method.DeclaringType == null)
-				throw new Exception($"Can not parse method with name {memberName} ({name})");
+				throw new Exception($"Can not parse method with name {memberName}");
 
-			Callbacks.Add(name, (null, method));
+			Callbacks.Add(memberName, (null, method));
 		}
 
 		public static void Init()

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RenSharp.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -43,6 +44,8 @@ namespace RenSharp
 				if (clearedExpression.Contains("\"") == false)
 					break;
 				string substring = $"\"{clearedExpression.GetStringBetween("\"")}\"";
+                if (string.IsNullOrEmpty(substring))
+                    break;
 				clearedExpression = clearedExpression.Replace(substring, "");
 			}
 
@@ -50,14 +53,30 @@ namespace RenSharp
 				.Split(" ")
 				.Where(x => string.IsNullOrEmpty(x) == false)
                 .Where(x => Int32.TryParse(x, out _) == false)
+                .Distinct()
 				.ToList();
 
             return vars;
 		}
 
+        public static List<string> GetMethods(string expression)
+        {
+            var regex = new Regex("([a-zA-Z_{1}][a-zA-Z0-9_]+)(?=\\(.*\\))");
+            return regex.Matches(expression).Select(x => x.Value).ToList();
+        }
+
         public static bool IsNumber(this string str)
         {
             return Int32.TryParse(str, out _);
         }
-    }
+
+		internal static ExpressionMembers GetMembers(string expression)
+		{
+            return new ExpressionMembers()
+            {
+                Methods = GetMethods(expression),
+                Variables = GetVars(expression)
+            };
+		}
+	}
 }

@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Linq;
 using System.Text;
 using System.Reflection;
+using RenSharp.Models;
 
 namespace RenSharp.Core
 {
@@ -31,15 +32,14 @@ namespace RenSharp.Core
 		}
         internal T ExecuteExpression<T>(string expression)
         {
-			//[a-zA-Z]+\([^\)]*\)
-			List<string> names = StringManipulator.GetVars(expression)
-				.Distinct()
+			ExpressionMembers members = StringManipulator.GetMembers(expression);
+			List<MethodInfo> methods = members.Methods
+				.Select(x => CallbackAttribute.Callbacks[x].Item2)
 				.ToList();
-			List<MethodInfo> methods = CallbackAttribute.MethodsList;
 
 			var exp = new ExpressionContext();
 
-			foreach (string name in names)
+			foreach (string name in members.Variables)
 			{
 				object value = GetValue(name);
 				exp.Variables[name] = value;
