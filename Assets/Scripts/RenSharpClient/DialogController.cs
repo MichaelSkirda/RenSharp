@@ -119,7 +119,7 @@ public class DialogController : MonoBehaviour
 						chr = message[i];
 						DisplayText += chr;
 						Text += chr;
-						if (attempt > 15)
+						if (attempt > 20)
 							throw new System.Exception("Too many atempts");
 					} while (chr != '>');
 					continue;

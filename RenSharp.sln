@@ -1,7 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33723.286
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{0851A307-3AB8-3BF7-BAB7-B9D1B2432C06}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RenSharpConsole", "RenSharpConsole\RenSharpConsole.csproj", "{DC5EB352-5DBF-4A3E-A579-0B510DB0A8C1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RenSharp", "Assets\Scripts\RenSharp\RenSharp.csproj", "{159EC56F-145F-4FB4-A05A-65BD421084EF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,8 +19,19 @@ Global
 		{0851A307-3AB8-3BF7-BAB7-B9D1B2432C06}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0851A307-3AB8-3BF7-BAB7-B9D1B2432C06}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0851A307-3AB8-3BF7-BAB7-B9D1B2432C06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC5EB352-5DBF-4A3E-A579-0B510DB0A8C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC5EB352-5DBF-4A3E-A579-0B510DB0A8C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC5EB352-5DBF-4A3E-A579-0B510DB0A8C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC5EB352-5DBF-4A3E-A579-0B510DB0A8C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{159EC56F-145F-4FB4-A05A-65BD421084EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{159EC56F-145F-4FB4-A05A-65BD421084EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{159EC56F-145F-4FB4-A05A-65BD421084EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{159EC56F-145F-4FB4-A05A-65BD421084EF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5DBF4608-A6D2-4FF8-AE8B-22281D63188E}
 	EndGlobalSection
 EndGlobal

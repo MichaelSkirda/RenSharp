@@ -78,3 +78,4 @@ Assets/Scripts/RenSharp/obj/
 Assets/Scripts/RenSharp/bin/
 
 !RenSharpConsole/*.csproj
+!Assets/Scripts/RenSharp/RenSharp.csproj
