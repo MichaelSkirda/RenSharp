@@ -75,17 +75,18 @@ namespace RenSharp.Core
 
         public Label GetLabel(string name)
         {
-            Label label = CachedLabels.FirstOrDefault(x => x.Name == name);
-            if (label != null)
-                return label;
-
-            label = _program
+            var labels = _program
                 .OfType<Label>()
-                .FirstOrDefault(x => x.Name == name);
+                .Where(x => x.Name == name);
+
+            if (labels.Count() > 1)
+                throw new ArgumentException($"There are two labels with name {name}");
+
+            Label label = labels.First();
+
             if (label == null)
                 return null;
 
-            label.Line = _program.IndexOf(label) + 1;
             CachedLabels.Add(label);
             return label;
         }

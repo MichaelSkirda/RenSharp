@@ -9,8 +9,10 @@ namespace RenSharp.Core
 	{
 		internal List<string> SourceCode = new List<string>();
 		internal List<Command> Commands = new List<Command>();
+
 		internal int Line { get; set; }
-		internal string LineText => SourceCode[Line - 1];
+		internal int SourceLine { get; set; }
+		internal string LineText => SourceCode[SourceLine - 1];
 
 		private Func<ReaderContext, List<Command>> _parseFunc;
 		private Func<ReaderContext, Command> _parseSingle;
@@ -27,5 +29,14 @@ namespace RenSharp.Core
 
 		internal List<Command> ParseCommands() => _parseFunc(this);
 		internal Command ParseSingle() => _parseSingle(this);
+		internal Command SeekNext()
+		{
+			int line = Line;
+			int sourceLine = SourceLine;
+			Command next = ParseSingle();
+			Line = line;
+			SourceLine = sourceLine;
+			return next;
+		}
 	}
 }

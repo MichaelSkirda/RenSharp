@@ -8,15 +8,14 @@ using RenSharp.Models.Commands;
 internal static class ComplexParser
 {
     // Todo rename rootIf. Actually it's can be not root.
-    // Not root and root if at all almost same.
+    // Not root and root if - at all almost same.
     internal static List<Command> ComplexIfParser(ReaderContext ctx, If rootIf)
     {
         List<Command> commands = new List<Command>();
         int endIfLine;
         while (true)
         {
-            Command next = ctx.ParseSingle();
-            ctx.Line--;
+            Command next = ctx.SeekNext();
 
             if (IsValid(next, rootIf) == false)
             {

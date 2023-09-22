@@ -26,12 +26,11 @@ namespace RenSharp.Core
 
             ctx.ParseFunc = ParseCommands;
             ctx.ParseSingleFunc = ParseCommand;
-			ctx.SourceCode = codeLines
-                .Where(x => string.IsNullOrWhiteSpace(x) == false)
-                .ToList();
+            ctx.SourceCode = codeLines;
 			ctx.SourceCode = RemoveComments(ctx.SourceCode);
+            RemoveNullOrEmptyFromEnd(ctx.SourceCode);
 
-            while (ctx.Line < ctx.SourceCode.Count)
+            while (ctx.SourceLine < ctx.SourceCode.Count)
             {
                 try
                 {
@@ -44,14 +43,14 @@ namespace RenSharp.Core
 				}
 				catch (Exception ex)
                 {
-                    throw new Exception($"at line {ctx.Line}. Commans is '{ctx.LineText}'", ex);
+                    throw new Exception($"at line {ctx.SourceLine}. Commans is '{ctx.LineText}'", ex);
                 }
             }
 
             return ctx.Commands;
         }
 
-        internal List<Command> ParseCommands(ReaderContext ctx)
+		internal List<Command> ParseCommands(ReaderContext ctx)
         {
 			Command command = ParseCommand(ctx);
 
@@ -68,10 +67,15 @@ namespace RenSharp.Core
 
         private Command ParseCommand(ReaderContext ctx)
         {
-            ctx.Line++;
-			int level = GetCommandLevel(ctx);
+			string line = "";
+            while(string.IsNullOrWhiteSpace(line))
+            {
+				ctx.SourceLine++;
+                line = ctx.LineText;
+			}
 
-			string line = ctx.LineText;
+			int level = GetCommandLevel(line);
+
 			line = line.Trim();
 			line = ApplySyntaxSugar(line, ctx.Commands);
 
@@ -83,6 +87,7 @@ namespace RenSharp.Core
 			if (command == null)
 				throw new Exception($"Cannot parse command '{line}'");
 
+            ctx.Line++;
 			command.Line = ctx.Line;
 			command.Level = level;
 
@@ -118,20 +123,16 @@ namespace RenSharp.Core
                 throw new Exception($"Command '{command.GetType()} not valid. Tabulation can not be higher by two then previous.");
         }
 
-        internal static int GetCommandLevel(ReaderContext ctx)
+        internal static int GetCommandLevel(string line)
         {
-            string command = ctx.LineText;
-            if (string.IsNullOrWhiteSpace(command))
-                return ctx.Commands.Last().Level;
-
-            int level = 0;
-            foreach (char chr in command)
+            int level = 1;
+            foreach (char chr in line)
             {
-                level++;
                 if (chr != '\t')
                     break;
-            }
-            return level;
+				level++;
+			}
+			return level;
         }
         internal static List<string> RemoveComments(List<string> code)
         {
@@ -140,8 +141,12 @@ namespace RenSharp.Core
                 .ToList();
         }
 
-        internal static List<string> RemoveNullOrEmpty(List<string> code)
-            => code.Where(x => String.IsNullOrEmpty(x.Trim()) == false).ToList();
-        private static bool NullOrEmpty(string str) => string.IsNullOrEmpty(str.Trim());
-    }
+		private void RemoveNullOrEmptyFromEnd(List<string> sourceCode)
+		{
+            while(string.IsNullOrWhiteSpace(sourceCode.Last()))
+            {
+                sourceCode.RemoveAt(sourceCode.Count - 1);
+            }
+		}
+	}
 }

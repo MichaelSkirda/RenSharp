@@ -1,4 +1,7 @@
 
+menu:
+	image:
+
 label main
 name = "John Smith"
 x = 0
