@@ -5,18 +5,11 @@ using System.Text;
 
 namespace RenSharp.Models.Commands
 {
-	internal class Callback : Command
+	internal class Nop : Command
 	{
-		internal string Expression { get; set; }
-
-		public Callback(string expression)
-		{
-			Expression = expression;
-		}
-
 		internal override void Execute(RenSharpCore renSharpCore, RenSharpContext context)
 		{
-			_ = context.ExecuteExpression<object>(Expression);
+			throw new NotImplementedException("You can not execute no operation");
 		}
 	}
 }

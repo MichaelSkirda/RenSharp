@@ -13,15 +13,15 @@ namespace RenSharp.Models
 		public void AddAttributes(Attributes attributes) => AddAttributes(attributes.KeyValues());
 		private IEnumerable<string> KeyValues() => values.Select(x => $"{x.Key}={x.Value}");
 
-		public void AddAttributes(IEnumerable<string> attributes)
+		public void AddAttributes(IEnumerable<string> attributes, bool rewrite = true)
 		{
 			foreach (string attribute in attributes)
 			{
-				AddAttribute(attribute);
+				AddAttribute(attribute, rewrite);
 			}
 		}
 
-		private void AddAttribute(string attribute)
+		private void AddAttribute(string attribute, bool rewrite)
 		{
 			string[] keyValue = attribute.Split('=');
 			KeyValuePair<string, string> pair;
@@ -33,7 +33,16 @@ namespace RenSharp.Models
 			else
 				throw new Exception($"Cannot parse attribute '{attribute}'.");
 
-			values[pair.Key] = pair.Value;
+			if(rewrite)
+			{
+				values[pair.Key] = pair.Value;
+			}
+			else
+			{
+				bool hasValue = values.TryGetValue(pair.Key, out _);
+				if(!hasValue)
+					values[pair.Key] = pair.Value;
+			}
 		}
 
 		public int GetDelay()

@@ -36,33 +36,22 @@ namespace RenSharp
 
         public static List<string> GetVars(string expression)
         {
-            string clearedExpression = Regex.Replace(expression, "(=|>|<|\\+|-|\\*|\\/|\\%|true|false)", "");
-
-			while (true)
-			{
-                // Delete constant strings "like this"
-				if (clearedExpression.Contains("\"") == false)
-					break;
-				string substring = $"\"{clearedExpression.GetStringBetween("\"")}\"";
-                if (string.IsNullOrEmpty(substring))
-                    break;
-				clearedExpression = clearedExpression.Replace(substring, "");
-			}
-
-			List<string> vars = clearedExpression
-				.Split(" ")
-				.Where(x => string.IsNullOrEmpty(x) == false)
-                .Where(x => Int32.TryParse(x, out _) == false)
+			//[a-zA-Z{1}][a-zA-Z0-9_]+(?=[\-+*/%,) ]|$) <- old. Uses positive lookahead.
+			// words that have no '('
+			var regex = new Regex("\\b[a-zA-Z]{1}[a-zA-Z0-9_]*\\b(?!\\()");
+            return regex.Matches(expression)
+                .Select(x => x.Value)
                 .Distinct()
-				.ToList();
-
-            return vars;
+                .ToList();
 		}
 
         public static List<string> GetMethods(string expression)
         {
-            var regex = new Regex("([a-zA-Z_{1}][a-zA-Z0-9_]+)(?=\\(.*\\))");
-            return regex.Matches(expression).Select(x => x.Value).ToList();
+			var regex = new Regex("([a-zA-Z{1}][a-zA-Z0-9_]+)(?=\\()");
+            return regex.Matches(expression)
+                .Select(x => x.Value)
+                .Distinct()
+                .ToList();
         }
 
         public static bool IsNumber(this string str)
@@ -72,10 +61,14 @@ namespace RenSharp
 
 		internal static ExpressionMembers GetMembers(string expression)
 		{
-            return new ExpressionMembers()
+			// Delete all math operators, true/false, const numbers (42, 12, 10) and const string ("hello, world", "foo")
+			string clearedExpression = Regex.Replace
+				(expression, "(=|>|<|\\+|-|\\*|\\/|\\%|\\b(true|false|[0-9]+)\\b|\".*?\")", " ");
+
+			return new ExpressionMembers()
             {
-                Methods = GetMethods(expression),
-                Variables = GetVars(expression)
+                Methods = GetMethods(clearedExpression),
+                Variables = GetVars(clearedExpression)
             };
 		}
 	}

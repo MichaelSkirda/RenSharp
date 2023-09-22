@@ -30,6 +30,20 @@ namespace RenSharp.Core
 			return line;
 		}
 
+		internal static string CallbackSugar(string line)
+		{
+			//TODO
+			return line;
+			/*List<string> methodNames = CallbackAttribute.Callbacks.Keys
+				.Select(x => x)
+				.ToList();
+
+			// If line starts with any method name
+			if(methodNames.Any(x => line.StartsWith(x)))
+				return "callback " + line;
+			return line; */
+		}
+
 		internal static string SetSugar(string line)
 		{
 			// x = 123 -> ['x ', ' 123']

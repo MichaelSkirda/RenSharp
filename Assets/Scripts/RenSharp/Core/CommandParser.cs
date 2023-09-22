@@ -12,13 +12,7 @@ namespace RenSharp.Core
 		internal static Label ParseLabel(string[] args) => new Label(args[1]);
 		internal static Goto ParseGoto(string[] args) => new Goto(args[1]);
 		internal static Load ParseLoad(string[] args) => new Load(String.Join(" ", args.Skip(1)).GetStringBetween("\""));
-		internal static Callback ParseCallback(string[] args)
-		{
-			string funcName = args[1];
-			string[] funcArgs = args.Skip(2).ToArray();
-
-			return new Callback(funcName, funcArgs);
-		}
+		internal static Callback ParseCallback(string[] args) => new Callback(String.Join(" ", args.Skip(1)));
 		internal static While ParseWhile(string[] args) => new While(String.Join(" ", args.Skip(1)));
 		internal static If ParseIf(string[] args)
 		{
@@ -80,10 +74,11 @@ namespace RenSharp.Core
 			//    ^       ^ (splitter)   ^         ^   ^ (index 3)
 			// (index 0)              (index 1)  (splitter)
 			string[] line = String.Join(" ", words).Split('\"');
+			int length = line.Length;
 
 			string command = line[0].Trim(); // 'say Eliz'
-			string text = line[1];        // 'Hello, Alex! How are you?'
-			string attrs = line[2].Trim();   // 'no-clear delay=50'
+			string text = string.Join("\"", line.Skip(1).SkipLast(1));
+			string attrs = line.Last().Trim();   // 'no-clear delay=50'
 
 			string[] attributes = attrs
 				.Split(' ')
@@ -93,13 +88,13 @@ namespace RenSharp.Core
 
 			Message message = new Message(text, character, attributes);
 
-			// They won't override current attributes
+			// They won't rewrite current attributes
 			List<string> defaultAttributes = new List<string>()
 			{
 				config.GetDefault("delay"),
 				config.GetDefault("name")
 			};
-			message.Attributes.AddAttributes(defaultAttributes);
+			message.Attributes.AddAttributes(defaultAttributes, rewrite: false);
 
 			return message;
 		}

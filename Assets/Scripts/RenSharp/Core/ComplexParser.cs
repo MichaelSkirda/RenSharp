@@ -17,6 +17,7 @@ internal static class ComplexParser
         {
             Command next = ctx.ParseSingle();
             ctx.Line--;
+
             if (IsValid(next, rootIf) == false)
             {
                 endIfLine = next.Line;

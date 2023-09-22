@@ -17,13 +17,40 @@ namespace RenSharp.Core
 		/// Tabulation level
 		/// </summary>
         internal int Level => Stack.Count + 1;
-        internal Dictionary<string, string> Variables { get; set; } = new Dictionary<string, string>();
+        internal Dictionary<string, object> Variables { get; set; } = new Dictionary<string, object>();
+		ExpressionContext FleeCtx;
+
+		public RenSharpContext()
+		{
+			UpdateContext();
+		}
+
+		public void UpdateContext()
+		{
+			List<string> variables = Variables.Keys.Select(x => x).ToList();
+			List<RenSharpMethod> methods = CallbackAttribute.Callbacks;
+
+			FleeCtx = new ExpressionContext();
+			FleeCtx.ParserOptions.DecimalSeparator = '.';
+			FleeCtx.ParserOptions.FunctionArgumentSeparator = ',';
+			FleeCtx.ParserOptions.RecreateParser();
+
+			foreach (string name in variables)
+			{
+				object value = GetValue(name);
+				FleeCtx.Variables[name] = value;
+			}
+			foreach (RenSharpMethod method in methods)
+			{
+				FleeCtx.Imports.AddMethod(method.MethodInfo, method.Namespace);
+			}
+		}
 
 		internal object GetValue(string var)
 		{
-			string value = Variables[var];
+			object value = Variables[var];
 			int num;
-			bool isNumber = Int32.TryParse(value, out num);
+			bool isNumber = Int32.TryParse(value.ToString(), out num);
 
 			if (isNumber)
 				return num;
@@ -32,28 +59,12 @@ namespace RenSharp.Core
 		}
         internal T ExecuteExpression<T>(string expression)
         {
-			ExpressionMembers members = StringManipulator.GetMembers(expression);
-			List<MethodInfo> methods = members.Methods
-				.Select(x => CallbackAttribute.Callbacks[x].Item2)
-				.ToList();
-
-			var exp = new ExpressionContext();
-
-			foreach (string name in members.Variables)
-			{
-				object value = GetValue(name);
-				exp.Variables[name] = value;
-			}
-			foreach (MethodInfo method in methods)
-			{
-				exp.Imports.AddMethod(method, method.DeclaringType.Namespace);
-			}
-
-			IGenericExpression<T> e = exp.CompileGeneric<T>(expression);
+			UpdateContext();
+			IGenericExpression<T> e = FleeCtx.CompileGeneric<T>(expression);
 
 			T result = e.Evaluate();
 			return result;
-		}
+        }
 
 		internal string MessageExecuteVars(string line, RenSharpContext context)
 		{

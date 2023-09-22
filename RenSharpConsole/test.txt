@@ -1,10 +1,7 @@
 
 label main
-set x = 10
-y = x + x -2
+name = "John Smith"
+x = 0
 label test
-"{Time()}"
-"Test {x}"
-x--
-y++
+"Today is {TimeF("yyyy")} year! It's a {TimeF("HH:mm:ss")}!" name=Eliz
 goto test

@@ -1,15 +1,8 @@
-character Eliz name=Элизабет
+
 label main
-
+name = "John Smith"
 x = 0
-"Before while"
-while x < 5
-	"{x} < 5"
-	x = x + 1
-"End of while"
-
-"line11"
-"line12"
-"line13"
-
-goto main
+label test
+"Hello, {name}"
+"Today is {TimeF("yyyy")} year!" name=Eliz
+goto test

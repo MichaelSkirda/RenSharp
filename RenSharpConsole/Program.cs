@@ -1,4 +1,5 @@
-﻿using RenSharp.Core;
+﻿using Flee.PublicTypes;
+using RenSharp.Core;
 using RenSharp.Interfaces;
 using RenSharp.Models;
 using RenSharpConsole;

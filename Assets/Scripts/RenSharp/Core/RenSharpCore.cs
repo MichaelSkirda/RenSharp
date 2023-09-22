@@ -21,7 +21,8 @@ namespace RenSharp.Core
         public RenSharpCore(IEnumerable<string> code, Configuration config = null) => SetupProgram(code, config);
         private void SetupProgram(IEnumerable<string> code, Configuration config)
         {
-            Context = new RenSharpContext();
+			CallbackAttribute.Init();
+			Context = new RenSharpContext();
 			if (config == null)
             {
 				config = new Configuration();
@@ -34,7 +35,6 @@ namespace RenSharp.Core
 			var program = reader.ParseCode(code.ToList());
 
 			Program = new RenSharpProgram(program);
-            CallbackAttribute.Init();
 		}
 
         public Command ReadNext()
@@ -102,14 +102,9 @@ namespace RenSharp.Core
             return character.Attributes;
         }
 
-        public void Callback(string funcName, RenSharpCore renSharpCore, string[] args)
+        public void RegisterCallback(string name, MethodInfo method)
         {
-			CallbackAttribute.CallMethod(funcName, renSharpCore, args);
-		}
-
-        public void RegisterCallback(string name, MethodInfo method, object obj = null)
-        {
-            CallbackAttribute.RegisterMethod(name, method, obj);
+            CallbackAttribute.RegisterMethod(name, method);
         }
 
         public void Goto(int line) => Program.Goto(line);
