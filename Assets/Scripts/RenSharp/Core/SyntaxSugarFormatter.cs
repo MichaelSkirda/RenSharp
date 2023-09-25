@@ -30,6 +30,13 @@ namespace RenSharp.Core
 			return line;
 		}
 
+		internal static string ColonSugar(string line)
+		{
+			if(line.EndsWith(":"))
+				return line.Substring(0, line.Length - 1);
+			return line;
+		}
+
 		internal static string CallbackSugar(string line)
 		{
 			//TODO

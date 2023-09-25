@@ -10,8 +10,6 @@ namespace RenSharp.Core
 {
     internal class RenSharpProgram : IEnumerator<Command>
     {
-        private List<Label> CachedLabels { get; set; } = new List<Label>();
-
         object IEnumerator.Current => Current;
         private int Position = -1;
         private List<Command> _program { get; set; }
@@ -33,26 +31,7 @@ namespace RenSharp.Core
         public RenSharpProgram(List<Command> program)
         {
             _program = program;
-            SetupProgram();
-        }
-
-        private void SetupProgram()
-        {
-            CacheLabels();
-
-            Goto("main");
-        }
-
-        private void CacheLabels()
-        {
-            IEnumerable<Label> labelDefines = _program
-                .OfType<Label>();
-
-            foreach (var labelDefine in labelDefines)
-            {
-                Label label = GetLabel(labelDefine.Name);
-                CachedLabels.Add(label);
-            }
+			Goto("main");
         }
 
         public bool MoveNext()
@@ -70,6 +49,8 @@ namespace RenSharp.Core
         public void Goto(string label) => Goto(GetLabel(label).Line);
         public void Goto(int line)
         {
+            // -1 because line to index
+            // -1 because we call MoveNext() before get command
             Position = line - 2;
         }
 
@@ -85,21 +66,12 @@ namespace RenSharp.Core
             Label label = labels.First();
 
             if (label == null)
-                return null;
+                throw new NullReferenceException($"Null label was found by name {name}.");
 
-            CachedLabels.Add(label);
             return label;
         }
 
-        public void Reset()
-        {
-            Label main = _program.OfType<Label>().FirstOrDefault(x => x.Name == "main");
-            Position = _program.IndexOf(main);
-        }
-
-        public void Dispose()
-        {
-
-        }
+        public void Reset() => Goto("main");
+		public void Dispose() { }
     }
 }

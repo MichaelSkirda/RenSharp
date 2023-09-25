@@ -26,12 +26,12 @@ namespace RenSharp.Models.Commands
 			if (Repeated >= Times.Value)
 			{
 				Times = null;
-				context.Stack.Push(0);
+				context.LevelStack.Push(0);
 				Repeated = 0;
 			}
 			else
 			{
-				context.Stack.Push(Line);
+				context.LevelStack.Push(Line);
 			}
 		}
 	}

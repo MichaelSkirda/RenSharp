@@ -32,7 +32,7 @@ namespace RenSharp.Core
 
 			Configuration = config;
             RenSharpReader reader = new RenSharpReader(config);
-			var program = reader.ParseCode(code.ToList());
+			var program = reader.ParseCode(code);
 
 			Program = new RenSharpProgram(program);
 		}
@@ -59,7 +59,7 @@ namespace RenSharp.Core
                 int cycleStart = 0;
 				while (command.Level < Context.Level)
                 {
-                    cycleStart = Context.Stack.Pop();
+                    cycleStart = Context.LevelStack.Pop();
                     if (cycleStart != 0)
                         break;
 				}
@@ -85,9 +85,9 @@ namespace RenSharp.Core
         
         private void GotoClearStack(Label label)
         {
-			Context.Stack.Clear();
+			Context.LevelStack.Clear();
 			while (Context.Level < label.Level)
-				Context.Stack.Push(0);
+				Context.LevelStack.Push(0);
 		}
 
         public Attributes GetCharacterAttributes(string characterName)

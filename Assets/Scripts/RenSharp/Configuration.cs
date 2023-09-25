@@ -23,10 +23,10 @@ namespace RenSharp
 
 
 		public bool CanPush(Command command) => AllowedToPushStack.Contains(command.GetType());
-		public void AddCommand(string command, Func<string[], Configuration, Command> Parser) => CommandParsers[command] = Parser;
+		public void SetCommand(string command, Func<string[], Configuration, Command> Parser) => CommandParsers[command] = Parser;
 		public void SetDefault(string key, string value) => DefaultAttributes[key] = value;
 		public string GetDefaultValue(string attributeName) => DefaultAttributes[attributeName];
-		public string GetDefault(string attributeName) => $"{attributeName}={DefaultAttributes[attributeName]}";
+		public string GetDefaultKeyValueString(string attributeName) => $"{attributeName}={DefaultAttributes[attributeName]}";
 		public bool IsComplex(Command command) => ComplexCommandParsers.TryGetValue(command.GetType(), out _);
 		public void AddComplex(Type type, Func<ReaderContext, Command, List<Command>> Parser)
 			=> ComplexCommandParsers[type] = Parser;
@@ -49,7 +49,7 @@ namespace RenSharp
 			return SkipCommands.Contains(type);
 		}
 
-		public bool IsSkip<T>(T command)
+		public bool IsSkip(Command command)
 		{
 			Type type = command.GetType();
 			return SkipCommands.Contains(type);

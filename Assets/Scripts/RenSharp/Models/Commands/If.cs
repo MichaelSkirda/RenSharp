@@ -23,7 +23,7 @@ namespace RenSharp.Models.Commands
 		{
 			bool result = context.ExecuteExpression<bool>(Expression);
 			if (result)
-				context.Stack.Push(EndIfLine);
+				context.LevelStack.Push(EndIfLine);
 		}
 	}
 }

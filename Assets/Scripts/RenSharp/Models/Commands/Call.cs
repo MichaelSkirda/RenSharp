@@ -5,11 +5,19 @@ using System.Text;
 
 namespace RenSharp.Models.Commands
 {
-	internal class Nop : Command
+	internal class Call : Command
 	{
+		public string LabelName { get; set; }
+
+		public Call(string labelName)
+		{
+			LabelName = labelName;
+		}
+
 		internal override void Execute(RenSharpCore renSharpCore, RenSharpContext context)
 		{
-			throw new NotImplementedException("You can not execute no operation");
+
+			renSharpCore.GotoLabel(LabelName);
 		}
 	}
 }

@@ -6,17 +6,18 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 using RenSharp.Models;
+using System.Text.RegularExpressions;
 
 namespace RenSharp.Core
 {
     public class RenSharpContext
     {
-		internal Stack<int> Stack = new Stack<int>();
+		internal Stack<int> LevelStack { get; set; } = new Stack<int>();
 
 		/// <summary>
 		/// Tabulation level
 		/// </summary>
-        internal int Level => Stack.Count + 1;
+        internal int Level => LevelStack.Count + 1;
         internal Dictionary<string, object> Variables { get; set; } = new Dictionary<string, object>();
 		ExpressionContext FleeCtx;
 
@@ -68,16 +69,31 @@ namespace RenSharp.Core
 
 		internal string MessageExecuteVars(string line, RenSharpContext context)
 		{
-			while (true)
-			{
-				if (line.Contains("{") == false || line.Contains("}") == false)
-					break;
+			// Value in brackets '{' '}' and brackets, except escaped brackets '\{' \}'
+			Regex valueInBrackets = new Regex("(?<![\\\\])\\{(\\\\\\}|[^}])*(?<![\\\\])\\}");
+			// Matches any not escaped bracket
+			Regex notEscapedBrackets = new Regex("(?<![\\\\])\\{|(?<![\\\\])\\}");
 
-				string expression = line.GetStringBetween("{", "}");
+			List<string> expressions = valueInBrackets.Matches(line)
+				.Select(x => x.Value.Substring(1, x.Value.Length - 2))
+				.Distinct()
+				.ToList();
+
+			if (expressions.Any(x => notEscapedBrackets.IsMatch(x)))
+				throw new ArgumentException($"Wrong brackets count with line '{line}'");
+
+			foreach(string expression in expressions)
+			{
 				string value = context.ExecuteExpression<object>(expression).ToString();
 
 				line = line.Replace("{" + expression + "}", value);
 			}
+
+			if (notEscapedBrackets.IsMatch(line))
+				throw new ArgumentException($"Wrong brackets count with line '{line}'");
+
+			line = line.Replace("\\{", "{").Replace("\\}", "}");
+
 			return line;
 		}
     }

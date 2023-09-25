@@ -1,11 +1,12 @@
 
-menu:
-	image:
-
 label main
 name = "John Smith"
 x = 0
 label test
-"Hello, {name}"
-"Today is {TimeF("yyyy")} year!" name=Eliz
+if x > 5:
+	"Wow! x > 5. x is {x}"
+	x = x * 2
+"No, x still <= 5. x is {x}"
+x++
+
 goto test

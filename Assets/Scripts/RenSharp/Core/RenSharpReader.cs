@@ -20,14 +20,15 @@ namespace RenSharp.Core
             Commands = Config.CommandParsers;
         }
 
-        internal List<Command> ParseCode(List<string> codeLines)
+        internal List<Command> ParseCode(IEnumerable<string> codeLines)
         {
 			ReaderContext ctx = new ReaderContext();
 
             ctx.ParseFunc = ParseCommands;
             ctx.ParseSingleFunc = ParseCommand;
-            ctx.SourceCode = codeLines;
+            ctx.SourceCode = codeLines.ToList();
 			ctx.SourceCode = RemoveComments(ctx.SourceCode);
+            // Обязательно. Когда complex parser читает он не проверяет есть ли следующая строчка
             RemoveNullOrEmptyFromEnd(ctx.SourceCode);
 
             while (ctx.SourceLine < ctx.SourceCode.Count)
@@ -67,12 +68,9 @@ namespace RenSharp.Core
 
         private Command ParseCommand(ReaderContext ctx)
         {
-			string line = "";
-            while(string.IsNullOrWhiteSpace(line))
-            {
-				ctx.SourceLine++;
-                line = ctx.LineText;
-			}
+			ctx.Line++;
+			ctx.SourceLine++;
+            string line = ctx.LineText;
 
 			int level = GetCommandLevel(line);
 
@@ -87,15 +85,15 @@ namespace RenSharp.Core
 			if (command == null)
 				throw new Exception($"Cannot parse command '{line}'");
 
-            ctx.Line++;
 			command.Line = ctx.Line;
 			command.Level = level;
 
 			return command;
 		}
 
-        private static string ApplySyntaxSugar(string line, List<Command> commands)
+        private string ApplySyntaxSugar(string line, List<Command> commands)
         {
+            line = SyntaxSugarFormatter.ColonSugar(line);
             line = SyntaxSugarFormatter.CharacterSugar(line);
             line = SyntaxSugarFormatter.MessageSugar(line, commands);
             line = SyntaxSugarFormatter.SetSugar(line);

@@ -10,6 +10,8 @@ namespace RenSharp.Core
 	internal static class CommandParser
 	{
 		internal static Label ParseLabel(string[] args) => new Label(args[1]);
+		internal static Pass ParsePass(string[] args) => (args.Length == 1 && args[0] == "pass")
+			? new Pass() : throw new ArgumentException($"Can not parse pass at line '{string.Join(" ", args)}'");
 		internal static Goto ParseGoto(string[] args) => new Goto(args[1]);
 		internal static Load ParseLoad(string[] args) => new Load(String.Join(" ", args.Skip(1)).GetStringBetween("\""));
 		internal static Callback ParseCallback(string[] args) => new Callback(String.Join(" ", args.Skip(1)));
@@ -35,7 +37,7 @@ namespace RenSharp.Core
 			If command = new If(expression, isRoot);
 			return command;
 		}
-			internal static Set ParseSet(string[] args)
+		internal static Set ParseSet(string[] args)
 		{
 			// Example:
 			// set foo=42 ->   foo=42
@@ -91,8 +93,8 @@ namespace RenSharp.Core
 			// They won't rewrite current attributes
 			List<string> defaultAttributes = new List<string>()
 			{
-				config.GetDefault("delay"),
-				config.GetDefault("name")
+				config.GetDefaultKeyValueString("delay"),
+				config.GetDefaultKeyValueString("name")
 			};
 			message.Attributes.AddAttributes(defaultAttributes, rewrite: false);
 
