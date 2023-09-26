@@ -12,7 +12,7 @@ namespace RenSharp.Core
 {
     public class RenSharpCore
     {
-        private RenSharpProgram Program;
+        private RenSharpProgram Program => Context.Program;
         public Configuration Configuration { get; set; }
         public IWriter Writer { get; set; }
         private RenSharpContext Context { get; set; }
@@ -23,18 +23,63 @@ namespace RenSharp.Core
         {
 			CallbackAttribute.Init();
 			Context = new RenSharpContext();
-			if (config == null)
-            {
-				config = new Configuration();
-                config.UseDefault();
-			}
-			config.UseCoreCommands();
 
+			if (config == null)
+				config = new Configuration().UseDefault().UseCoreCommands();
+            
 			Configuration = config;
+
             RenSharpReader reader = new RenSharpReader(config);
 			var program = reader.ParseCode(code);
 
-			Program = new RenSharpProgram(program);
+			Context.Program = new RenSharpProgram(program);
+
+            List<Init> inits = Context.Program.Code
+                .OfType<Init>()
+                .ToList();
+
+            foreach(Init init in inits)
+            {
+                Program.Goto(init.Line + 1);
+				Command command;
+                bool skip;
+
+				do
+				{
+					skip = false;
+					bool hasNext = Program.MoveNext();
+                    if (!hasNext)
+                        break;
+
+					command = Program.Current;
+					if (command.Level > Context.Level)
+					{
+						skip = true;
+						continue;
+					}
+
+					int cycleStart = 0;
+					while (command.Level < Context.Level)
+					{
+						cycleStart = Context.LevelStack.Pop();
+						if (cycleStart != 0)
+							break;
+					}
+					if (cycleStart != 0)
+					{
+						Program.Goto(cycleStart);
+						skip = true;
+						continue;
+					}
+
+					if (command.Level <= 1)
+						break;
+
+					command.Execute(this, Context);
+				} while (Configuration.IsSkip(command) || skip);
+			}
+
+            Program.Goto("main");
 		}
 
         public Command ReadNext()
@@ -106,8 +151,5 @@ namespace RenSharp.Core
         {
             CallbackAttribute.RegisterMethod(name, method);
         }
-
-        public void Goto(int line) => Program.Goto(line);
-        
     }
 }

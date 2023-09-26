@@ -31,7 +31,6 @@ namespace RenSharp.Core
         public RenSharpProgram(List<Command> program)
         {
             _program = program;
-			Goto("main");
         }
 
         public bool MoveNext()

@@ -10,14 +10,15 @@ namespace RenSharp.Core
 {
     public class RenSharpReader
     {
-        private Dictionary<string, Func<string[], Configuration, Command>> Commands
+        private Dictionary<string, Func<string[], Configuration, Command>> Parsers { get; set; }
             = new Dictionary<string, Func<string[], Configuration, Command>>();
+
 
         private Configuration Config { get; set; }
         public RenSharpReader(Configuration config)
         {
             Config = config;
-            Commands = Config.CommandParsers;
+            Parsers = Config.CommandParsers;
         }
 
         internal List<Command> ParseCode(IEnumerable<string> codeLines)
@@ -54,23 +55,23 @@ namespace RenSharp.Core
 		internal List<Command> ParseCommands(ReaderContext ctx)
         {
 			Command command = ParseCommand(ctx);
+			List<Command> parsed = new List<Command>() { command };
 
-            if(Config.IsComplex(command))
-            {
-                List<Command> parsed = new List<Command>() { command };
-                Type type = command.GetType();
-                parsed.AddRange(Config.ComplexCommandParsers[type](ctx, command));
-                return parsed;
-            }
+			if (Config.IsComplex(command))
+                parsed.AddRange(Config.ParseComplex(ctx, command));
 
-            return new List<Command>() { command };
+            return parsed;
         }
 
         private Command ParseCommand(ReaderContext ctx)
         {
-			ctx.Line++;
-			ctx.SourceLine++;
-            string line = ctx.LineText;
+
+			string line = "";
+			while (string.IsNullOrWhiteSpace(line))
+			{
+				ctx.SourceLine++;
+				line = ctx.LineText;
+			}
 
 			int level = GetCommandLevel(line);
 
@@ -80,11 +81,12 @@ namespace RenSharp.Core
 			string[] words = line.Split(' ');
 			string keyword = words.FirstOrDefault();
 
-			Command command = Commands[keyword](words, Config);
+			Command command = Parsers[keyword](words, Config);
 
 			if (command == null)
 				throw new Exception($"Cannot parse command '{line}'");
 
+			ctx.Line++;
 			command.Line = ctx.Line;
 			command.Level = level;
 
@@ -108,8 +110,11 @@ namespace RenSharp.Core
             if (command.Level <= 0)
                 throw new Exception($"Command '{command.GetType()}' not valid. Tabulation can not be less than zero.");
 
-            if (previousCmd == null)
-                return;
+			if (previousCmd == null)
+				return;
+
+			if (command.Level >= previousCmd.Level + 2)
+				throw new Exception($"Command '{command.GetType()} not valid. Tabulation can not be higher by two then previous.");
 
             if(Config.CanPush(previousCmd) == false)
             {
@@ -117,8 +122,15 @@ namespace RenSharp.Core
                     throw new Exception($"Command '{previousCmd.GetType()}' can not push tabulation.");
             }
 
-            if (command.Level >= previousCmd.Level + 2)
-                throw new Exception($"Command '{command.GetType()} not valid. Tabulation can not be higher by two then previous.");
+			if(Config.IsMustPush(previousCmd))
+            {
+                if (previousCmd.Level >= command.Level)
+                    throw new Exception($"Command '{previousCmd.GetType()}' must use tab on next line.");
+            }
+
+            if (command is Init && command.Level != 1)
+                throw new ArgumentException($"Команда 'Init' должна быть корневой и не иметь отступов.");
+			
         }
 
         internal static int GetCommandLevel(string line)

@@ -9,7 +9,7 @@ namespace RenSharp
 {
 	internal static class DefaultConfigurationExtension
 	{
-		public static void UseDefault(this Configuration config)
+		public static Configuration UseDefault(this Configuration config)
 		{
 			config.Skip<Label>();
 			config.Skip<Goto>();
@@ -20,23 +20,28 @@ namespace RenSharp
 			config.Skip<Callback>();
 			config.Skip<Pass>();
 
-			config.AllowToPushStack<If>();
-			config.AllowToPushStack<Repeat>();
-			config.AllowToPushStack<While>();
+			config.MustPush<If>();
+			config.MustPush<Repeat>();
+			config.MustPush<While>();
+			config.MustPush<Label>();
+			config.MustPush<Init>();
 
 			config.SetDefault("delay", "30");
 			config.SetDefault("no-clear", "false");
 			config.SetDefault("loop", "false");
 			config.SetDefault("name", "nobody");
+
+			return config;
 		}
 
-		public static void UseCoreCommands(this Configuration config)
+		public static Configuration UseCoreCommands(this Configuration config)
 		{
 			config.SetCommand("say", (words, config) => CommandParser.ParseMessage(words, config));
 			config.SetCommand("character", (words, _) => CommandParser.ParseCharacter(words));
 
 			config.SetCommand("label", (words, _) => CommandParser.ParseLabel(words));
 			config.SetCommand("goto", (words, _) => CommandParser.ParseGoto(words));
+			config.SetCommand("init", (words, _) => CommandParser.ParseInit(words));
 
 			config.SetCommand("set", (words, _) => CommandParser.ParseSet(words));
 			config.SetCommand("else", (words, _) => CommandParser.ParseIf(words));
@@ -50,7 +55,12 @@ namespace RenSharp
 			config.SetCommand("", (_, __)
 				=> throw new ArgumentException("Can not parse this line. Try to use 'pass' explictly."));
 
+			config.SetCommand("call", (words, _) => CommandParser.ParseCall(words));
+			config.SetCommand("return", (words, _) => CommandParser.ParseReturn(words));
+
 			config.AddComplex(typeof(If), (ctx, rootCmd) => ComplexParser.ComplexIfParser(ctx, rootCmd as If));
+
+			return config;
 		}
 	}
 }

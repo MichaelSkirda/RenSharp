@@ -12,29 +12,46 @@ namespace RenSharp.Core
 {
     public class RenSharpContext
     {
-		internal Stack<int> LevelStack { get; set; } = new Stack<int>();
+		internal RenSharpProgram Program { get; set; }
+		internal Dictionary<string, object> Variables { get; set; } = new Dictionary<string, object>();
+		internal Stack<StackFrame> Stack { get; set; } = new Stack<StackFrame>();
+		internal Stack<int> LevelStack => CurrentFrame.LevelStack;
+		internal StackFrame CurrentFrame => Stack.Peek();
+		internal int Level => LevelStack.Count + 1;
 
-		/// <summary>
-		/// Tabulation level
-		/// </summary>
-        internal int Level => LevelStack.Count + 1;
-        internal Dictionary<string, object> Variables { get; set; } = new Dictionary<string, object>();
-		ExpressionContext FleeCtx;
+		private ExpressionContext FleeCtx { get; set; }
 
 		public RenSharpContext()
 		{
-			UpdateContext();
-		}
-
-		public void UpdateContext()
-		{
-			List<string> variables = Variables.Keys.Select(x => x).ToList();
-			List<RenSharpMethod> methods = CallbackAttribute.Callbacks;
-
 			FleeCtx = new ExpressionContext();
 			FleeCtx.ParserOptions.DecimalSeparator = '.';
 			FleeCtx.ParserOptions.FunctionArgumentSeparator = ',';
 			FleeCtx.ParserOptions.RecreateParser();
+
+			UpdateContext();
+
+			var mainFrame = new StackFrame();
+			Stack.Push(mainFrame);
+		}
+
+		public void PushStack()
+		{
+			CurrentFrame.Line = Program.Current.Line;
+			var frame = new StackFrame();
+			Stack.Push(frame);
+		}
+
+		internal StackFrame PopStack()
+		{
+			var oldFrame = Stack.Pop();
+			Program.Goto(CurrentFrame.Line);
+			return oldFrame;
+		}
+
+		public void UpdateContext()
+		{
+			List<string> variables = Variables.Keys.ToList();
+			List<RenSharpMethod> methods = CallbackAttribute.Callbacks;
 
 			foreach (string name in variables)
 			{
@@ -45,6 +62,8 @@ namespace RenSharp.Core
 			{
 				FleeCtx.Imports.AddMethod(method.MethodInfo, method.Namespace);
 			}
+
+			FleeCtx.Variables["ctx"] = this;
 		}
 
 		internal object GetValue(string var)
@@ -67,7 +86,7 @@ namespace RenSharp.Core
 			return result;
         }
 
-		internal string MessageExecuteVars(string line, RenSharpContext context)
+		internal string MessageExecuteVars(string line)
 		{
 			// Value in brackets '{' '}' and brackets, except escaped brackets '\{' \}'
 			Regex valueInBrackets = new Regex("(?<![\\\\])\\{(\\\\\\}|[^}])*(?<![\\\\])\\}");
@@ -84,7 +103,7 @@ namespace RenSharp.Core
 
 			foreach(string expression in expressions)
 			{
-				string value = context.ExecuteExpression<object>(expression).ToString();
+				string value = ExecuteExpression<object>(expression).ToString();
 
 				line = line.Replace("{" + expression + "}", value);
 			}

@@ -1,15 +1,12 @@
 
-label main
-name = "John Smith"
-x = 0
-label test
-if x > 5:
-	"Wow! x > 5. x is {x}"
-	x = x * 2
 
-	"Test"
-	
-"No, x still <= 5. x is {x}"
-x++
 
-goto test
+label main:
+	"Hello, {name}!"
+	"Foobar"
+"After test"
+goto main
+
+init:
+	name = "John Smith"
+	x = 0

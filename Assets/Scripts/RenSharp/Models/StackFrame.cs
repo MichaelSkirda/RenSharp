@@ -7,7 +7,6 @@ namespace RenSharp.Models
 	internal class StackFrame
 	{
 		internal Stack<int> LevelStack = new Stack<int>();
-		internal int Level => LevelStack.Count + 1;
-
+		internal int Line { get; set; }
 	}
 }
