@@ -23,7 +23,7 @@ namespace RenSharp.Models.Commands
 
 		internal override void Execute(RenSharpCore core, RenSharpContext ctx)
 		{
-			Speech = ctx.MessageExecuteVars(RawLine);
+			Speech = ctx.ReplaceInterpolated(RawLine);
 
 			Attributes attributes = core.GetCharacterAttributes(Character);
 			Attributes.AddAttributes(attributes);

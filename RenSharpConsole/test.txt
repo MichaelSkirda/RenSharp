@@ -1,23 +1,11 @@
 label main:
-
-	"Hello world!"
 	call test
-	"after test"
 	"test result: {_return}"
 
 
 label test:
-	"call test!"
-	"foobar"
-	return 10 + 20
+	return 20 * x + " efwef{42 + " " + name}"
 
-init 200:
-	"Second"
-
-init 100:
-	"Third! {name}"
-
-init 300:
+init 999:
 	name = "John Smith"
 	x = 0
-	"First! Hello, {name}!"

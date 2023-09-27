@@ -88,6 +88,7 @@ namespace RenSharp.Core
 
 			ctx.Line++;
 			command.Line = ctx.Line;
+            command.SourceLine = ctx.SourceLine;
 			command.Level = level;
 
 			return command;

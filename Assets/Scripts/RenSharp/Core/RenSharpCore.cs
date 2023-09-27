@@ -40,6 +40,7 @@ namespace RenSharp.Core
             List<Init> inits = Context.Program.Code
                 .OfType<Init>()
                 .OrderByDescending(x => x.Priority)
+                .ThenBy(x => x.Line)
                 .ToList();
 
             foreach(Init init in inits)

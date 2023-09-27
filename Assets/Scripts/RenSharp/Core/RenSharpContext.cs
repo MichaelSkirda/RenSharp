@@ -110,7 +110,7 @@ namespace RenSharp.Core
 
 			return value;
 		}
-		internal string MessageExecuteVars(string line)
+		internal string ReplaceInterpolated(string line)
 		{
 			// Value in brackets '{' '}' and brackets, except escaped brackets '\{' \}'
 			Regex valueInBrackets = new Regex("(?<![\\\\])\\{(\\\\\\}|[^}])*(?<![\\\\])\\}");
@@ -134,7 +134,6 @@ namespace RenSharp.Core
 
 			if (notEscapedBrackets.IsMatch(line))
 				throw new ArgumentException($"Wrong brackets count with line '{line}'");
-
 			line = line.Replace("\\{", "{").Replace("\\}", "}");
 
 			return line;

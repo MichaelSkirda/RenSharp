@@ -16,7 +16,9 @@ namespace RenSharp.Models.Commands
 
 		internal override void Execute(RenSharpCore renSharpCore, RenSharpContext ctx)
 		{
-			ctx.Variables["_return"] = ctx.ExecuteExpression<object>(Expression);
+			string exp = ctx.ReplaceInterpolated(Expression);
+			ctx.Variables["_return"] = ctx.ExecuteExpression<object>(exp);
+
 			ctx.PopState();
 		}
 	}
