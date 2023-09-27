@@ -7,14 +7,17 @@ namespace RenSharp.Models.Commands
 {
 	internal class Return : Command
 	{
-		public Return()
-		{
+		public string Expression { get; set; }
 
+		public Return(string expression)
+		{
+			Expression = expression;
 		}
 
-		internal override void Execute(RenSharpCore renSharpCore, RenSharpContext context)
+		internal override void Execute(RenSharpCore renSharpCore, RenSharpContext ctx)
 		{
-			throw new NotImplementedException();
+			ctx.Variables["_return"] = ctx.ExecuteExpression<object>(Expression);
+			ctx.PopState();
 		}
 	}
 }

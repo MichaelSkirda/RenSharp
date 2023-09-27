@@ -17,9 +17,15 @@ namespace RenSharp.Core
 		internal static Callback ParseCallback(string[] args) => new Callback(String.Join(" ", args.Skip(1)));
 		internal static While ParseWhile(string[] args) => new While(String.Join(" ", args.Skip(1)));
 		internal static Call ParseCall(string[] args)
-			=> args.Count() == 1 ? new Call(args[0]) : throw new ArgumentException("Call statement can contains only one argument.");
+			=> args.Count() == 2 ? new Call(args[1]) : throw new ArgumentException("Call statement can contains only one argument.");
 		internal static Return ParseReturn(string[] args)
-			=> args.ToWord().Trim() == "return" ? new Return() : throw new ArgumentException("return statement can not contains arguments.");
+		{
+			string expression = "";
+			if (args.Length >= 2)
+				expression = args.Skip(1).ToWord();
+
+			return new Return(expression);
+		}
 		internal static If ParseIf(string[] args)
 		{
 			bool isRoot;
@@ -64,7 +70,6 @@ namespace RenSharp.Core
 			Set set = new Set(name, expression);
 			return set;
 		}
-
 		internal static Character ParseCharacter(string[] args)
 		{
 			string name = args[1];
@@ -104,16 +109,12 @@ namespace RenSharp.Core
 
 			return message;
 		}
-
 		internal static Repeat ParseRepeat(string[] words)
 		{
 			string expression = String.Join(" ", words.Skip(1));
 
 			return new Repeat(expression);
 		}
-
-		private static string ToWord(this string[] words) => string.Join(" ", words);
-
 		internal static Init ParseInit(string[] words)
 		{
 			if (words.Length != 1 && words.Length != 2)
@@ -127,5 +128,9 @@ namespace RenSharp.Core
 
 			return new Init(priority);
 		}
+
+
+		private static string ToWord(this IEnumerable<string> words) => string.Join(" ", words);
+
 	}
 }

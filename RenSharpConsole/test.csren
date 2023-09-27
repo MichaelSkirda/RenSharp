@@ -1,12 +1,23 @@
+label main:
 
-label main
-name = "John Smith"
-x = 0
-label test
-if x > 5:
-	"Wow! x > 5. x is {x}"
-	x = x * 2
-"No, x still <= 5. x is {x}"
-x++
+	"Hello world!"
+	call test
+	"after test"
+	"test result: {_return}"
 
-goto test
+
+label test:
+	"call test!"
+	"foobar"
+	return 10 + 20
+
+init 200:
+	"Second"
+
+init 100:
+	"Third! {name}"
+
+init 300:
+	name = "John Smith"
+	x = 0
+	"First! Hello, {name}!"

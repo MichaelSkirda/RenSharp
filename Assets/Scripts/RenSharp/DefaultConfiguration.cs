@@ -13,18 +13,24 @@ namespace RenSharp
 		{
 			config.Skip<Label>();
 			config.Skip<Goto>();
-			config.Skip<If>();
-			config.Skip<Set>();
+			config.Skip<Call>();
+			config.Skip<Return>();
+
 			config.Skip<Repeat>();
 			config.Skip<While>();
+
+			config.Skip<If>();
+			config.Skip<Set>();
 			config.Skip<Callback>();
 			config.Skip<Pass>();
+
 
 			config.MustPush<If>();
 			config.MustPush<Repeat>();
 			config.MustPush<While>();
 			config.MustPush<Label>();
 			config.MustPush<Init>();
+
 
 			config.SetDefault("delay", "30");
 			config.SetDefault("no-clear", "false");

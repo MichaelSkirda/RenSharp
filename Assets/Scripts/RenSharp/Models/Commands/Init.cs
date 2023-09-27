@@ -1,11 +1,12 @@
 ﻿using RenSharp.Core;
+using RenSharp.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace RenSharp.Models.Commands
 {
-	internal class Init : Command
+	internal class Init : Command, IPushable
 	{
 		public int Priority { get; set; }
 
@@ -21,5 +22,7 @@ namespace RenSharp.Models.Commands
 			// Do nothing
 			// No push! Init must be ingnored in runtime
 		}
+
+		public void Push(Stack<int> stack, RenSharpContext ctx) => stack.Push(0);
 	}
 }

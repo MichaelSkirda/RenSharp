@@ -1,5 +1,6 @@
 ﻿using Flee.PublicTypes;
 using RenSharp.Core;
+using RenSharp.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Text;
 
 namespace RenSharp.Models.Commands
 {
-	public class If : Command
+	public class If : Command, IPushable
 	{
 		public string Expression { get; set; }
 		public int EndIfLine { get; set; }
@@ -19,11 +20,14 @@ namespace RenSharp.Models.Commands
 			IsRoot = isRoot;
 		}
 
-		internal override void Execute(RenSharpCore renSharpCore, RenSharpContext context)
+		internal override void Execute(RenSharpCore renSharpCore, RenSharpContext ctx)
 		{
-			bool result = context.ExecuteExpression<bool>(Expression);
+			bool result = ctx.ExecuteExpression<bool>(Expression);
 			if (result)
-				context.LevelStack.Push(EndIfLine);
+				Push(ctx.LevelStack, ctx);
 		}
+
+		public void Push(Stack<int> stack, RenSharpContext ctx) => stack.Push(EndIfLine);
+		
 	}
 }

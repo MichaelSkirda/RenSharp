@@ -21,14 +21,14 @@ namespace RenSharp.Models.Commands
 			Attributes = new Attributes(attributes);
 		}
 
-		internal override void Execute(RenSharpCore renSharpCore, RenSharpContext context)
+		internal override void Execute(RenSharpCore core, RenSharpContext ctx)
 		{
-			Speech = context.MessageExecuteVars(RawLine);
+			Speech = ctx.MessageExecuteVars(RawLine);
 
-			Attributes attributes = renSharpCore.GetCharacterAttributes(Character);
+			Attributes attributes = core.GetCharacterAttributes(Character);
 			Attributes.AddAttributes(attributes);
 
-			IWriter writer = renSharpCore.Writer;
+			IWriter writer = core.Writer;
 			if (writer != null)
 				writer.Write(this);
 		}

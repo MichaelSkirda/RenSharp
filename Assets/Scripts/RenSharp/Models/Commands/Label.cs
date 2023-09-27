@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 using RenSharp.Core;
+using RenSharp.Interfaces;
 
 namespace RenSharp.Models.Commands
 {
-    public class Label : Command
+    public class Label : Command, IPushable
 	{
 		public string Name { get; set; }
 
@@ -16,7 +17,8 @@ namespace RenSharp.Models.Commands
 
 		internal override void Execute(RenSharpCore renSharpCore, RenSharpContext ctx)
 		{
-			ctx.LevelStack.Push(0);
+			Push(ctx.LevelStack, ctx);
 		}
+		public void Push(Stack<int> stack, RenSharpContext ctx) => stack.Push(0);
 	}
 }

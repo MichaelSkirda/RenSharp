@@ -7,6 +7,7 @@ using System.Text;
 using System.Reflection;
 using RenSharp.Models;
 using System.Text.RegularExpressions;
+using RenSharp.Interfaces;
 
 namespace RenSharp.Core
 {
@@ -15,12 +16,11 @@ namespace RenSharp.Core
 		internal RenSharpProgram Program { get; set; }
 		internal Dictionary<string, object> Variables { get; set; } = new Dictionary<string, object>();
 		internal Stack<StackFrame> Stack { get; set; } = new Stack<StackFrame>();
-		internal Stack<int> LevelStack => CurrentFrame.LevelStack;
-		internal StackFrame CurrentFrame => Stack.Peek();
-		internal int Level => LevelStack.Count + 1;
-
 		private ExpressionContext FleeCtx { get; set; }
 
+		internal Stack<int> LevelStack => CurrentFrame.LevelStack;
+		internal int Level => LevelStack.Count + 1;
+		internal StackFrame CurrentFrame => Stack.Peek();
 		public RenSharpContext()
 		{
 			FleeCtx = new ExpressionContext();
@@ -28,27 +28,60 @@ namespace RenSharp.Core
 			FleeCtx.ParserOptions.FunctionArgumentSeparator = ',';
 			FleeCtx.ParserOptions.RecreateParser();
 
-			UpdateContext();
+			UpdateExpressionContext();
 
 			var mainFrame = new StackFrame();
 			Stack.Push(mainFrame);
 		}
 
-		public void PushStack()
+		internal void Goto(Command command)
+		{
+			Program.Goto(command.Line);
+			RewriteStack(command);
+		}
+
+		#region StackState
+		public void PushState()
 		{
 			CurrentFrame.Line = Program.Current.Line;
 			var frame = new StackFrame();
 			Stack.Push(frame);
 		}
 
-		internal StackFrame PopStack()
+		internal void PopState()
 		{
-			var oldFrame = Stack.Pop();
-			Program.Goto(CurrentFrame.Line);
-			return oldFrame;
+			_ = Stack.Pop();
+			int line = CurrentFrame.Line;
+			Program.Goto(line + 1);
 		}
 
-		public void UpdateContext()
+		internal void RewriteStack(Command command)
+		{
+			LevelStack.Clear();
+			int line = command.Line;
+			int level = command.Level;
+
+			Stack<int> levelStack = new Stack<int>();
+
+			while (levelStack.Count + 1 < command.Level)
+			{
+				line--;
+				Command cmd = Program[line];
+				if (cmd.Level < level)
+				{
+					level--;
+					IPushable pushableCmd = cmd as IPushable;
+					if (pushableCmd == null)
+						throw new ArgumentException($"Command '{cmd.GetType()}' not implement IPushable but pushes stacks.");
+					pushableCmd.Push(levelStack, this);
+				}
+			}
+			CurrentFrame.LevelStack = levelStack.ReverseStack();
+		}
+		#endregion
+
+		#region EXPRESSIONS
+		public void UpdateExpressionContext()
 		{
 			List<string> variables = Variables.Keys.ToList();
 			List<RenSharpMethod> methods = CallbackAttribute.Callbacks;
@@ -77,15 +110,6 @@ namespace RenSharp.Core
 
 			return value;
 		}
-        internal T ExecuteExpression<T>(string expression)
-        {
-			UpdateContext();
-			IGenericExpression<T> e = FleeCtx.CompileGeneric<T>(expression);
-
-			T result = e.Evaluate();
-			return result;
-        }
-
 		internal string MessageExecuteVars(string line)
 		{
 			// Value in brackets '{' '}' and brackets, except escaped brackets '\{' \}'
@@ -115,5 +139,14 @@ namespace RenSharp.Core
 
 			return line;
 		}
-    }
+		internal T ExecuteExpression<T>(string expression)
+		{
+			UpdateExpressionContext();
+			IGenericExpression<T> e = FleeCtx.CompileGeneric<T>(expression);
+
+			T result = e.Evaluate();
+			return result;
+		}
+		#endregion
+	}
 }

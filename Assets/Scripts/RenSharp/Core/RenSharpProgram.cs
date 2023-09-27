@@ -10,25 +10,14 @@ namespace RenSharp.Core
 {
     internal class RenSharpProgram : IEnumerator<Command>
     {
-        object IEnumerator.Current => Current;
         private int Position = -1;
         private List<Command> _program { get; set; }
-        internal IReadOnlyList<Command> Code
-        {
-            get
-            {
-                return _program.AsReadOnly();
-            }
-        }
-        public Command Current
-        {
-            get
-            {
-                return _program[Position];
-            }
-        }
+		internal Command this[int line] => _program[line - 1];
+		internal IReadOnlyList<Command> Code => _program.AsReadOnly();
+        public Command Current => _program[Position];
+        
 
-        public RenSharpProgram(List<Command> program)
+        internal RenSharpProgram(List<Command> program)
         {
             _program = program;
         }
@@ -44,16 +33,15 @@ namespace RenSharp.Core
                 return false;
         }
 
-        public void Goto(Label label) => Goto(label.Line);
-        public void Goto(string label) => Goto(GetLabel(label).Line);
-        public void Goto(int line)
+		internal void Goto(int line)
         {
-            // -1 because line to index
+			// -1 because line to index
+			int index = line - 1;
             // -1 because we call MoveNext() before get command
-            Position = line - 2;
+            Position = index - 1;
         }
 
-        public Label GetLabel(string name)
+		internal Label GetLabel(string name)
         {
             var labels = _program
                 .OfType<Label>()
@@ -70,7 +58,8 @@ namespace RenSharp.Core
             return label;
         }
 
-        public void Reset() => Goto("main");
+        public void Reset() => throw new NotImplementedException();
 		public void Dispose() { }
-    }
+		object IEnumerator.Current => Current;
+	}
 }

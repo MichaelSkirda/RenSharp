@@ -1,4 +1,5 @@
 ﻿using Flee.PublicTypes;
+using RenSharp;
 using RenSharp.Core;
 using RenSharp.Interfaces;
 using RenSharp.Models;
@@ -10,7 +11,7 @@ internal class Program
 	{
 		string path = "./test.txt";
 		IWriter writer = new ConsoleWriter();
-		RenSharpCore renSharp = new RenSharpCore(path);
+		RenSharpCore renSharp = new RenSharpCore(path, new Configuration() { Writer = writer });
 		renSharp.Writer = writer;
 
 		while (true)

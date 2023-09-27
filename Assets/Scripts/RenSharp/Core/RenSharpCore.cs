@@ -25,8 +25,11 @@ namespace RenSharp.Core
 			Context = new RenSharpContext();
 
 			if (config == null)
-				config = new Configuration().UseDefault().UseCoreCommands();
-            
+				config = new Configuration();
+
+            config.UseDefault().UseCoreCommands();
+            Writer = config.Writer;
+
 			Configuration = config;
 
             RenSharpReader reader = new RenSharpReader(config);
@@ -36,27 +39,24 @@ namespace RenSharp.Core
 
             List<Init> inits = Context.Program.Code
                 .OfType<Init>()
+                .OrderByDescending(x => x.Priority)
                 .ToList();
 
             foreach(Init init in inits)
             {
-                Program.Goto(init.Line + 1);
+                Command initStart = Program[init.Line + 1];
+                Context.Goto(initStart);
 				Command command;
-                bool skip;
 
-				do
+				while(true)
 				{
-					skip = false;
 					bool hasNext = Program.MoveNext();
                     if (!hasNext)
                         break;
 
 					command = Program.Current;
 					if (command.Level > Context.Level)
-					{
-						skip = true;
 						continue;
-					}
 
 					int cycleStart = 0;
 					while (command.Level < Context.Level)
@@ -68,7 +68,6 @@ namespace RenSharp.Core
 					if (cycleStart != 0)
 					{
 						Program.Goto(cycleStart);
-						skip = true;
 						continue;
 					}
 
@@ -76,10 +75,13 @@ namespace RenSharp.Core
 						break;
 
 					command.Execute(this, Context);
-				} while (Configuration.IsSkip(command) || skip);
+				}
 			}
 
-            Program.Goto("main");
+            Label main = Program.GetLabel("main");
+            if (main.Level != 1)
+                throw new ArgumentException("Main must have no tabulation.");
+            Context.Goto(main);
 		}
 
         public Command ReadNext()
@@ -121,19 +123,8 @@ namespace RenSharp.Core
             return command;
         }
 
-        public void GotoLabel(string labelName)
-        {
-            Label label = Program.GetLabel(labelName);
-            GotoClearStack(label);
-            Program.Goto(label);
-        }
-        
-        private void GotoClearStack(Label label)
-        {
-			Context.LevelStack.Clear();
-			while (Context.Level < label.Level)
-				Context.LevelStack.Push(0);
-		}
+        public void Goto(string labelName) => Goto(Program.GetLabel(labelName));
+        public void Goto(Command command) => Context.Goto(command);
 
         public Attributes GetCharacterAttributes(string characterName)
         {
@@ -145,11 +136,6 @@ namespace RenSharp.Core
                 return new Attributes(new string[0]);
 
             return character.Attributes;
-        }
-
-        public void RegisterCallback(string name, MethodInfo method)
-        {
-            CallbackAttribute.RegisterMethod(name, method);
         }
     }
 }

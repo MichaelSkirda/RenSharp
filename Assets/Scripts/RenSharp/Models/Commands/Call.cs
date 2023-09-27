@@ -16,8 +16,8 @@ namespace RenSharp.Models.Commands
 
 		internal override void Execute(RenSharpCore renSharpCore, RenSharpContext ctx)
 		{
-			ctx.PushStack();
-			renSharpCore.GotoLabel(LabelName);
+			ctx.PushState();
+			renSharpCore.Goto(LabelName);
 		}
 	}
 }

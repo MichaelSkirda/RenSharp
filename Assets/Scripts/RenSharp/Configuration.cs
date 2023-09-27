@@ -1,5 +1,7 @@
 ﻿using RenSharp.Core;
+using RenSharp.Interfaces;
 using RenSharp.Models;
+using RenSharp.Models.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,6 +40,10 @@ namespace RenSharp
 		public bool IsMustPush(Command command) => MustPushStack.Contains(command.GetType());
 		public void MustPush<T>()
 		{
+			// If not implements IPushable
+			if (typeof(IPushable).IsAssignableFrom(typeof(T)) == false)
+				throw new ArgumentException($"Command of type '{typeof(T)}' not implements IPushable, but configured as 'Must to push'.");
+
 			// If command must push it automaticly can push
 			AllowToPushStack<T>();
 			MustPushStack.Add(typeof(T));
@@ -60,5 +66,7 @@ namespace RenSharp
 			Type type = command.GetType();
 			return SkipCommands.Contains(type);
 		}
+
+		public IWriter Writer { get; set; }
 	}
 }
