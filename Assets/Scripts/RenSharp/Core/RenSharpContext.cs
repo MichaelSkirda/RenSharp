@@ -110,7 +110,7 @@ namespace RenSharp.Core
 
 			return value;
 		}
-		internal string ReplaceInterpolated(string line)
+		internal string InterpolateString(string line)
 		{
 			// Value in brackets '{' '}' and brackets, except escaped brackets '\{' \}'
 			Regex valueInBrackets = new Regex("(?<![\\\\])\\{(\\\\\\}|[^}])*(?<![\\\\])\\}");

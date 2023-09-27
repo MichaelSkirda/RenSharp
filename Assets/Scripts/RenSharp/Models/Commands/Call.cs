@@ -7,17 +7,21 @@ namespace RenSharp.Models.Commands
 {
 	internal class Call : Command
 	{
-		public string LabelName { get; set; }
+		public string Expression { get; set; }
 
-		public Call(string labelName)
+		public Call(string expression)
 		{
-			LabelName = labelName;
+			if (string.IsNullOrWhiteSpace(expression))
+				throw new ArgumentNullException("Call must have at least 1 argument (label name).");
+			Expression = expression;
 		}
 
 		internal override void Execute(RenSharpCore renSharpCore, RenSharpContext ctx)
 		{
 			ctx.PushState();
-			renSharpCore.Goto(LabelName);
+			string labelName = ctx.InterpolateString(Expression);
+			labelName = ctx.ExecuteExpression<string>(labelName);
+			renSharpCore.Goto(labelName);
 		}
 	}
 }

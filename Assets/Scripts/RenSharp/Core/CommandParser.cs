@@ -12,19 +12,30 @@ namespace RenSharp.Core
 		internal static Label ParseLabel(string[] args) => new Label(args[1]);
 		internal static Pass ParsePass(string[] args) => (args.Length == 1 && args[0] == "pass")
 			? new Pass() : throw new ArgumentException($"Can not parse pass at line '{string.Join(" ", args)}'");
-		internal static Goto ParseGoto(string[] args) => new Goto(args[1]);
 		internal static Load ParseLoad(string[] args) => new Load(String.Join(" ", args.Skip(1)).GetStringBetween("\""));
 		internal static Callback ParseCallback(string[] args) => new Callback(String.Join(" ", args.Skip(1)));
 		internal static While ParseWhile(string[] args) => new While(String.Join(" ", args.Skip(1)));
-		internal static Call ParseCall(string[] args)
-			=> args.Count() == 2 ? new Call(args[1]) : throw new ArgumentException("Call statement can contains only one argument.");
 		internal static Return ParseReturn(string[] args)
 		{
-			string expression = "";
-			if (args.Length >= 2)
-				expression = args.Skip(1).ToWord();
+			string expression;
+			if (args.Length <= 1)
+				return new Return("", isSoft: false);
 
-			return new Return(expression);
+			if (args[1] == "soft")
+			{
+				expression = args.Skip(2).ToWord();
+				return new Return(expression, isSoft: true);
+			}
+			else if (args[1] == "hard")
+			{
+				expression = args.Skip(2).ToWord();
+				return new Return(expression, isSoft: false);
+			}
+			else
+			{
+				expression = args.Skip(1).ToWord();
+				return new Return(expression, isSoft: false);
+			}
 		}
 		internal static If ParseIf(string[] args)
 		{
@@ -129,6 +140,30 @@ namespace RenSharp.Core
 			return new Init(priority);
 		}
 
+		internal static Goto ParseGoto(string[] args)
+		{
+			if (args.Length < 2)
+				throw new ArgumentException("Call can not contains less than 1 arguments");
+			if (args[1] == "expression")
+				return new Goto(args.Skip(2).ToWord());
+
+			if (args.Length != 2)
+				throw new ArgumentException("Call without expression keyword can contains only 1 argument (label name).");
+
+			return new Goto($"\"{args[1]}\"");
+		}
+		internal static Call ParseCall(string[] args)
+		{
+			if (args.Length < 2)
+				throw new ArgumentException("Call can not contains less than 1 arguments");
+			if (args[1] == "expression")
+				return new Call(args.Skip(2).ToWord());
+
+			if (args.Length != 2)
+				throw new ArgumentException("Call without expression keyword can contains only 1 argument (label name).");
+
+			return new Call($"\"{args[1]}\"");
+		}
 
 		private static string ToWord(this IEnumerable<string> words) => string.Join(" ", words);
 

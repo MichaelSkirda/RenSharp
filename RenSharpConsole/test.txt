@@ -1,11 +1,8 @@
 label main:
-	call test
-	"test result: {_return}"
+	"foo"
+	goto expression "test_{"bar_"}" + 123
+	"after test"
 
 
-label test:
-	return 20 * x + " efwef{42 + " " + name}"
-
-init 999:
-	name = "John Smith"
-	x = 0
+label test_bar_123:
+	"testtest"
