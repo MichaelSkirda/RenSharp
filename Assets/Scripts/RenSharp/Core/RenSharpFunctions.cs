@@ -12,5 +12,7 @@ namespace RenSharp.Core
 			Console.WriteLine(line);
 			return null;
 		}
+		[Callback("sys")] public static string GetEnv(string env) => Environment.GetEnvironmentVariable(env);
+		[Callback] public static dynamic Store() => new object();
 	}
 }

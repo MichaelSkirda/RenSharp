@@ -53,9 +53,6 @@ namespace RenSharp.Core
 
 		internal static string SetSugar(string line)
 		{
-			if (line.StartsWith("$"))
-				line = line.Remove(0, 1).Trim();
-
 			// x = 123 -> ['x ', ' 123']
 			// y=42 -> ['y', '42']
 			string[] keyValue = line.Split("=");
@@ -67,6 +64,9 @@ namespace RenSharp.Core
 
 			if (key.Contains(" "))
 				return line;
+
+			if (line.StartsWith("$"))
+				line = line.Remove(0, 1).Trim();
 
 			return $"set {line}";
 		}

@@ -8,6 +8,7 @@ using System.Reflection;
 using RenSharp.Models;
 using System.Text.RegularExpressions;
 using RenSharp.Interfaces;
+using IDynamicExpression = Flee.PublicTypes.IDynamicExpression;
 
 namespace RenSharp.Core
 {
@@ -23,11 +24,6 @@ namespace RenSharp.Core
 		internal StackFrame CurrentFrame => Stack.Peek();
 		public RenSharpContext()
 		{
-			FleeCtx = new ExpressionContext();
-			FleeCtx.ParserOptions.DecimalSeparator = '.';
-			FleeCtx.ParserOptions.FunctionArgumentSeparator = ',';
-			FleeCtx.ParserOptions.RecreateParser();
-
 			UpdateExpressionContext();
 
 			var mainFrame = new StackFrame();
@@ -83,6 +79,11 @@ namespace RenSharp.Core
 		#region EXPRESSIONS
 		public void UpdateExpressionContext()
 		{
+			FleeCtx = new ExpressionContext();
+			FleeCtx.ParserOptions.DecimalSeparator = '.';
+			FleeCtx.ParserOptions.FunctionArgumentSeparator = ',';
+			FleeCtx.ParserOptions.RecreateParser();
+
 			List<string> variables = Variables.Keys.ToList();
 			List<RenSharpMethod> methods = CallbackAttribute.Callbacks;
 
@@ -144,6 +145,15 @@ namespace RenSharp.Core
 			IGenericExpression<T> e = FleeCtx.CompileGeneric<T>(expression);
 
 			T result = e.Evaluate();
+			return result;
+		}
+
+		internal dynamic ExecuteExpression(string expression)
+		{
+			UpdateExpressionContext();
+			IDynamicExpression e = FleeCtx.CompileDynamic(expression);
+
+			dynamic result = e.Evaluate();
 			return result;
 		}
 		#endregion

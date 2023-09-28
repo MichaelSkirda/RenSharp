@@ -63,6 +63,8 @@ namespace RenSharp
 
 			config.SetCommand("call", (words, _) => CommandParser.ParseCall(words));
 			config.SetCommand("return", (words, _) => CommandParser.ParseReturn(words));
+			config.SetCommand("soft", (words, _) => CommandParser.ParseReturn(words));
+			config.SetCommand("hard", (words, _) => CommandParser.ParseReturn(words));
 
 			config.AddComplex(typeof(If), (ctx, rootCmd) => ComplexParser.ComplexIfParser(ctx, rootCmd as If));
 

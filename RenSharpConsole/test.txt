@@ -1,3 +1,8 @@
+init 999:
+	x = sys.GetEnv("APPDATA")
+	"{x}"
+
+
 label main:
 	"foo"
 	goto expression "test_{"bar_"}" + 123
@@ -6,3 +11,4 @@ label main:
 
 label test_bar_123:
 	"testtest"
+	soft return
