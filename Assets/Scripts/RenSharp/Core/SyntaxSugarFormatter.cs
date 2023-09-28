@@ -65,9 +65,6 @@ namespace RenSharp.Core
 			if (key.Contains(" "))
 				return line;
 
-			if (line.StartsWith("$"))
-				line = line.Remove(0, 1).Trim();
-
 			return $"set {line}";
 		}
 

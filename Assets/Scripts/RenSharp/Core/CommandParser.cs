@@ -15,6 +15,8 @@ namespace RenSharp.Core
 		internal static Load ParseLoad(string[] args) => new Load(String.Join(" ", args.Skip(1)).GetStringBetween("\""));
 		internal static Callback ParseCallback(string[] args) => new Callback(String.Join(" ", args.Skip(1)));
 		internal static While ParseWhile(string[] args) => new While(String.Join(" ", args.Skip(1)));
+		internal static Python ParsePythonStart(string[] args)
+			=> (args.Length == 1 && args[0] == "python") ? new Python() : throw new ArgumentException($"Can not parse python start block. Value: '{args.ToWord()}'");
 		internal static Return ParseReturn(string[] args)
 		{
 			string expression;

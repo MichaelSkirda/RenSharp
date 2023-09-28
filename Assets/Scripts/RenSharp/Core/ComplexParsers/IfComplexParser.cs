@@ -5,11 +5,11 @@ using RenSharp.Core;
 using RenSharp.Models;
 using RenSharp.Models.Commands;
 
-internal static class ComplexParser
+internal static class IfComplexParser
 {
     // Todo rename rootIf. Actually it's can be not root.
     // Not root and root if - at all almost same.
-    internal static List<Command> ComplexIfParser(ReaderContext ctx, If rootIf)
+    internal static List<Command> Parse(ReaderContext ctx, If rootIf)
     {
         List<Command> commands = new List<Command>();
         int endIfLine;

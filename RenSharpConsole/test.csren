@@ -2,6 +2,9 @@ init 999:
 	x = sys.GetEnv("APPDATA")
 	"{x}"
 
+python:
+	print("Hello world!")
+
 
 label main:
 	"foo"

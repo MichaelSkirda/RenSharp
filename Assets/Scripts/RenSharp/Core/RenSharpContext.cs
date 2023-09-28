@@ -9,6 +9,8 @@ using RenSharp.Models;
 using System.Text.RegularExpressions;
 using RenSharp.Interfaces;
 using IDynamicExpression = Flee.PublicTypes.IDynamicExpression;
+using IronPython.Hosting;
+using Microsoft.Scripting.Hosting;
 
 namespace RenSharp.Core
 {
@@ -18,6 +20,7 @@ namespace RenSharp.Core
 		internal Dictionary<string, object> Variables { get; set; } = new Dictionary<string, object>();
 		internal Stack<StackFrame> Stack { get; set; } = new Stack<StackFrame>();
 		private ExpressionContext FleeCtx { get; set; }
+		private ScriptEngine Engine { get; set; } = Python.CreateEngine();
 
 		internal Stack<int> LevelStack => CurrentFrame.LevelStack;
 		internal int Level => LevelStack.Count + 1;
@@ -155,6 +158,12 @@ namespace RenSharp.Core
 
 			dynamic result = e.Evaluate();
 			return result;
+		}
+
+		internal void ExecutePython(IEnumerable<string> lines)
+		{
+			string code = string.Join("\n", lines);
+			Engine.Execute(code);
 		}
 		#endregion
 	}

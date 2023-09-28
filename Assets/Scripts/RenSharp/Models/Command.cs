@@ -10,7 +10,7 @@ namespace RenSharp.Models
 		public int Level { get; set; }
 		public int Line { get; set; }
 		public int SourceLine { get; set; }
-		internal abstract void Execute(RenSharpCore renSharpCore, RenSharpContext context);
+		internal abstract void Execute(RenSharpCore core, RenSharpContext ctx);
 		internal bool IsNot<T>() where T : Command => !(this is T);
 		internal bool Is<T>() where T : Command => this is T;
 	}

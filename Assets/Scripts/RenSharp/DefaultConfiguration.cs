@@ -1,4 +1,5 @@
 ﻿using RenSharp.Core;
+using RenSharp.Core.ComplexParsers;
 using RenSharp.Models;
 using RenSharp.Models.Commands;
 using System;
@@ -66,7 +67,10 @@ namespace RenSharp
 			config.SetCommand("soft", (words, _) => CommandParser.ParseReturn(words));
 			config.SetCommand("hard", (words, _) => CommandParser.ParseReturn(words));
 
-			config.AddComplex(typeof(If), (ctx, rootCmd) => ComplexParser.ComplexIfParser(ctx, rootCmd as If));
+			config.SetCommand("python", (words, _) => CommandParser.ParsePythonStart(words));
+
+			config.AddComplex(typeof(If), (ctx, rootCmd) => IfComplexParser.Parse(ctx, rootCmd as If));
+			config.AddComplex(typeof(Python), (ctx, rootCmd) => PythonComplexParser.Parse(ctx, rootCmd as Python));
 
 			return config;
 		}
