@@ -17,18 +17,22 @@ namespace RenSharp.Core
 		internal static While ParseWhile(string[] args) => new While(String.Join(" ", args.Skip(1)));
 		internal static Python ParsePythonStart(string[] args)
 			=> (args.Length == 1 && args[0] == "python") ? new Python() : throw new ArgumentException($"Can not parse python start block. Value: '{args.ToWord()}'");
+		internal static Python ParsePythonSingle(string[] args)
+			=> new Python() { Commands = new List<string>() { args.Skip(1).ToWord() } };
 		internal static Return ParseReturn(string[] args)
 		{
 			string expression;
-			if (args.Length <= 1)
+			if (args.Length <= 0)
+				throw new ArgumentException($"Can not parse '{args.ToWord()}'");
+			if (args.Length == 1)
 				return new Return("", isSoft: false);
 
-			if (args[1] == "soft")
+			if (args[0] == "soft")
 			{
 				expression = args.Skip(2).ToWord();
 				return new Return(expression, isSoft: true);
 			}
-			else if (args[1] == "hard")
+			else if (args[0] == "hard")
 			{
 				expression = args.Skip(2).ToWord();
 				return new Return(expression, isSoft: false);
