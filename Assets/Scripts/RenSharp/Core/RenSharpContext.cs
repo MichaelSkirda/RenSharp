@@ -30,14 +30,39 @@ namespace RenSharp.Core
 		internal StackFrame CurrentFrame => Stack.Peek();
 		public RenSharpContext()
 		{
-			Engine = Python.CreateEngine();
-			Scope = Engine.CreateScope();
+			InitPython();
 
 			UpdateExpressionContext();
 
 			var mainFrame = new StackFrame();
 			Stack.Push(mainFrame);
 		}
+
+
+		private void InitPython()
+		{
+			Engine = Python.CreateEngine();
+			Scope = Engine.CreateScope();
+
+			List<RenSharpMethod> methods = CallbackAttribute.Callbacks;
+
+			List<string> references = methods
+				.Select(x => $"clr.AddReference(\"{x.MethodInfo.DeclaringType.Assembly.FullName}\")")
+				.Distinct()
+				.ToList();
+			List<string> imports = methods
+				.Select(x => string.IsNullOrWhiteSpace(x.Namespace)
+				? $"from {x.MethodInfo.DeclaringType.Namespace}.{x.MethodInfo.DeclaringType.Name} import {x.MethodInfo.Name}"
+				: $"from {x.MethodInfo.DeclaringType.Namespace}.{x.MethodInfo.DeclaringType.Name} import {x.MethodInfo.Name} as {x.Namespace}")
+				.Distinct()
+				.ToList();
+			
+			string addReferencesCode = "import clr\n" + string.Join("\n", references);
+			string importCode = string.Join("\n", imports);
+			Engine.Execute(addReferencesCode, Scope);
+			Engine.Execute(importCode, Scope);
+		}
+
 
 		internal void Goto(Command command)
 		{
@@ -171,19 +196,13 @@ namespace RenSharp.Core
 		internal void UpdatePythonContext()
 		{
 			List<string> variables = Variables.Keys.ToList();
-			List<RenSharpMethod> methods = CallbackAttribute.Callbacks;
 
 			foreach (string name in variables)
 			{
 				object value = GetValue(name);
 				Scope.SetVariable(name, value);
 			}
-			foreach (RenSharpMethod method in methods)
-			{
-				Action action = () => method.MethodInfo.Invoke(null, null);
-				Scope.SetVariable(method.MethodInfo.Name, action);
-			}
-
+			
 			FleeCtx.Variables["ctx"] = this;
 		}
 
