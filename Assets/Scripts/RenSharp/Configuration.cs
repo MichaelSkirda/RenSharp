@@ -21,6 +21,9 @@ namespace RenSharp
 		public Dictionary<Type, Func<ReaderContext, Command, List<Command>>> ComplexCommandParsers { get; set; }
 			= new Dictionary<Type, Func<ReaderContext, Command, List<Command>>>();
 
+		public Dictionary<Type, List<Predicate<Command>>> IsComplexPredicates { get; set; }
+			= new Dictionary<Type, List<Predicate<Command>>>();
+
 		internal List<Type> AllowedToPushStack { get; set; } = new List<Type>();
 
 		internal List<Type> MustPushStack { get; set; } = new List<Type>();
@@ -34,7 +37,14 @@ namespace RenSharp
 		public string GetDefaultValue(string attributeName) => DefaultAttributes[attributeName];
 		public string GetDefaultKeyValueString(string attributeName)
 			=> $"{attributeName}={DefaultAttributes[attributeName]}";
-		public bool IsComplex(Command command) => ComplexCommandParsers.TryGetValue(command.GetType(), out _);
+		public bool IsComplex(Command command)
+			=> IsComplexPredicates.ContainsKey(command.GetType()) 
+			&& IsComplexPredicates[command.GetType()].Any(x => x(command));
+		public void SetComplexPredicate<T, K>(Predicate<K> predicate) where K : Command
+		{
+
+		}
+
 		public void AddComplex(Type type, Func<ReaderContext, Command, List<Command>> Parser)
 			=> ComplexCommandParsers[type] = Parser;
 		public bool IsMustPush(Command command) => MustPushStack.Contains(command.GetType());
