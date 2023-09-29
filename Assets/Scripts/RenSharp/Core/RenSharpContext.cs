@@ -11,6 +11,8 @@ using RenSharp.Interfaces;
 using IDynamicExpression = Flee.PublicTypes.IDynamicExpression;
 using IronPython.Hosting;
 using Microsoft.Scripting.Hosting;
+using IronPython.Runtime.Types;
+using Microsoft.Scripting.Runtime;
 
 namespace RenSharp.Core
 {
@@ -20,13 +22,17 @@ namespace RenSharp.Core
 		internal Dictionary<string, object> Variables { get; set; } = new Dictionary<string, object>();
 		internal Stack<StackFrame> Stack { get; set; } = new Stack<StackFrame>();
 		private ExpressionContext FleeCtx { get; set; }
-		private ScriptEngine Engine { get; set; } = Python.CreateEngine();
+		private ScriptEngine Engine { get; set; }
+		private ScriptScope Scope { get; set; }
 
 		internal Stack<int> LevelStack => CurrentFrame.LevelStack;
 		internal int Level => LevelStack.Count + 1;
 		internal StackFrame CurrentFrame => Stack.Peek();
 		public RenSharpContext()
 		{
+			Engine = Python.CreateEngine();
+			Scope = Engine.CreateScope();
+
 			UpdateExpressionContext();
 
 			var mainFrame = new StackFrame();
@@ -144,6 +150,8 @@ namespace RenSharp.Core
 		}
 		internal T ExecuteExpression<T>(string expression)
 		{
+			if (string.IsNullOrWhiteSpace(expression))
+				throw new ArgumentException("Expression can not be null or whitespace.");
 			UpdateExpressionContext();
 			IGenericExpression<T> e = FleeCtx.CompileGeneric<T>(expression);
 
@@ -160,10 +168,30 @@ namespace RenSharp.Core
 			return result;
 		}
 
+		internal void UpdatePythonContext()
+		{
+			List<string> variables = Variables.Keys.ToList();
+			List<RenSharpMethod> methods = CallbackAttribute.Callbacks;
+
+			foreach (string name in variables)
+			{
+				object value = GetValue(name);
+				Scope.SetVariable(name, value);
+			}
+			foreach (RenSharpMethod method in methods)
+			{
+				Action action = () => method.MethodInfo.Invoke(null, null);
+				Scope.SetVariable(method.MethodInfo.Name, action);
+			}
+
+			FleeCtx.Variables["ctx"] = this;
+		}
+
 		internal void ExecutePython(IEnumerable<string> lines)
 		{
+			UpdatePythonContext();
 			string code = string.Join("\n", lines);
-			Engine.Execute(code);
+			Engine.Execute(code, Scope);
 		}
 		#endregion
 	}
