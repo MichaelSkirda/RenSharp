@@ -18,8 +18,11 @@ namespace RenSharp.Models.Commands
 
 		internal override void Execute(RenSharpCore renSharpCore, RenSharpContext ctx)
 		{
-			string exp = ctx.InterpolateString(Expression);
-			ctx.Variables["_return"] = ctx.ExecuteExpression<object>(exp);
+			if(string.IsNullOrEmpty(Expression) == false)
+			{
+				string exp = ctx.InterpolateString(Expression);
+				ctx.Variables["_return"] = ctx.ExecuteExpression<object>(exp);
+			}
 
 			// Soft return won't pop last element
 			if (IsSoft && ctx.Stack.Count <= 1)
