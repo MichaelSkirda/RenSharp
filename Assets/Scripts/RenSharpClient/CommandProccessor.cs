@@ -22,15 +22,6 @@ public class CommandProccessor : MonoBehaviour
 		RenSharp = new RenSharpCore(lines);
 		DialogWriter writer = new DialogWriter(Dialog);
 		RenSharp.Writer = writer;
-
-		MethodInfo method = this.GetType().GetMethod("CallbackTest");
-		RenSharp.RegisterCallback("testCallback", method, this);
-	}
-
-	public void CallbackTest()
-	{
-        Transform child = transform.GetChild(0);
-		child.position += new Vector3(0, 20);
 	}
 
 	void Update()

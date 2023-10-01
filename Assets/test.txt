@@ -1,8 +1,9 @@
 
+init 999:
+	python:
+		printTest("Foobar")
+		x = getEnvTest("APPDATA")
+
 label main
-set x = 2
-label test
-"Hello world! {x}"
-"Test"
-x = x + 1
-goto test
+	"Test {x}"
+	goto main

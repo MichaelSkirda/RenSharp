@@ -11,6 +11,7 @@ using RenSharp.Interfaces;
 using IDynamicExpression = Flee.PublicTypes.IDynamicExpression;
 using IronPython.Hosting;
 using Microsoft.Scripting.Hosting;
+using Microsoft.Scripting.Runtime;
 
 namespace RenSharp.Core
 {
@@ -20,17 +21,41 @@ namespace RenSharp.Core
 		internal Dictionary<string, object> Variables { get; set; } = new Dictionary<string, object>();
 		internal Stack<StackFrame> Stack { get; set; } = new Stack<StackFrame>();
 		private ExpressionContext FleeCtx { get; set; }
-		private ScriptEngine Engine { get; set; } = Python.CreateEngine();
+		private ScriptEngine Engine { get; set; }
+		private ScriptScope Scope { get; set; }
 
 		internal Stack<int> LevelStack => CurrentFrame.LevelStack;
 		internal int Level => LevelStack.Count + 1;
 		internal StackFrame CurrentFrame => Stack.Peek();
 		public RenSharpContext()
 		{
+			Engine = Python.CreateEngine();
+			Scope = Engine.CreateScope();
+
+			InitPython();
 			UpdateExpressionContext();
 
 			var mainFrame = new StackFrame();
 			Stack.Push(mainFrame);
+		}
+
+		private void InitPython()
+		{
+			Engine.Execute("import clr", Scope);
+
+			List<RenSharpMethod> methods = CallbackAttribute.Callbacks;
+			string loadAssemblies = string.Join("\n", methods
+				.Select(x => $"clr.AddReference(\"{x.MethodInfo.DeclaringType.Assembly.FullName}\")")
+				.Distinct());
+
+			string importTypes = string.Join("\n",
+			methods.Select(x => string.IsNullOrEmpty(x.Namespace)
+			? $"from {x.MethodInfo.DeclaringType.Namespace}.{x.MethodInfo.DeclaringType.Name} import {x.MethodInfo.Name}"
+			: $"from {x.MethodInfo.DeclaringType.Namespace}.{x.MethodInfo.DeclaringType.Name} import {x.MethodInfo.Name} as {x.Namespace}"
+			));
+
+			Engine.Execute(loadAssemblies, Scope);
+			Engine.Execute(importTypes, Scope);
 		}
 
 		internal void Goto(Command command)
@@ -87,12 +112,14 @@ namespace RenSharp.Core
 			FleeCtx.ParserOptions.FunctionArgumentSeparator = ',';
 			FleeCtx.ParserOptions.RecreateParser();
 
-			List<string> variables = Variables.Keys.ToList();
+			List<string> variables = Scope.GetVariableNames().ToList();
 			List<RenSharpMethod> methods = CallbackAttribute.Callbacks;
 
 			foreach (string name in variables)
 			{
-				object value = GetValue(name);
+				object value = Scope.GetVariable(name);
+				if (value == null)
+					continue;
 				FleeCtx.Variables[name] = value;
 			}
 			foreach (RenSharpMethod method in methods)
@@ -163,7 +190,7 @@ namespace RenSharp.Core
 		internal void ExecutePython(IEnumerable<string> lines)
 		{
 			string code = string.Join("\n", lines);
-			Engine.Execute(code);
+			Engine.Execute(code, Scope);
 		}
 		#endregion
 	}

@@ -10,9 +10,9 @@ namespace RenSharp.Core
 		[Callback] public static object Print(string line)
 		{
 			Console.WriteLine(line);
+			UnityEngine.Debug.Log(line);
 			return null;
 		}
-		[Callback("sys")] public static string GetEnv(string env) => Environment.GetEnvironmentVariable(env);
-		[Callback] public static dynamic Store() => new object();
+		[Callback] public static string GetEnv(string env) => Environment.GetEnvironmentVariable(env);
 	}
 }

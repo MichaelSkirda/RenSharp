@@ -814,7 +814,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   RenSharpCode: {fileID: 4900000, guid: 93a0f27bd50687d48b98fe2d86e47928, type: 3}
-  dialogController: {fileID: 1661186931}
+  Dialog: {fileID: 1661186931}
 --- !u!1 &1661186929
 GameObject:
   m_ObjectHideFlags: 0

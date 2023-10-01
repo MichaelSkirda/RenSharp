@@ -79,3 +79,4 @@ Assets/Scripts/RenSharp/bin/
 
 !RenSharpConsole/*.csproj
 !Assets/Scripts/RenSharp/RenSharp.csproj
+*.meta

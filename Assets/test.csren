@@ -1,10 +1,10 @@
 
+init 999:
+	python:
+		x = 12
+		x *= 3
+		#unity.Print("hello")
+
 label main
-set x = somefunc()
-y = 1
-label test
-"Hello world! {y}"
-"Test {x}"
-x--
-y++
-goto test
+	"Test {x}"
+	goto main
