@@ -148,7 +148,7 @@ namespace RenSharp.Core
         internal static List<string> RemoveComments(List<string> code)
         {
             return code
-                .Select(x => x.DeleteAfter("//"))
+                .Select(x => x.DeleteAfter("#"))
                 .ToList();
         }
 

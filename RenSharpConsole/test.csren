@@ -1,9 +1,17 @@
 init 999:
-	x = sys.GetEnv("APPDATA")
-	"{x}"
+	# x = sys.GetEnv("APPDATA")
+	# "{x}"
+	# $ print(x)
 
-python:
-	print("Hello world!")
+	python:
+		fruits = ["apple", "banana", "cherry"]
+		i = 0
+		for x in fruits:
+			i += 1
+			if x == "banana":
+				continue
+			print(str(i) + " " + x)
+		
 
 
 label main:
@@ -14,4 +22,11 @@ label main:
 
 label test_bar_123:
 	"testtest"
+	# Soft return сработает только если был вызван call. Jump проигнорирует soft return.
 	soft return
+	"foobar"
+
+label test:
+	"test1"
+	call test_bar_123
+	"test2"

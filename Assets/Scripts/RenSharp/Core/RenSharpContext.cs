@@ -11,6 +11,8 @@ using RenSharp.Interfaces;
 using IDynamicExpression = Flee.PublicTypes.IDynamicExpression;
 using IronPython.Hosting;
 using Microsoft.Scripting.Hosting;
+using IronPython.Runtime.Types;
+using Microsoft.Scripting.Runtime;
 using Microsoft.Scripting.Runtime;
 
 namespace RenSharp.Core
@@ -29,10 +31,8 @@ namespace RenSharp.Core
 		internal StackFrame CurrentFrame => Stack.Peek();
 		public RenSharpContext()
 		{
-			Engine = Python.CreateEngine();
-			Scope = Engine.CreateScope();
-
 			InitPython();
+
 			UpdateExpressionContext();
 
 			var mainFrame = new StackFrame();
@@ -171,6 +171,8 @@ namespace RenSharp.Core
 		}
 		internal T ExecuteExpression<T>(string expression)
 		{
+			if (string.IsNullOrWhiteSpace(expression))
+				throw new ArgumentException("Expression can not be null or whitespace.");
 			UpdateExpressionContext();
 			IGenericExpression<T> e = FleeCtx.CompileGeneric<T>(expression);
 
@@ -187,8 +189,22 @@ namespace RenSharp.Core
 			return result;
 		}
 
+		internal void UpdatePythonContext()
+		{
+			List<string> variables = Variables.Keys.ToList();
+
+			foreach (string name in variables)
+			{
+				object value = GetValue(name);
+				Scope.SetVariable(name, value);
+			}
+			
+			FleeCtx.Variables["ctx"] = this;
+		}
+
 		internal void ExecutePython(IEnumerable<string> lines)
 		{
+			UpdatePythonContext();
 			string code = string.Join("\n", lines);
 			Engine.Execute(code, Scope);
 		}

@@ -24,6 +24,7 @@ namespace RenSharp
 			config.Skip<Set>();
 			config.Skip<Callback>();
 			config.Skip<Pass>();
+			config.Skip<Python>();
 
 
 			config.MustPush<If>();
@@ -68,6 +69,7 @@ namespace RenSharp
 			config.SetCommand("hard", (words, _) => CommandParser.ParseReturn(words));
 
 			config.SetCommand("python", (words, _) => CommandParser.ParsePythonStart(words));
+			config.SetCommand("$", (words, _) => CommandParser.ParsePythonSingle(words));
 
 			config.AddComplex(typeof(If), (ctx, rootCmd) => IfComplexParser.Parse(ctx, rootCmd as If));
 			config.AddComplex(typeof(Python), (ctx, rootCmd) => PythonComplexParser.Parse(ctx, rootCmd as Python));
