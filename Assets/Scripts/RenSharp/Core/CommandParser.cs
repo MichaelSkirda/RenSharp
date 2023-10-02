@@ -64,29 +64,6 @@ namespace RenSharp.Core
 			If command = new If(expression, isRoot);
 			return command;
 		}
-		internal static Set ParseSet(string[] args)
-		{
-			// Example:
-			// set foo=42 ->   foo=42
-			// set foo =42 ->  foo =42
-			// set foo= 42 ->  foo= 42
-			// set foo = 42 -> foo = 42
-			// set bar = "Hello world!" -> bar = "Hello world!"
-			string command = String.Join(" ", args.Skip(1));
-
-			string[] keyValue = command.Split("=");
-			if (keyValue.Length != 2)
-				throw new ArgumentException($"Can not parse string {command}.");
-
-			string name = keyValue[0].Trim();
-			string expression = keyValue[1].Trim();
-
-			if (name.Contains(" "))
-				throw new ArgumentException($"Can not parse command {command}");
-
-			Set set = new Set(name, expression);
-			return set;
-		}
 		internal static Character ParseCharacter(string[] args)
 		{
 			string name = args[1];

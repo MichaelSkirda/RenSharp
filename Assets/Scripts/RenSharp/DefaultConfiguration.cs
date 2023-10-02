@@ -21,7 +21,6 @@ namespace RenSharp
 			config.Skip<While>();
 
 			config.Skip<If>();
-			config.Skip<Set>();
 			config.Skip<Callback>();
 			config.Skip<Pass>();
 			config.Skip<Python>();
@@ -51,7 +50,6 @@ namespace RenSharp
 			config.SetCommand("goto", (words, _) => CommandParser.ParseGoto(words));
 			config.SetCommand("init", (words, _) => CommandParser.ParseInit(words));
 
-			config.SetCommand("set", (words, _) => CommandParser.ParseSet(words));
 			config.SetCommand("else", (words, _) => CommandParser.ParseIf(words));
 			config.SetCommand("if", (words, _) => CommandParser.ParseIf(words));
 			config.SetCommand("callback", (words, _) => CommandParser.ParseCallback(words));
