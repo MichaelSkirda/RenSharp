@@ -5,15 +5,15 @@ using System.Text;
 
 namespace RenSharp.Models
 {
-	public class RenSharpMethod
+	public class ImportMethod
 	{
-		public string Namespace { get; set; }
+		public string Name { get; set; }
 		public MethodInfo MethodInfo { get; set; }
 
-		public RenSharpMethod(MethodInfo methodInfo, string ns = "")
+		public ImportMethod(MethodInfo methodInfo, string name = "")
 		{
 			MethodInfo = methodInfo;
-			Namespace = ns;
+			Name = name;
 		} 
 	}
 }
