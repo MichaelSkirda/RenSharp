@@ -13,7 +13,6 @@ using IronPython.Hosting;
 using Microsoft.Scripting.Hosting;
 using IronPython.Runtime.Types;
 using Microsoft.Scripting.Runtime;
-using Microsoft.Scripting.Runtime;
 
 namespace RenSharp.Core
 {
@@ -41,19 +40,22 @@ namespace RenSharp.Core
 
 		private void InitPython()
 		{
-			Engine.Execute("import clr", Scope);
+			Engine = Python.CreateEngine();
+			Scope = Engine.CreateScope();
 
-			List<RenSharpMethod> methods = CallbackAttribute.Callbacks;
+
+			List<ImportMethod> methods = PyImportAttribute.MethodImports;
 			string loadAssemblies = string.Join("\n", methods
 				.Select(x => $"clr.AddReference(\"{x.MethodInfo.DeclaringType.Assembly.FullName}\")")
 				.Distinct());
 
 			string importTypes = string.Join("\n",
-			methods.Select(x => string.IsNullOrEmpty(x.Namespace)
+			methods.Select(x => string.IsNullOrEmpty(x.Name)
 			? $"from {x.MethodInfo.DeclaringType.Namespace}.{x.MethodInfo.DeclaringType.Name} import {x.MethodInfo.Name}"
-			: $"from {x.MethodInfo.DeclaringType.Namespace}.{x.MethodInfo.DeclaringType.Name} import {x.MethodInfo.Name} as {x.Namespace}"
+			: $"from {x.MethodInfo.DeclaringType.Namespace}.{x.MethodInfo.DeclaringType.Name} import {x.MethodInfo.Name} as {x.Name}"
 			));
 
+			Engine.Execute("import clr", Scope);
 			Engine.Execute(loadAssemblies, Scope);
 			Engine.Execute(importTypes, Scope);
 		}
@@ -113,7 +115,7 @@ namespace RenSharp.Core
 			FleeCtx.ParserOptions.RecreateParser();
 
 			List<string> variables = Scope.GetVariableNames().ToList();
-			List<RenSharpMethod> methods = CallbackAttribute.Callbacks;
+			List<ImportMethod> methods = PyImportAttribute.MethodImports;
 
 			foreach (string name in variables)
 			{
@@ -122,9 +124,9 @@ namespace RenSharp.Core
 					continue;
 				FleeCtx.Variables[name] = value;
 			}
-			foreach (RenSharpMethod method in methods)
+			foreach (ImportMethod method in methods)
 			{
-				FleeCtx.Imports.AddMethod(method.MethodInfo, method.Namespace);
+				FleeCtx.Imports.AddMethod(method.MethodInfo, method.Name);
 			}
 
 			FleeCtx.Variables["ctx"] = this;

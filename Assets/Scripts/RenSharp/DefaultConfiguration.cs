@@ -74,6 +74,9 @@ namespace RenSharp
 			config.AddComplex(typeof(If), (ctx, rootCmd) => IfComplexParser.Parse(ctx, rootCmd as If));
 			config.AddComplex(typeof(Python), (ctx, rootCmd) => PythonComplexParser.Parse(ctx, rootCmd as Python));
 
+			config.SetComplexPredicate<If>((x) => true);
+			config.SetComplexPredicate<Python>((x) => true);
+
 			return config;
 		}
 	}

@@ -4,12 +4,12 @@ using System.Text;
 
 namespace RenSharp.Core.Functions
 {
-	[Callback("config")]
+	[PyImport("config")]
 	public static class GameConfig
 	{
 		public static int ScreenWidth { get; set; }
 
-		[Callback("debug_log")]
+		[PyImport("debug_log")]
 		public static object DebugLog(int value)
 		{
 			Console.WriteLine(value);

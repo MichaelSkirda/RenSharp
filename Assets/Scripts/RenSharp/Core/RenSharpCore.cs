@@ -21,7 +21,7 @@ namespace RenSharp.Core
         public RenSharpCore(IEnumerable<string> code, Configuration config = null) => SetupProgram(code, config);
         private void SetupProgram(IEnumerable<string> code, Configuration config)
         {
-			CallbackAttribute.ReloadCallbacks();
+			PyImportAttribute.ReloadCallbacks();
 			Context = new RenSharpContext();
 
 			if (config == null)

@@ -40,9 +40,14 @@ namespace RenSharp
 		public bool IsComplex(Command command)
 			=> IsComplexPredicates.ContainsKey(command.GetType()) 
 			&& IsComplexPredicates[command.GetType()].Any(x => x(command));
-		public void SetComplexPredicate<T, K>(Predicate<K> predicate) where K : Command
+		public void SetComplexPredicate<T>(Predicate<Command> predicate) where T : Command
 		{
+			Type type = typeof(T);
+			bool hasValue = IsComplexPredicates.ContainsKey(type);
+			if (hasValue == false)
+				IsComplexPredicates[type] = new List<Predicate<Command>>();
 
+			IsComplexPredicates[typeof(T)].Add(predicate);
 		}
 
 		public void AddComplex(Type type, Func<ReaderContext, Command, List<Command>> Parser)
