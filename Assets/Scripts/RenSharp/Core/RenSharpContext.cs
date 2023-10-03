@@ -1,9 +1,7 @@
 ﻿using Flee.PublicTypes;
 using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using System.Linq;
-using System.Text;
 using System.Reflection;
 using RenSharp.Models;
 using System.Text.RegularExpressions;
@@ -11,8 +9,6 @@ using RenSharp.Interfaces;
 using IDynamicExpression = Flee.PublicTypes.IDynamicExpression;
 using IronPython.Hosting;
 using Microsoft.Scripting.Hosting;
-using IronPython.Runtime.Types;
-using Microsoft.Scripting.Runtime;
 
 namespace RenSharp.Core
 {
@@ -43,21 +39,63 @@ namespace RenSharp.Core
 			Engine = Python.CreateEngine();
 			Scope = Engine.CreateScope();
 
+			dynamic exp = new System.Dynamic.ExpandoObject();
+
 
 			List<ImportMethod> methods = PyImportAttribute.MethodImports;
+			List<ImportType> types = PyImportAttribute.TypeImports;
+
 			string loadAssemblies = string.Join("\n", methods
 				.Select(x => $"clr.AddReference(\"{x.MethodInfo.DeclaringType.Assembly.FullName}\")")
 				.Distinct());
 
-			string importTypes = string.Join("\n",
+			string importMethods = string.Join("\n",
 			methods.Select(x => string.IsNullOrEmpty(x.Name)
 			? $"from {x.MethodInfo.DeclaringType.Namespace}.{x.MethodInfo.DeclaringType.Name} import {x.MethodInfo.Name}"
 			: $"from {x.MethodInfo.DeclaringType.Namespace}.{x.MethodInfo.DeclaringType.Name} import {x.MethodInfo.Name} as {x.Name}"
 			));
 
+			string importTypes = string.Join("\n",
+			types.Select(x => string.IsNullOrWhiteSpace(x.Name)
+			? $"import {x.Type.Namespace}.{x.Type.Name}"
+			: $"import {x.Type.Namespace}.{x.Type.Name} as {x.Name}"
+			));
+
+			// All public static methods that's contains PyImportAttribute
+			List<string> renameMethods = new List<string>();
+
+
+			foreach (ImportType import in types)
+			{
+				List<MethodInfo> toRename = import.Type
+					.GetMethods(BindingFlags.Public | BindingFlags.Static)
+					.Where(x => x.IsDefined(typeof(PyImportAttribute)))
+					.ToList();
+
+				foreach (MethodInfo method in toRename)
+				{
+					string methodName = method.GetCustomAttribute<PyImportAttribute>().Name;
+					if (string.IsNullOrWhiteSpace(methodName))
+						throw new Exception("Если у класса есть PyImport, то методы с PyImport должны объявлять имя.");
+
+					if (string.IsNullOrEmpty(import.Name))
+					{
+						renameMethods.Add($"{import.Type.Name}.{methodName} = {import.Type.Name}.{method.Name}");
+						renameMethods.Add($"del {import.Type.Name}.{method.Name}");
+					}
+					else
+					{
+						renameMethods.Add($"{import.Name}.{methodName} = {import.Name}.{method.Name}");
+						renameMethods.Add($"del {import.Name}.{method.Name}");
+					}
+				}
+			}
+
 			Engine.Execute("import clr", Scope);
 			Engine.Execute(loadAssemblies, Scope);
+			Engine.Execute(importMethods, Scope);
 			Engine.Execute(importTypes, Scope);
+			Engine.Execute(string.Join("\n", renameMethods), Scope);
 		}
 
 		internal void Goto(Command command)

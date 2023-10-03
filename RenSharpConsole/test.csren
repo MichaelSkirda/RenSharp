@@ -11,7 +11,9 @@ init 999:
 			if x == "banana":
 				continue
 			print(str(i) + " " + x)
-		
+		print(config.ScreenWidth)
+		debug_log("foobar---111")
+		config.DebugLog("foobar---444")
 
 
 label main:

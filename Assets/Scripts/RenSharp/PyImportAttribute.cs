@@ -15,7 +15,8 @@ namespace RenSharp
 		public static List<ImportMethod> MethodImports { get; private set; } = new List<ImportMethod>();
 		public static List<ImportType> TypeImports { get; private set; } = new List<ImportType>();
 
-		private string Name { get; set; }
+
+		internal string Name { get; set; }
 
 		public PyImportAttribute(string name = "")
 		{
@@ -24,6 +25,7 @@ namespace RenSharp
 
 		internal static void ReloadCallbacks()
 		{
+			Type attr = typeof(PyImportAttribute);
 			MethodImports = new List<ImportMethod>();
 			TypeImports = new List<ImportType>();
 
@@ -33,14 +35,15 @@ namespace RenSharp
 				.ToList();
 
 			// Get ALL methods with attribute in ALL assemblies from Domain
+			// Except methods that class contains PyImportAttribute
 			List<MethodInfo> importMethods = domainTypes
 				.SelectMany(x => x.GetMethods(BindingFlags.Static | BindingFlags.Public))
-				.Where(x => x.IsDefined(typeof(PyImportAttribute)))
+				.Where(x => x.IsDefined(attr) && x.DeclaringType.IsDefined(attr) == false)
 				.ToList();
 
 			// Get ALL types with attribute in ALL assemblies from Domain
 			List<Type> importTypes = domainTypes
-				.Where(x => x.IsDefined(typeof(PyImportAttribute)))
+				.Where(x => x.IsDefined(attr))
 				.ToList();
 
 
@@ -59,6 +62,7 @@ namespace RenSharp
 			}
 
 			AssertDuplicates(MethodImports);
+			// TODO types assert
 		}
 
 		private static void AssertDuplicates(List<ImportMethod> methods)

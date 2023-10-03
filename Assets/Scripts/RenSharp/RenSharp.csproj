@@ -22,9 +22,7 @@
     <Reference Include="Microsoft.Scripting">
       <HintPath>..\Plugins\Microsoft.Scripting.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Scripting.Core">
-      <HintPath>..\Plugins\Microsoft.Scripting.Core.dll</HintPath>
-    </Reference>
+
   </ItemGroup>
 
   <ItemGroup>
