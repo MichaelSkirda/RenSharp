@@ -9,93 +9,26 @@ using RenSharp.Interfaces;
 using IDynamicExpression = Flee.PublicTypes.IDynamicExpression;
 using IronPython.Hosting;
 using Microsoft.Scripting.Hosting;
+using RenSharp.Core.Expressions;
 
 namespace RenSharp.Core
 {
     public class RenSharpContext
     {
 		internal RenSharpProgram Program { get; set; }
-		internal Dictionary<string, object> Variables { get; set; } = new Dictionary<string, object>();
+		internal Dictionary<string, object> SystemVariables { get; set; } = new Dictionary<string, object>();
 		internal Stack<StackFrame> Stack { get; set; } = new Stack<StackFrame>();
-		private ExpressionContext FleeCtx { get; set; }
-		private ScriptEngine Engine { get; set; }
-		private ScriptScope Scope { get; set; }
+		private PythonEvaluator PyEvaluator { get; set; }
 
 		internal Stack<int> LevelStack => CurrentFrame.LevelStack;
 		internal int Level => LevelStack.Count + 1;
 		internal StackFrame CurrentFrame => Stack.Peek();
 		public RenSharpContext()
 		{
-			InitPython();
-
-			UpdateExpressionContext();
+			PyEvaluator = new PythonEvaluator();
 
 			var mainFrame = new StackFrame();
 			Stack.Push(mainFrame);
-		}
-
-		private void InitPython()
-		{
-			Engine = Python.CreateEngine();
-			Scope = Engine.CreateScope();
-
-			dynamic exp = new System.Dynamic.ExpandoObject();
-
-
-			List<ImportMethod> methods = PyImportAttribute.MethodImports;
-			List<ImportType> types = PyImportAttribute.TypeImports;
-
-			string loadAssemblies = string.Join("\n", methods
-				.Select(x => $"clr.AddReference(\"{x.MethodInfo.DeclaringType.Assembly.FullName}\")")
-				.Distinct());
-
-			string importMethods = string.Join("\n",
-			methods.Select(x => string.IsNullOrEmpty(x.Name)
-			? $"from {x.MethodInfo.DeclaringType.Namespace}.{x.MethodInfo.DeclaringType.Name} import {x.MethodInfo.Name}"
-			: $"from {x.MethodInfo.DeclaringType.Namespace}.{x.MethodInfo.DeclaringType.Name} import {x.MethodInfo.Name} as {x.Name}"
-			));
-
-			string importTypes = string.Join("\n",
-			types.Select(x => string.IsNullOrWhiteSpace(x.Name)
-			? $"import {x.Type.Namespace}.{x.Type.Name}"
-			: $"import {x.Type.Namespace}.{x.Type.Name} as {x.Name}"
-			));
-
-			// All public static methods that's contains PyImportAttribute
-			List<string> renameMethods = new List<string>();
-
-
-			foreach (ImportType import in types)
-			{
-				List<MethodInfo> toRename = import.Type
-					.GetMethods(BindingFlags.Public | BindingFlags.Static)
-					.Where(x => x.IsDefined(typeof(PyImportAttribute)))
-					.ToList();
-
-				foreach (MethodInfo method in toRename)
-				{
-					string methodName = method.GetCustomAttribute<PyImportAttribute>().Name;
-					if (string.IsNullOrWhiteSpace(methodName))
-						throw new Exception("Если у класса есть PyImport, то методы с PyImport должны объявлять имя.");
-
-					if (string.IsNullOrEmpty(import.Name))
-					{
-						renameMethods.Add($"{import.Type.Name}.{methodName} = {import.Type.Name}.{method.Name}");
-						renameMethods.Add($"del {import.Type.Name}.{method.Name}");
-					}
-					else
-					{
-						renameMethods.Add($"{import.Name}.{methodName} = {import.Name}.{method.Name}");
-						renameMethods.Add($"del {import.Name}.{method.Name}");
-					}
-				}
-			}
-
-			Engine.Execute("import clr", Scope);
-			Engine.Execute(loadAssemblies, Scope);
-			Engine.Execute(importMethods, Scope);
-			Engine.Execute(importTypes, Scope);
-			Engine.Execute(string.Join("\n", renameMethods), Scope);
 		}
 
 		internal void Goto(Command command)
@@ -145,42 +78,6 @@ namespace RenSharp.Core
 		#endregion
 
 		#region EXPRESSIONS
-		public void UpdateExpressionContext()
-		{
-			FleeCtx = new ExpressionContext();
-			FleeCtx.ParserOptions.DecimalSeparator = '.';
-			FleeCtx.ParserOptions.FunctionArgumentSeparator = ',';
-			FleeCtx.ParserOptions.RecreateParser();
-
-			List<string> variables = Scope.GetVariableNames().ToList();
-			List<ImportMethod> methods = PyImportAttribute.MethodImports;
-
-			foreach (string name in variables)
-			{
-				object value = Scope.GetVariable(name);
-				if (value == null)
-					continue;
-				FleeCtx.Variables[name] = value;
-			}
-			foreach (ImportMethod method in methods)
-			{
-				FleeCtx.Imports.AddMethod(method.MethodInfo, method.Name);
-			}
-
-			FleeCtx.Variables["ctx"] = this;
-		}
-
-		internal object GetValue(string var)
-		{
-			object value = Variables[var];
-			int num;
-			bool isNumber = Int32.TryParse(value.ToString(), out num);
-
-			if (isNumber)
-				return num;
-
-			return value;
-		}
 		internal string InterpolateString(string line)
 		{
 			// Value in brackets '{' '}' and brackets, except escaped brackets '\{' \}'
@@ -209,44 +106,12 @@ namespace RenSharp.Core
 
 			return line;
 		}
-		internal T ExecuteExpression<T>(string expression)
-		{
-			if (string.IsNullOrWhiteSpace(expression))
-				throw new ArgumentException("Expression can not be null or whitespace.");
-			UpdateExpressionContext();
-			IGenericExpression<T> e = FleeCtx.CompileGeneric<T>(expression);
-
-			T result = e.Evaluate();
-			return result;
-		}
-
-		internal dynamic ExecuteExpression(string expression)
-		{
-			UpdateExpressionContext();
-			IDynamicExpression e = FleeCtx.CompileDynamic(expression);
-
-			dynamic result = e.Evaluate();
-			return result;
-		}
-
-		internal void UpdatePythonContext()
-		{
-			List<string> variables = Variables.Keys.ToList();
-
-			foreach (string name in variables)
-			{
-				object value = GetValue(name);
-				Scope.SetVariable(name, value);
-			}
-			
-			FleeCtx.Variables["ctx"] = this;
-		}
-
+		internal T ExecuteExpression<T>(string expression) => PyEvaluator.Evaluate(expression);
 		internal void ExecutePython(IEnumerable<string> lines)
 		{
-			UpdatePythonContext();
-			string code = string.Join("\n", lines);
-			Engine.Execute(code, Scope);
+			var keyValues = SystemVariables.ToList();
+			PyEvaluator.SetVariables(keyValues);
+			PyEvaluator.Execute(lines);
 		}
 		#endregion
 	}

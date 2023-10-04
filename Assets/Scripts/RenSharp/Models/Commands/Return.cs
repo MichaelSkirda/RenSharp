@@ -21,7 +21,7 @@ namespace RenSharp.Models.Commands
 			if(string.IsNullOrEmpty(Expression) == false)
 			{
 				string exp = ctx.InterpolateString(Expression);
-				ctx.Variables["_return"] = ctx.ExecuteExpression<object>(exp);
+				ctx.SystemVariables["_return"] = ctx.ExecuteExpression<object>(exp);
 			}
 
 			// Soft return won't pop last element

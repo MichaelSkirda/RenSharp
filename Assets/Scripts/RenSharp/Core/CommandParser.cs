@@ -126,14 +126,14 @@ namespace RenSharp.Core
 		internal static Goto ParseGoto(string[] args)
 		{
 			if (args.Length < 2)
-				throw new ArgumentException("Call can not contains less than 1 arguments");
+				throw new ArgumentException("Call can not contains less than 2 arguments");
 			if (args[1] == "expression")
-				return new Goto(args.Skip(2).ToWord());
+				return new Goto(args.Skip(2).ToWord(), evaluate: true);
 
 			if (args.Length != 2)
 				throw new ArgumentException("Call without expression keyword can contains only 1 argument (label name).");
 
-			return new Goto($"\"{args[1]}\"");
+			return new Goto($"\"{args[1]}\"", evaluate: false);
 		}
 		internal static Call ParseCall(string[] args)
 		{

@@ -71,5 +71,8 @@ namespace RenSharp
                 Variables = GetVars(clearedExpression)
             };
 		}
+
+        internal static string ToPythonCode(this IEnumerable<string> str)
+            => string.Join(Environment.NewLine, str);
 	}
 }

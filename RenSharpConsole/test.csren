@@ -4,6 +4,7 @@ init 999:
 	# $ print(x)
 
 	python:
+		x = 5
 		fruits = ["apple", "banana", "cherry"]
 		i = 0
 		for x in fruits:
@@ -12,13 +13,12 @@ init 999:
 				continue
 			print(str(i) + " " + x)
 		print(config.ScreenWidth)
-		debug_log("foobar---111")
-		config.DebugLog("foobar---444")
+		config.debug_log("foobar---444")
 
 
 label main:
-	"foo"
-	goto expression "test_{"bar_"}" + 123
+	"x is {x} and i is {i}"
+	goto expression "test_{"bar_"}123"
 	"after test"
 
 

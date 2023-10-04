@@ -7,19 +7,25 @@ namespace RenSharp.Models.Commands
 {
     public class Goto : Command
 	{
-		public string Expression { get; set; }
+		public string Label { get; set; }
+		public bool Evaluate { get; set; }
 
-		public Goto(string expression)
+		public Goto(string label, bool evaluate)
 		{
-			if (string.IsNullOrWhiteSpace(expression))
-				throw new ArgumentNullException("Call must have at least 1 argument (label name).");
-			Expression = expression;
+			if (string.IsNullOrWhiteSpace(label))
+				throw new ArgumentNullException("Goto label can not be null or empty");
+			Label = label;
+			Evaluate = evaluate;
 		}
 
 		internal override void Execute(RenSharpCore renSharpCore, RenSharpContext ctx)
 		{
-			string labelName = ctx.InterpolateString(Expression);
-			labelName = ctx.ExecuteExpression<string>(labelName);
+			string labelName = Label;
+			if (Evaluate)
+			{
+				labelName = ctx.InterpolateString(Label);
+				labelName = ctx.ExecuteExpression<string>(labelName);
+			}
 			renSharpCore.Goto(labelName);
 		}
 	}
