@@ -49,20 +49,28 @@ namespace RenSharp
 
 			foreach(MethodInfo method in importMethods)
 			{
-				PyImportAttribute attribute = method.GetCustomAttribute<PyImportAttribute>();
+				PyImportAttribute attribute = GetPyImportAttribute(method);
 				var import = new ImportMethod(method, attribute.Name);
 				MethodImports.Add(import);
 			}
 
 			foreach(Type type in importTypes)
 			{
-				PyImportAttribute attribute = type.GetCustomAttribute<PyImportAttribute>();
+				PyImportAttribute attribute = GetPyImportAttribute(type);
 				var import = new ImportType(type, attribute.Name);
 				TypeImports.Add(import);
 			}
 
 			AssertDuplicates(MethodImports);
 			// TODO types assert
+		}
+
+		private static PyImportAttribute GetPyImportAttribute(MemberInfo member)
+		{
+			PyImportAttribute attribute = member.GetCustomAttribute<PyImportAttribute>();
+			if(string.IsNullOrWhiteSpace(attribute.Name))
+				attribute.Name = member.Name;
+			return attribute;
 		}
 
 		private static void AssertDuplicates(List<ImportMethod> methods)

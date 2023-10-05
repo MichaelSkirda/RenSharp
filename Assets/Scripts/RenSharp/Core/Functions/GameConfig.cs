@@ -1,19 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace RenSharp.Core.Functions
 {
 	[PyImport("config")]
 	public static class GameConfig
 	{
-		public static int ScreenWidth { get; set; } = 1024;
+		public static int ScreenWidth { get; set; } = 1920;
+		public static int ScreenHeight = 1080;
 
 		[PyImport("debug_log")]
-		public static object DebugLog(string value)
+		public static void DebugLog(object value)
 		{
 			Console.WriteLine(value);
-			return null;
 		}
+
+		[PyImport("_because_of_name")]
+		public static void WillNotImport(object someval)
+		{
+            Console.WriteLine(someval);
+        }
 	}
 }
