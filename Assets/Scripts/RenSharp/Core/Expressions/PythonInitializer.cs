@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Security.AccessControl;
 using System.Text;
 using static IronPython.Modules._ast;
 
@@ -51,54 +52,33 @@ namespace RenSharp.Core.Expressions
 		{
 			foreach (ImportType import in types)
 			{
+				// Import all in temp object RSImport
 				Engine.Execute($"import {import.Type.Namespace}.{import.Type.Name} as RSImport", Scope);
+				// Create object that will contains every renamed (or not renamed) member
 				Engine.Execute($"{import.Name} = RenSharpWrapper()", Scope);
 
-				ImportTypeProperties(import);
-				ImportTypeVariables(import);
-				RenameImportedMethods(import);
+				ImportMembers(import);
+
+				Engine.Execute($"del RSImport", Scope);
 			}
 		}
 
-		private void ImportTypeProperties(ImportType import)
+		private void ImportMembers(ImportType import)
 		{
-			PropertyInfo[] propertiesImports = import.Type
-					.GetProperties(BindingFlags.Public | BindingFlags.Static);
+			MemberInfo[] members = import.Type
+				.GetMembers(BindingFlags.Public | BindingFlags.Static)
+				.Where(x => !(x is MethodInfo) || !(x as MethodInfo).IsSpecialName)
+				.ToArray();
 
-			foreach (PropertyInfo property in propertiesImports)
+			foreach(MemberInfo member in members)
 			{
-				RSImport(import.Name, property.Name, property.Name);
+				var attr = member.GetCustomAttribute<PyImportAttribute>();
+
+				if (attr != null)
+					RSImport(import.Name, attr.Name, member.Name);
+				else
+					RSImport(import.Name, member.Name, member.Name);
 			}
-		}
-
-		private void ImportTypeVariables(ImportType import)
-		{
-			FieldInfo[] variables = import.Type
-				.GetFields(BindingFlags.Public | BindingFlags.Static);
-
-			foreach (FieldInfo field in variables)
-			{
-				RSImport(import.Name, field.Name, field.Name);
-			}
-		}
-
-		private void RenameImportedMethods(ImportType import)
-		{
-			List<MethodInfo> toRename = import.Type
-					.GetMethods(BindingFlags.Public | BindingFlags.Static)
-					.Where(x => !x.IsSpecialName && x.IsDefined(typeof(PyImportAttribute)))
-					.ToList();
-
-			foreach (MethodInfo method in toRename)
-			{
-				string customName = method.GetCustomAttribute<PyImportAttribute>()?.Name;
-				if (string.IsNullOrWhiteSpace(customName))
-					customName = method.Name;
-
-				RSImport(import.Name, customName, method.Name);
-			}
-
-			Engine.Execute($"del RSImport", Scope);
 		}
 
 		private void RSImport(string target, string name, string member)

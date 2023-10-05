@@ -15,8 +15,7 @@ init 999:
 		print(config.ScreenWidth)
 		config.debug_log("foobar---444")
 		config.debug_log(config.ScreenHeight)
-		# print(config._because_of_name) # <- Not exists error.
-		# Name starts with underscore is private and won't imort
+		print(config.WillImport) # <- Not exists error.
 
 
 label main:

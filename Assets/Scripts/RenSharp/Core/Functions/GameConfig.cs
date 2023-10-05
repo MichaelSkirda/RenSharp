@@ -14,8 +14,7 @@ namespace RenSharp.Core.Functions
 			Console.WriteLine(value);
 		}
 
-		[PyImport("_because_of_name")]
-		public static void WillNotImport(object someval)
+		public static void WillImport(object someval)
 		{
             Console.WriteLine(someval);
         }
