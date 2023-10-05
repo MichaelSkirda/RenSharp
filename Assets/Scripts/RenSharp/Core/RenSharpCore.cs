@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using RenSharp.Core.Exceptions;
 using RenSharp.Interfaces;
 using RenSharp.Models;
 using RenSharp.Models.Commands;
@@ -95,7 +96,7 @@ namespace RenSharp.Core
                 skip = false;
                 bool hasNext = Program.MoveNext();
                 if (!hasNext)
-                    throw new Exception("Unexpected end of game");
+                    throw new UnexpectedEndOfProgramException("Неожиданный конец программы.");
 
                 command = Program.Current;
                 if (command.Level > Context.Level)
