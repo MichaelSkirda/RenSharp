@@ -1,4 +1,4 @@
-label main:
+label start:
 	x = 6
 	if x > 5:
 		"x bigger than 5"

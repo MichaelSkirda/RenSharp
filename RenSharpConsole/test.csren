@@ -9,9 +9,9 @@ init 999 python:
 		print("nothing")
 
 
-label main
+label start
 	"Hello, \"Sayorineko!\""
 
 label test
 	"test"
-	jump main
+	jump start

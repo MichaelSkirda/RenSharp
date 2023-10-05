@@ -2,7 +2,7 @@ init 999:
 	python:
 		x = 42
 
-label main:
+label start:
 	if x > 5:
 		"x bigger than 5"
 	else:

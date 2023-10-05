@@ -38,49 +38,11 @@ namespace RenSharp.Core
 
 			Context.Program = new RenSharpProgram(program);
 
-            List<Init> inits = Context.Program.Code
-                .OfType<Init>()
-                .OrderByDescending(x => x.Priority)
-                .ThenBy(x => x.Line)
-                .ToList();
+            ExecuteInits();
 
-            foreach(Init init in inits)
-            {
-                Command initStart = Program[init.Line + 1];
-                Context.Goto(initStart);
-				Command command;
-
-				while(true)
-				{
-					bool hasNext = Program.MoveNext();
-                    if (!hasNext)
-                        break;
-
-					command = Program.Current;
-					if (command.Level > Context.Level)
-						continue;
-
-					int cycleStart = 0;
-					while (command.Level < Context.Level)
-					{
-						cycleStart = Context.LevelStack.Pop();
-						if (cycleStart != 0)
-							break;
-					}
-					if (cycleStart != 0)
-					{
-						Program.Goto(cycleStart);
-						continue;
-					}
-
-					if (command.Level <= 1)
-						break;
-
-					command.Execute(this, Context);
-				}
-			}
-
-            Label main = Program.GetLabel("main");
+			Label main = Program.GetLabel("start");
+            if (main == null)
+                throw new Exception("Программа обязана иметь точку входа start");
             if (main.Level != 1)
                 throw new ArgumentException("Main must have no tabulation.");
             Context.Goto(main);
@@ -139,5 +101,50 @@ namespace RenSharp.Core
 
             return character.Attributes;
         }
+
+        private void ExecuteInits()
+        {
+			List<Init> inits = Context.Program.Code
+				.OfType<Init>()
+				.OrderByDescending(x => x.Priority)
+				.ThenBy(x => x.Line)
+				.ToList();
+
+			foreach (Init init in inits)
+			{
+				Command initStart = Program[init.Line + 1];
+				Context.Goto(initStart);
+				Command command;
+
+				while (true)
+				{
+					bool hasNext = Program.MoveNext();
+					if (!hasNext)
+						break;
+
+					command = Program.Current;
+					if (command.Level > Context.Level)
+						continue;
+
+					int cycleStart = 0;
+					while (command.Level < Context.Level)
+					{
+						cycleStart = Context.LevelStack.Pop();
+						if (cycleStart != 0)
+							break;
+					}
+					if (cycleStart != 0)
+					{
+						Program.Goto(cycleStart);
+						continue;
+					}
+
+					if (command.Level <= 1)
+						break;
+
+					command.Execute(this, Context);
+				}
+			}
+		}
     }
 }

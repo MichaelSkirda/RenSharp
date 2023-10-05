@@ -5,6 +5,6 @@ init 999:
 		x *= 3
 		#unity.Print("hello")
 
-label main
+label start
 	"Test {x}"
-	goto main
+	goto start
