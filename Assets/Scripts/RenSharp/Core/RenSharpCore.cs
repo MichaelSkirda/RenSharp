@@ -15,7 +15,7 @@ namespace RenSharp.Core
         public Configuration Configuration { get; set; }
         public IWriter Writer { get; set; }
         private RenSharpContext Context { get; set; }
-		private bool HasStarted { get; set; }
+		private bool HasStarted { get; set; } = false;
 
         public RenSharpCore(string path, Configuration config = null) => SetupProgram(File.ReadAllLines(path), config);
         public RenSharpCore(IEnumerable<string> code, Configuration config = null) => SetupProgram(code, config);
@@ -49,6 +49,7 @@ namespace RenSharp.Core
 			var program = reader.ParseCode(code);
 
 			Context.Program = new RenSharpProgram(program);
+			HasStarted = false;
 		}
 
 		/// <summary>
@@ -58,6 +59,9 @@ namespace RenSharp.Core
 		/// <exception cref="ArgumentException">Если label 'start' имеет табы</exception>
 		public void Start()
 		{
+			if (HasStarted)
+				return;
+			HasStarted = true;
 			ExecuteInits();
 
 			Label main = Program.GetLabel("start");
@@ -70,6 +74,9 @@ namespace RenSharp.Core
 
         public Command ReadNext()
         {
+			if (!HasStarted)
+				Start();
+
             Command command;
 			bool skip;
 

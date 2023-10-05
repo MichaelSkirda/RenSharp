@@ -1,17 +1,9 @@
 
-init -999 python
-	print("foobar" + str(x))
-
-
 init 999:
 	python:
 		x = 12
 		x *= 3
 		#unity.Print("hello")
-
-init -999 python
-	print("foobar" + str(x))
-
 
 label start
 	"Test {x}"

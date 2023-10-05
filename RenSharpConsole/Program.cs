@@ -11,7 +11,7 @@ internal class Program
 	{
 		string path = "./test.csren";
 		IWriter writer = new ConsoleWriter();
-		RenSharpCore renSharp = new RenSharpCore(path, new Configuration() { Writer = writer });
+		var renSharp = new RenSharpCore(path);
 		renSharp.Writer = writer;
 
 		while (true)
