@@ -138,12 +138,12 @@ namespace RenSharp.Core
 			if (args.Length < 2)
 				throw new ArgumentException("Call can not contains less than 1 arguments");
 			if (args[1] == "expression")
-				return new Call(args.Skip(2).ToWord()); // skip words 'call', 'expression'
+				return new Call(args.Skip(2).ToWord(), evaluate: true); // skip words 'call', 'expression'
 
 			if (args.Length != 2)
 				throw new ArgumentException("Call without expression keyword can contains only 1 argument (label name).");
 
-			return new Call($"\"{args[1]}\"");
+			return new Call($"\"{args[1]}\"", evaluate: false);
 		}
 		internal static Exit ParseExit() => new Exit();
 		private static string ToWord(this IEnumerable<string> words) => string.Join(" ", words);

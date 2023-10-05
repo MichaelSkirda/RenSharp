@@ -74,6 +74,9 @@ crashlytics-build.properties
 RenSharpConsole/obj/
 RenSharpConsole/bin/
 
+RSTests/bin/
+RSTests/obj/
+
 Assets/Scripts/RenSharp/obj/
 Assets/Scripts/RenSharp/bin/
 
