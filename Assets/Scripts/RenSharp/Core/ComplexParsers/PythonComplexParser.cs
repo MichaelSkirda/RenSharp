@@ -13,7 +13,7 @@ namespace RenSharp.Core.ComplexParsers
 		{
 			int minTab = blockStart.Level;
 
-			while (true)
+			while (ctx.HasNextSourceLine)
 			{
 				ctx.SourceLine++;
 				string line = ctx.LineText;

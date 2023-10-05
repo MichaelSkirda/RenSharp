@@ -46,8 +46,6 @@ namespace RenSharp
 			config.SetCommand("say", (words, config) => CommandParser.ParseMessage(words, config));
 			config.SetCommand("character", (words, _) => CommandParser.ParseCharacter(words));
 
-			config.SetCommand("label", (words, _) => CommandParser.ParseLabel(words));
-			config.SetCommand("goto", (words, _) => CommandParser.ParseGoto(words));
 			config.SetCommand("init", (words, _) => CommandParser.ParseInit(words));
 
 			config.SetCommand("else", (words, _) => CommandParser.ParseIf(words));
@@ -61,7 +59,11 @@ namespace RenSharp
 			config.SetCommand("", (_, __)
 				=> throw new ArgumentException("Can not parse this line. Try to use 'pass' explictly."));
 
+			config.SetCommand("label", (words, _) => CommandParser.ParseLabel(words));
+			config.SetCommand("jump", (words, _) => CommandParser.ParseGoto(words));
 			config.SetCommand("call", (words, _) => CommandParser.ParseCall(words));
+
+			config.SetCommand("exit", (_, __) => CommandParser.ParseExit());
 			config.SetCommand("return", (words, _) => CommandParser.ParseReturn(words));
 			config.SetCommand("soft", (words, _) => CommandParser.ParseReturn(words));
 			config.SetCommand("hard", (words, _) => CommandParser.ParseReturn(words));

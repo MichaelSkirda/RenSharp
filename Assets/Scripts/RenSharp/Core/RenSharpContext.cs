@@ -16,21 +16,17 @@ namespace RenSharp.Core
     public class RenSharpContext
     {
 		internal RenSharpProgram Program { get; set; }
-		internal Dictionary<string, object> SystemVariables { get; set; } = new Dictionary<string, object>();
-		internal Stack<StackFrame> Stack { get; set; } = new Stack<StackFrame>();
+		private Stack<StackFrame> Stack { get; set; }
 		private PythonEvaluator PyEvaluator { get; set; }
 
 		internal Stack<int> LevelStack => CurrentFrame.LevelStack;
 		internal int Level => LevelStack.Count + 1;
-		internal StackFrame CurrentFrame => Stack.Peek();
+		internal StackFrame CurrentFrame { get; set; }
 		public RenSharpContext()
 		{
+			Stack = new Stack<StackFrame>();
 			PyEvaluator = new PythonEvaluator();
-			var sysVars = SystemVariables.ToList();
-			PyEvaluator.SetVariables(sysVars);
-
-			var mainFrame = new StackFrame();
-			Stack.Push(mainFrame);
+			CurrentFrame = new StackFrame();
 		}
 
 		internal void Goto(Command command)
@@ -49,14 +45,14 @@ namespace RenSharp.Core
 
 		internal void PopState()
 		{
-			_ = Stack.Pop();
+			CurrentFrame = Stack.Pop();
 			int line = CurrentFrame.Line;
 			Program.Goto(line + 1);
 		}
 
 		internal bool TryPopState()
 		{
-			if (Stack.Count <= 1)
+			if (Stack.Count > 0)
 				return false;
 			PopState();
 			return true;
@@ -79,7 +75,7 @@ namespace RenSharp.Core
 					level--;
 					IPushable pushableCmd = cmd as IPushable;
 					if (pushableCmd == null)
-						throw new ArgumentException($"Command '{cmd.GetType()}' not implement IPushable but pushes stacks.");
+						throw new ArgumentException($"Команда '{cmd.GetType()}' не реализует IPushable, но использует табуляцию.");
 					pushableCmd.Push(levelStack, this);
 				}
 			}
@@ -118,14 +114,15 @@ namespace RenSharp.Core
 		}
 		internal T ExecuteExpression<T>(string expression) => PyEvaluator.Evaluate(expression);
 		internal void ExecutePython(IEnumerable<string> lines)
-		{
-			PyEvaluator.Execute(lines);
-		}
+			=> PyEvaluator.Execute(lines);
+		
 		internal void SetVariable(string name, object value)
 		{
 			var keyValue = new KeyValuePair<string, object>(name, value);
 			PyEvaluator.SetVariable(keyValue);
 		}
+		internal void GetVariable(string name)
+			=> PyEvaluator.GetVariable(name);
 		#endregion
 	}
 }

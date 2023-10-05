@@ -22,8 +22,6 @@ namespace RenSharp.Core.Expressions
 			Scope = initializer.Scope;
 		}
 
-		
-
 		internal void Execute(IEnumerable<string> lines)
 		{
 			string code = lines.ToPythonCode();
@@ -47,5 +45,8 @@ namespace RenSharp.Core.Expressions
 
 		internal void SetVariable(KeyValuePair<string, object> keyValue)
 			=> Scope.SetVariable(keyValue.Key, keyValue.Value);
+
+		internal object GetVariable(string key)
+			=> Scope.GetVariable(key);
 	}
 }

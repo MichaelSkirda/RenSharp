@@ -24,6 +24,7 @@ namespace RenSharp.Core
         internal List<Command> ParseCode(IEnumerable<string> codeLines)
         {
 			ReaderContext ctx = new ReaderContext();
+            codeLines = codeLines.Append("exit");
 
             ctx.ParseFunc = ParseCommands;
             ctx.ParseSingleFunc = ParseCommand;
@@ -32,7 +33,7 @@ namespace RenSharp.Core
             // Обязательно. Когда complex parser читает он не проверяет есть ли следующая строчка
             RemoveNullOrEmptyFromEnd(ctx.SourceCode);
 
-            while (ctx.SourceLine < ctx.SourceCode.Count)
+            while(ctx.HasNextSourceLine)
             {
                 try
                 {

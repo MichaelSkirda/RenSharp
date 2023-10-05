@@ -13,6 +13,7 @@ namespace RenSharp.Core
 		internal int Line { get; set; }
 		internal int SourceLine { get; set; }
 		internal string LineText => SourceCode[SourceLine - 1];
+		internal bool HasNextSourceLine => (SourceLine < SourceCode.Count);
 
 		private Func<ReaderContext, List<Command>> _parseFunc;
 		private Func<ReaderContext, Command> _parseSingle;

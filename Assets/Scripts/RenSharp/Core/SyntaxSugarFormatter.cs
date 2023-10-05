@@ -65,7 +65,7 @@ namespace RenSharp.Core
 			if (key.Contains(" "))
 				return line;
 
-			return $"set {line}";
+			return $"$ {line}";
 		}
 
 		internal static string ShortenMathSugar(string line)
@@ -106,12 +106,12 @@ namespace RenSharp.Core
 
 			if(incMatches > 0)
 			{
-				result = $"set {name} = {name} + 1";
+				result = $"$ {name} = {name} + 1";
 				return true;
 			}
 			else if(decMatches > 0)
 			{
-				result = $"set {name} = {name} - 1";
+				result = $"$ {name} = {name} - 1";
 				return true;
 			}
 			else
@@ -125,7 +125,7 @@ namespace RenSharp.Core
 		internal static string ElseSugar(string line)
 		{
 			if (line.Trim() == "else")
-				return "else if true";
+				return "else if True";
 			return line;
 		}
 

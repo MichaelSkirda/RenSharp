@@ -5,32 +5,15 @@ init 999:
 
 	python:
 		x = 5
-		fruits = ["apple", "banana", "cherry"]
-		i = 0
-		for x in fruits:
-			i += 1
-			if x == "banana":
-				continue
-			print(str(i) + " " + x)
-		print(config.ScreenWidth)
-		config.debug_log("foobar---444")
-		config.debug_log(config.ScreenHeight)
-		print(config.WillImport) # <- Not exists error.
 
 
 label main:
-	"x is {x} and i is {i}"
-	goto expression "test_{"bar_"}123"
-	"after test"
-
-
-label test_bar_123:
-	"testtest"
-	# Soft return сработает только если был вызван call. Jump проигнорирует soft return.
-	soft return
-	"foobar"
+	x = 10
+	if x == 9:
+		"x == 9"
+	else
+		"x != 9"
 
 label test:
-	"test1"
-	call test_bar_123
-	"test2"
+	"test"
+	jump main;

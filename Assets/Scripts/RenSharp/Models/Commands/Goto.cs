@@ -7,23 +7,23 @@ namespace RenSharp.Models.Commands
 {
     public class Goto : Command
 	{
-		public string Label { get; set; }
+		public string Expression { get; set; }
 		public bool Evaluate { get; set; }
 
-		public Goto(string label, bool evaluate)
+		public Goto(string expression, bool evaluate)
 		{
-			if (string.IsNullOrWhiteSpace(label))
+			if (string.IsNullOrWhiteSpace(expression))
 				throw new ArgumentNullException("Goto label can not be null or empty");
-			Label = label;
+			Expression = expression;
 			Evaluate = evaluate;
 		}
 
 		internal override void Execute(RenSharpCore renSharpCore, RenSharpContext ctx)
 		{
-			string labelName = Label;
+			string labelName = Expression;
 			if (Evaluate)
 			{
-				labelName = ctx.InterpolateString(Label);
+				labelName = ctx.InterpolateString(Expression);
 				labelName = ctx.ExecuteExpression<string>(labelName);
 			}
 			renSharpCore.Goto(labelName);
