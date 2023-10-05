@@ -9,13 +9,9 @@ init 999 python:
 		print("nothing")
 
 
-label main:
-	x = 10
-	if x == 9:
-		"x == 9"
-	else
-		"x != 9"
+label main
+	"Hello, \"Sayorineko!\""
 
-label test:
+label test
 	"test"
 	jump main

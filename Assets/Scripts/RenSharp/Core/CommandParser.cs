@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace RenSharp.Core
 {
@@ -76,12 +77,14 @@ namespace RenSharp.Core
 			// say nobody "Hello, It's test message" delay=20
 			//    ^       ^ (splitter)   ^         ^   ^ (index 3)
 			// (index 0)              (index 1)  (splitter)
-			string[] line = String.Join(" ", words).Split('\"');
-			int length = line.Length;
+			string line = String.Join(" ", words);
 
-			string command = line[0].Trim(); // 'say Eliz'
-			string text = string.Join("\"", line.Skip(1).SkipLast(1));
-			string attrs = line.Last().Trim();   // 'no-clear delay=50'
+			Regex valueInQuotes = new Regex(@"""(?:[^""\\]|\\.)*""");
+			Match match = valueInQuotes.Match(line);
+
+			string command = line.Substring(0, match.Index).Trim(); // 'say Eliz'
+			string text = match.Value.Substring(1, match.Value.Length - 2).Trim().Replace("\\\"", "\"");
+			string attrs = line.Substring(match.Index + match.Length).Trim();   // 'no-clear delay=50'
 
 			string[] attributes = attrs
 				.Split(' ')
