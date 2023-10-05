@@ -8,8 +8,11 @@ using System.Text;
 
 namespace RenSharp
 {
-	internal static class DefaultConfigurationExtension
+	internal static class DefaultConfiguration
 	{
+		public static Configuration GetDefaultConfig()
+			=> new Configuration().UseDefault().UseCoreCommands();
+
 		public static Configuration UseDefault(this Configuration config)
 		{
 			config.Skip<Label>();

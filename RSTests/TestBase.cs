@@ -4,10 +4,14 @@ namespace RSTests
 {
 	public class TestBase
 	{
-		protected static RenSharpCore? RS { get; set; }
+		protected static RenSharpCore RS { get; set; }
 		internal TestWriter Writer { get; set; }
 		internal List<Message> Messages => Writer.WritedMessage;
 
+		static TestBase()
+		{
+			RS = new RenSharpCore();
+		}
 		public TestBase()
 		{
 			Writer = new TestWriter();
@@ -15,8 +19,8 @@ namespace RSTests
 
 		protected void ExecuteUntilExit(string path)
 		{
+			RS.LoadProgram(path);
 			Writer = new TestWriter();
-			RS = new RenSharpCore(path);
 			RS.Writer = Writer;
 
 			if (RS == null)

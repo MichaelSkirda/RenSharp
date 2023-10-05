@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using RenSharp.Core.Exceptions;
 using RenSharp.Interfaces;
 using RenSharp.Models;
@@ -17,35 +15,57 @@ namespace RenSharp.Core
         public Configuration Configuration { get; set; }
         public IWriter Writer { get; set; }
         private RenSharpContext Context { get; set; }
+		private bool HasStarted { get; set; }
 
         public RenSharpCore(string path, Configuration config = null) => SetupProgram(File.ReadAllLines(path), config);
         public RenSharpCore(IEnumerable<string> code, Configuration config = null) => SetupProgram(code, config);
-        private void SetupProgram(IEnumerable<string> code, Configuration config)
+		public RenSharpCore(Configuration config = null) => SetupProgram(config);
+
+		private void SetupProgram(IEnumerable<string> code, Configuration config)
+		{
+			SetupProgram(config);
+			LoadProgram(code);
+		}
+		private void SetupProgram(Configuration config)
         {
 			PyImportAttribute.ReloadCallbacks();
 			Context = new RenSharpContext();
 
 			if (config == null)
-				config = new Configuration();
+				config = DefaultConfiguration.GetDefaultConfig();
 
-            config.UseDefault().UseCoreCommands();
             Writer = config.Writer;
-
 			Configuration = config;
+		}
 
-            RenSharpReader reader = new RenSharpReader(config);
+		public void LoadProgram(string path, bool saveScope = false)
+			=> LoadProgram(File.ReadAllLines(path), saveScope);
+        public void LoadProgram(IEnumerable<string> code, bool saveScope = false)
+        {
+			if (saveScope == false)
+				Context.RecreateScope();
+
+			RenSharpReader reader = new RenSharpReader(Configuration);
 			var program = reader.ParseCode(code);
 
 			Context.Program = new RenSharpProgram(program);
+		}
 
-            ExecuteInits();
+		/// <summary>
+		/// Запускает все блоки init и переводит курсор на блок 'start'
+		/// </summary>
+		/// <exception cref="Exception">Если label 'start' не найден</exception>
+		/// <exception cref="ArgumentException">Если label 'start' имеет табы</exception>
+		public void Start()
+		{
+			ExecuteInits();
 
 			Label main = Program.GetLabel("start");
-            if (main == null)
-                throw new Exception("Программа обязана иметь точку входа start");
-            if (main.Level != 1)
-                throw new ArgumentException("Main must have no tabulation.");
-            Context.Goto(main);
+			if (main == null)
+				throw new Exception("Программа обязана иметь точку входа start");
+			if (main.Level != 1)
+				throw new ArgumentException("Лейбл 'start' не должен иметь табуляции");
+			Context.Goto(main);
 		}
 
         public Command ReadNext()

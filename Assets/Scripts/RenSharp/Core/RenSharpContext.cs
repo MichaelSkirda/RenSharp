@@ -1,14 +1,9 @@
-﻿using Flee.PublicTypes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using RenSharp.Models;
 using System.Text.RegularExpressions;
 using RenSharp.Interfaces;
-using IDynamicExpression = Flee.PublicTypes.IDynamicExpression;
-using IronPython.Hosting;
-using Microsoft.Scripting.Hosting;
 using RenSharp.Core.Expressions;
 
 namespace RenSharp.Core
@@ -28,6 +23,8 @@ namespace RenSharp.Core
 			PyEvaluator = new PythonEvaluator();
 			CurrentFrame = new StackFrame();
 		}
+
+		internal void RecreateScope() => PyEvaluator.RecreateScope();
 
 		internal void Goto(Command command)
 		{

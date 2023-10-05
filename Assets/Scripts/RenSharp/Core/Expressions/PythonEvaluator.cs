@@ -22,6 +22,7 @@ namespace RenSharp.Core.Expressions
 			Scope = initializer.Scope;
 		}
 
+		internal void RecreateScope() => Scope = Engine.CreateScope();
 		internal void Execute(IEnumerable<string> lines)
 		{
 			string code = lines.ToPythonCode();
