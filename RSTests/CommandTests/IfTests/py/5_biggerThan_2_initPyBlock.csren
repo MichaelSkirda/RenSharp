@@ -1,3 +1,7 @@
+init 999:
+	python:
+		x = 42
+
 label main:
 	if x > 5:
 		"x bigger than 5"

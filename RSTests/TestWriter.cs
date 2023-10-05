@@ -10,7 +10,7 @@ namespace RSTests
 {
 	internal class TestWriter : IWriter
 	{
-		internal List<Message> WritedMessage { get; set; }
+		internal List<Message> WritedMessage { get; set; } = new List<Message>();
 
 		public void Write(Message message)
 		{
