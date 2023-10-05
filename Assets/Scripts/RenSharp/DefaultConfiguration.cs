@@ -13,7 +13,7 @@ namespace RenSharp
 		public static Configuration UseDefault(this Configuration config)
 		{
 			config.Skip<Label>();
-			config.Skip<Goto>();
+			config.Skip<Jump>();
 			config.Skip<Call>();
 			config.Skip<Return>();
 
@@ -73,9 +73,11 @@ namespace RenSharp
 
 			config.AddComplex(typeof(If), (ctx, rootCmd) => IfComplexParser.Parse(ctx, rootCmd as If));
 			config.AddComplex(typeof(Python), (ctx, rootCmd) => PythonComplexParser.Parse(ctx, rootCmd as Python));
+			config.AddComplex(typeof(Init), (ctx, rootCmd) => InitComplexParser.Parse(ctx, rootCmd as Init));
 
-			config.SetComplexPredicate<If>((x) => true);
-			config.SetComplexPredicate<Python>((x) => true);
+			config.SetComplexPredicate<If>(x => true);
+			config.SetComplexPredicate<Python>(x => true);
+			config.SetComplexPredicate<Init>(x => (x as Init).IsPython);
 
 			return config;
 		}

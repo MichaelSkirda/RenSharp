@@ -9,12 +9,14 @@ namespace RenSharp.Models.Commands
 	internal class Init : Command, IPushable
 	{
 		public int Priority { get; set; }
+		public bool IsPython { get; set; }
 
-		public Init(int priority)
+		public Init(int priority, bool isPython)
 		{
 			if (priority < -999 || priority > 999)
 				throw new ArgumentException("Priority of init can not be higher 999 and lower -999.");
 			Priority = priority;
+			IsPython = isPython;
 		}
 
 		internal override void Execute(RenSharpCore renSharpCore, RenSharpContext context)
@@ -23,6 +25,9 @@ namespace RenSharp.Models.Commands
 			// No push! Init must be ingnored in runtime
 		}
 
-		public void Push(Stack<int> stack, RenSharpContext ctx) => stack.Push(0);
+		public void Push(Stack<int> stack, RenSharpContext ctx)
+		{
+			stack.Push(0);
+		}
 	}
 }

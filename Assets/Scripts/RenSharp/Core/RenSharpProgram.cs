@@ -1,4 +1,5 @@
-﻿using RenSharp.Models;
+﻿using RenSharp.Core.Exceptions;
+using RenSharp.Models;
 using RenSharp.Models.Commands;
 using System;
 using System.Collections;
@@ -50,10 +51,10 @@ namespace RenSharp.Core
             if (labels.Count() > 1)
                 throw new ArgumentException($"There are two labels with name {name}");
 
-            Label label = labels.First();
+            Label label = labels.FirstOrDefault();
 
             if (label == null)
-                throw new NullReferenceException($"Null label was found by name {name}.");
+                throw new LabelNotExists($"Лейбл с именем '{name}' не существует.");
 
             return label;
         }

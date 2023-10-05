@@ -109,29 +109,33 @@ namespace RenSharp.Core
 		}
 		internal static Init ParseInit(string[] words)
 		{
-			if (words.Length != 1 && words.Length != 2)
-				throw new ArgumentException($"Init must have between zero and one argument. '{words.ToWord()}'");
+			if (words.Length < 1 || words.Length > 3)
+				throw new ArgumentException($"Init must have between zero and two argument. '{words.ToWord()}'");
 			if (words[0] != "init")
-				throw new ArgumentException($"Can not parse '{words.ToWord()}' command!");
+				throw new ArgumentException($"Can not parse '{words.ToWord()}' command.");
 
 			int priority = 0;
 			if(words.Length > 1)
 				priority = int.Parse(words[1]);
 
-			return new Init(priority);
+			// Silence!
+			string lastWord = words.Last();
+			if(lastWord == "python" || lastWord == "python:")
+				return new Init(priority, isPython: true);
+			return new Init(priority, isPython: false);
 		}
 
-		internal static Goto ParseGoto(string[] args)
+		internal static Jump ParseGoto(string[] args)
 		{
 			if (args.Length < 2)
 				throw new ArgumentException("Call can not contains less than 2 arguments");
 			if (args[1] == "expression")
-				return new Goto(args.Skip(2).ToWord(), evaluate: true);
+				return new Jump(args.Skip(2).ToWord(), evaluate: true);
 
 			if (args.Length != 2)
 				throw new ArgumentException("Call without expression keyword can contains only 1 argument (label name).");
 
-			return new Goto($"\"{args[1]}\"", evaluate: false);
+			return new Jump($"{args[1]}", evaluate: false);
 		}
 		internal static Call ParseCall(string[] args)
 		{

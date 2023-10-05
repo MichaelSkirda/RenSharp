@@ -9,6 +9,9 @@ using System.Text.RegularExpressions;
 
 namespace RenSharp.Core
 {
+	/// <summary>
+	/// Не применяется на Python код.
+	/// </summary>
 	internal static class SyntaxSugarFormatter
 	{
 		internal static string CharacterSugar(string line)

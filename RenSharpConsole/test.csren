@@ -1,10 +1,12 @@
-init 999:
+init 999 python:
 	# x = sys.GetEnv("APPDATA")
 	# "{x}"
 	# $ print(x)
-
-	python:
-		x = 5
+	x = 5
+	if x == 5:
+		print("foobar")
+	else:
+		print("nothing")
 
 
 label main:
@@ -16,4 +18,4 @@ label main:
 
 label test:
 	"test"
-	jump main;
+	jump main

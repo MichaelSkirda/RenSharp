@@ -5,12 +5,12 @@ using RenSharp.Core;
 
 namespace RenSharp.Models.Commands
 {
-    public class Goto : Command
+    public class Jump : Command
 	{
 		public string Expression { get; set; }
 		public bool Evaluate { get; set; }
 
-		public Goto(string expression, bool evaluate)
+		public Jump(string expression, bool evaluate)
 		{
 			if (string.IsNullOrWhiteSpace(expression))
 				throw new ArgumentNullException("Goto label can not be null or empty");

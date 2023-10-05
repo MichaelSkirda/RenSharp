@@ -11,7 +11,7 @@ namespace RenSharp.Core.ComplexParsers
 	{
 		internal static List<Command> Parse(ReaderContext ctx, Python blockStart)
 		{
-			int minTab = blockStart.Level;
+			 int minTab = blockStart.Level;
 
 			while (ctx.HasNextSourceLine)
 			{

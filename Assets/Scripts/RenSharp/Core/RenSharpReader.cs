@@ -85,7 +85,7 @@ namespace RenSharp.Core
 			Command command = Parsers[keyword](words, Config);
 
 			if (command == null)
-				throw new Exception($"Cannot parse command '{line}'");
+				throw new Exception($"Не возможно прочитать значение команды '{line}'");
 
 			ctx.Line++;
 			command.Line = ctx.Line;
