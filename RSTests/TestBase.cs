@@ -1,21 +1,22 @@
 ﻿using RenSharp.Models;
-using RenSharp.Models.Commands;
 
 namespace RSTests
 {
 	public class TestBase
 	{
-		protected RenSharpCore? RS { get; set; }
+		protected static RenSharpCore? RS { get; set; }
 		internal TestWriter Writer { get; set; }
 		internal List<Message> Messages => Writer.WritedMessage;
 
 		public TestBase()
 		{
+			Writer = new TestWriter();
 		}
 
-		protected void ExecuteUntilExit()
+		protected void ExecuteUntilExit(string path)
 		{
 			Writer = new TestWriter();
+			RS = new RenSharpCore(path);
 			RS.Writer = Writer;
 
 			if (RS == null)

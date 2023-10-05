@@ -29,10 +29,27 @@ namespace RenSharp
 			MethodImports = new List<ImportMethod>();
 			TypeImports = new List<ImportType>();
 
-			List<Type> domainTypes = AppDomain.CurrentDomain
+			var assemblies = AppDomain.CurrentDomain
 				.GetAssemblies()
-				.SelectMany(x => x.GetTypes())
+				.Distinct()
 				.ToList();
+
+			List<Type> domainTypes = new List<Type>();
+
+			foreach(Assembly assembly in assemblies)
+			{
+				try
+				{
+					var types = assembly.GetTypes();
+					domainTypes.AddRange(types);
+				}
+				catch
+				{
+
+				}
+			}
+
+			domainTypes = domainTypes.Distinct().ToList();
 
 			// Get ALL methods with attribute in ALL assemblies from Domain
 			// Except methods that class contains PyImportAttribute
