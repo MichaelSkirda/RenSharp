@@ -26,6 +26,8 @@ namespace RenSharp.Core
 		public RenSharpContext()
 		{
 			PyEvaluator = new PythonEvaluator();
+			var sysVars = SystemVariables.ToList();
+			PyEvaluator.SetVariables(sysVars);
 
 			var mainFrame = new StackFrame();
 			Stack.Push(mainFrame);
@@ -50,6 +52,14 @@ namespace RenSharp.Core
 			_ = Stack.Pop();
 			int line = CurrentFrame.Line;
 			Program.Goto(line + 1);
+		}
+
+		internal bool TryPopState()
+		{
+			if (Stack.Count <= 1)
+				return false;
+			PopState();
+			return true;
 		}
 
 		internal void RewriteStack(Command command)
@@ -109,9 +119,12 @@ namespace RenSharp.Core
 		internal T ExecuteExpression<T>(string expression) => PyEvaluator.Evaluate(expression);
 		internal void ExecutePython(IEnumerable<string> lines)
 		{
-			var keyValues = SystemVariables.ToList();
-			PyEvaluator.SetVariables(keyValues);
 			PyEvaluator.Execute(lines);
+		}
+		internal void SetVariable(string name, object value)
+		{
+			var keyValue = new KeyValuePair<string, object>(name, value);
+			PyEvaluator.SetVariable(keyValue);
 		}
 		#endregion
 	}

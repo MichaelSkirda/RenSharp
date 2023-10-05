@@ -21,14 +21,14 @@ namespace RenSharp.Models.Commands
 			if(string.IsNullOrEmpty(Expression) == false)
 			{
 				string exp = ctx.InterpolateString(Expression);
-				ctx.SystemVariables["_return"] = ctx.ExecuteExpression<object>(exp);
+				ctx.SetVariable("_return", ctx.ExecuteExpression<object>(exp));
 			}
 
 			// Soft return won't pop last element
-			if (IsSoft && ctx.Stack.Count <= 1)
-				return;
-
-			ctx.PopState();
+			if (IsSoft)
+				ctx.TryPopState();
+			else
+				ctx.PopState();
 		}
 	}
 }
