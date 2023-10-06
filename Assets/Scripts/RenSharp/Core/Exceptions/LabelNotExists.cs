@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RenSharp.Core.Exceptions
 {
-	internal class LabelNotExists : RSException
+	public class LabelNotExists : RSException
 	{
 		public LabelNotExists(string message) : base(message) { }
 	}

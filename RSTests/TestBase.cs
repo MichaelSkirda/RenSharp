@@ -19,7 +19,7 @@ namespace RSTests
 
 		protected void ExecuteUntilExit(string path)
 		{
-			RS.LoadProgram(path);
+			RS.LoadProgram(path, false);
 			Writer = new TestWriter();
 			RS.Writer = Writer;
 

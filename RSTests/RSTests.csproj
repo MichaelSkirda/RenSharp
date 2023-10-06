@@ -27,24 +27,34 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="CommandTests\IfTests\py\5_biggerThan_2_initPy.csren">
+    <None Update="CommandTests\IfTests\5_biggerThan_2_initPy.csren">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="CommandTests\IfTests\py\5_biggerThan_2_initPyBlock.csren">
+    <None Update="CommandTests\IfTests\5_biggerThan_2_initPyBlock.csren">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="CommandTests\IfTests\py\5_biggerThan_2_initPyol.csren">
+    <None Update="CommandTests\IfTests\5_biggerThan_2_initPyol.csren">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="CommandTests\IfTests\py\5_biggerThan_2_pyol.csren">
+    <None Update="CommandTests\IfTests\5_biggerThan_2_pyol.csren">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="CommandTests\IfTests\py\5_biggerThan_2_rsset.csren">
+    <None Update="CommandTests\IfTests\5_biggerThan_2_rsset.csren">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="CommandTests\IfTests\py\5_biggerThan_2_rssetinit.csren">
+    <None Update="CommandTests\IfTests\5_biggerThan_2_rssetinit.csren">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="CommandTests\ValidationTests\empty.csren">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="CommandTests\ValidationTests\nostart.csren">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="CommandTests\ValidationTests\" />
   </ItemGroup>
 
 </Project>

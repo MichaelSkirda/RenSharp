@@ -1,17 +1,8 @@
-init 999 python:
-	# x = sys.GetEnv("APPDATA")
-	# "{x}"
-	# $ print(x)
-	x = 5
-	if x == 5:
-		print("foobar")
+init 999:
+	x = 42
+
+label start:
+	if x > 5:
+		"x bigger than 5"
 	else:
-		print("nothing")
-
-
-label start
-	"Hello, \"Sayorineko!\""
-
-label test
-	"test"
-	jump start
+		"x lower than 5"

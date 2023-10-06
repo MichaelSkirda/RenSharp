@@ -1,0 +1,7 @@
+init 999
+	"do nothing"
+	"zero messages"
+
+label main
+	"foobar"
+	"hello"

@@ -32,7 +32,7 @@ namespace RenSharp.Core.Expressions
 		internal dynamic Evaluate(string code)
 		{
 			code = $"_evaluation_ = ({code})";
-			Engine.Execute(code, Scope);
+            Engine.Execute(code, Scope);
 			return Scope.GetVariable("_evaluation_");
 		}
 
