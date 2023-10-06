@@ -3,18 +3,20 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using RenSharp.Core.Exceptions;
+using RenSharp.Core.Read;
 using RenSharp.Interfaces;
 using RenSharp.Models;
 using RenSharp.Models.Commands;
 
 namespace RenSharp.Core
 {
-    public class RenSharpCore
-    {
-        private RenSharpProgram Program => Context.Program;
-        public Configuration Configuration { get; set; }
-        public IWriter Writer { get; set; }
-        private RenSharpContext Context { get; set; }
+	public class RenSharpCore
+	{
+		private RenSharpProgram Program => Context.Program;
+		public Configuration Configuration { get; set; }
+		public IWriter Writer { get; set; }
+		private RenSharpContext Context { get; set; }
+		private RenSharpReader Reader { get; set; }
 		private bool HasStarted { get; set; } = false;
 
         public RenSharpCore(string path, Configuration config = null) => SetupProgram(File.ReadAllLines(path), config);
@@ -36,7 +38,9 @@ namespace RenSharp.Core
 
             Writer = config.Writer;
 			Configuration = config;
+			RecreateReader();
 		}
+		public void RecreateReader() => Reader = new RenSharpReader(Configuration);
 
 		public void LoadProgram(string path, bool saveScope = false)
 			=> LoadProgram(File.ReadAllLines(path), saveScope);
@@ -45,8 +49,7 @@ namespace RenSharp.Core
 			if (saveScope == false)
 				Context.RecreateScope();
 
-			RenSharpReader reader = new RenSharpReader(Configuration);
-			var program = reader.ParseCode(code);
+			var program = Reader.ParseCode(code);
 
 			Context.Program = new RenSharpProgram(program);
 			HasStarted = false;

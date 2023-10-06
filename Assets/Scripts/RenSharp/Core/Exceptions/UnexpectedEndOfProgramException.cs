@@ -2,7 +2,7 @@
 
 namespace RenSharp.Core.Exceptions
 {
-	internal class UnexpectedEndOfProgramException : Exception
+	internal class UnexpectedEndOfProgramException : RSException
 	{
 		public UnexpectedEndOfProgramException(string message) : base(message) { }
 	}

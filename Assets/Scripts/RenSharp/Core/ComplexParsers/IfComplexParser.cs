@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using RenSharp.Core;
+using RenSharp.Core.Read;
 using RenSharp.Models;
 using RenSharp.Models.Commands;
 

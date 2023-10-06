@@ -1,10 +1,11 @@
-﻿using RenSharp.Models;
+﻿using RenSharp.Core.Read;
+using RenSharp.Models;
 using RenSharp.Models.Commands;
 using System.Collections.Generic;
 
 namespace RenSharp.Core.ComplexParsers
 {
-	internal class InitComplexParser
+    internal class InitComplexParser
 	{
 		public static List<Command> Parse(ReaderContext ctx, Init initStart)
 		{

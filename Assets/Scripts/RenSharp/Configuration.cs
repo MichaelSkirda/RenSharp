@@ -1,4 +1,4 @@
-﻿using RenSharp.Core;
+﻿using RenSharp.Core.Read;
 using RenSharp.Interfaces;
 using RenSharp.Models;
 using RenSharp.Models.Commands;
@@ -9,7 +9,7 @@ using System.Text;
 
 namespace RenSharp
 {
-	public class Configuration
+    public class Configuration
 	{
 		private List<Type> SkipCommands = new List<Type>();
 		private Dictionary<string, string> DefaultAttributes = new Dictionary<string, string>();
@@ -33,10 +33,9 @@ namespace RenSharp
 		public bool CanPush(Command command) => AllowedToPushStack.Contains(command.GetType());
 		public void SetCommand(string command, Func<string[], Configuration, Command> Parser)
 			=> CommandParsers[command] = Parser;
+		public void DelCommand(string key) => CommandParsers.Remove(key);
 		public void SetDefault(string key, string value) => DefaultAttributes[key] = value;
-		public string GetDefaultValue(string attributeName) => DefaultAttributes[attributeName];
-		public string GetDefaultKeyValueString(string attributeName)
-			=> $"{attributeName}={DefaultAttributes[attributeName]}";
+		
 		public bool IsComplex(Command command)
 			=> IsComplexPredicates.ContainsKey(command.GetType()) 
 			&& IsComplexPredicates[command.GetType()].Any(x => x(command));
@@ -81,6 +80,10 @@ namespace RenSharp
 			Type type = command.GetType();
 			return SkipCommands.Contains(type);
 		}
+
+		public string GetDefaultValue(string attributeName) => DefaultAttributes[attributeName];
+		public string GetDefaultKeyValueString(string attributeName)
+			=> $"{attributeName}={DefaultAttributes[attributeName]}";
 
 		public IWriter Writer { get; set; }
 	}

@@ -2,63 +2,64 @@
 using RenSharp.Models.Commands;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 
-namespace RenSharp.Core
+namespace RenSharp.Core.Read
 {
     public class RenSharpReader
     {
         private Dictionary<string, Func<string[], Configuration, Command>> Parsers { get; set; }
             = new Dictionary<string, Func<string[], Configuration, Command>>();
-
-
+        
+        private RenSharpValidator Validator { get; set; }
         private Configuration Config { get; set; }
+
         public RenSharpReader(Configuration config)
         {
             Config = config;
             Parsers = Config.CommandParsers;
+            Validator = new RenSharpValidator(Config);
         }
 
         internal List<Command> ParseCode(IEnumerable<string> codeLines)
         {
-			ReaderContext ctx = new ReaderContext();
+            ReaderContext ctx = new ReaderContext();
             codeLines = codeLines.Append("exit");
 
             ctx.ParseFunc = ParseCommands;
             ctx.ParseSingleFunc = ParseCommand;
             ctx.SourceCode = codeLines.ToList();
-			ctx.SourceCode = RemoveComments(ctx.SourceCode);
+            ctx.SourceCode = RemoveComments(ctx.SourceCode);
             // Обязательно. Когда complex parser читает он не проверяет есть ли следующая строчка
             RemoveNullOrEmptyFromEnd(ctx.SourceCode);
 
-            while(ctx.HasNextSourceLine)
+            while (ctx.HasNextSourceLine)
             {
                 try
                 {
                     List<Command> parsed = ctx.ParseCommands();
-                    foreach(Command command in parsed)
+                    foreach (Command command in parsed)
                     {
-						Validate(command, ctx.Commands.LastOrDefault());
-						ctx.Commands.Add(command);
-					}
-				}
-				catch (Exception ex)
+                        Validator.Validate(command, ctx.Commands.LastOrDefault());
+                        ctx.Commands.Add(command);
+                    }
+                }
+                catch (Exception ex)
                 {
                     throw new Exception($"at line {ctx.SourceLine}. Commans is '{ctx.LineText}'", ex);
                 }
             }
 
+            Validator.Validate(ctx.Commands);
             return ctx.Commands;
         }
 
-		internal List<Command> ParseCommands(ReaderContext ctx)
+        internal List<Command> ParseCommands(ReaderContext ctx)
         {
-			Command command = ParseCommand(ctx);
-			List<Command> parsed = new List<Command>() { command };
+            Command command = ParseCommand(ctx);
+            List<Command> parsed = new List<Command>() { command };
 
-			if (Config.IsComplex(command))
+            if (Config.IsComplex(command))
                 parsed.AddRange(Config.ParseComplex(ctx, command));
 
             return parsed;
@@ -67,33 +68,33 @@ namespace RenSharp.Core
         private Command ParseCommand(ReaderContext ctx)
         {
 
-			string line = "";
-			while (string.IsNullOrWhiteSpace(line))
-			{
-				ctx.SourceLine++;
-				line = ctx.LineText;
-			}
+            string line = "";
+            while (string.IsNullOrWhiteSpace(line))
+            {
+                ctx.SourceLine++;
+                line = ctx.LineText;
+            }
 
-			int level = GetCommandLevel(line);
+            int level = GetCommandLevel(line);
 
-			line = line.Trim();
-			line = ApplySyntaxSugar(line, ctx.Commands);
+            line = line.Trim();
+            line = ApplySyntaxSugar(line, ctx.Commands);
 
-			string[] words = line.Split(' ');
-			string keyword = words.FirstOrDefault();
+            string[] words = line.Split(' ');
+            string keyword = words.FirstOrDefault();
 
-			Command command = Parsers[keyword](words, Config);
+            Command command = Parsers[keyword](words, Config);
 
-			if (command == null)
-				throw new Exception($"Не возможно прочитать значение команды '{line}'");
+            if (command == null)
+                throw new Exception($"Не возможно прочитать значение команды '{line}'");
 
-			ctx.Line++;
-			command.Line = ctx.Line;
+            ctx.Line++;
+            command.Line = ctx.Line;
             command.SourceLine = ctx.SourceLine;
-			command.Level = level;
+            command.Level = level;
 
-			return command;
-		}
+            return command;
+        }
 
         private string ApplySyntaxSugar(string line, List<Command> commands)
         {
@@ -105,35 +106,9 @@ namespace RenSharp.Core
             line = SyntaxSugarFormatter.ShortenMathSugar(line);
 
             return line;
-		}
-
-		private void Validate(Command command, Command previousCmd)
-        {
-            if (command.Level <= 0)
-                throw new Exception($"Command '{command.GetType()}' not valid. Tabulation can not be less than zero.");
-
-			if (previousCmd == null)
-				return;
-
-			if (command.Level >= previousCmd.Level + 2)
-				throw new Exception($"Command '{command.GetType()} not valid. Tabulation can not be higher by two then previous.");
-
-            if(Config.CanPush(previousCmd) == false)
-            {
-                if (previousCmd.Level < command.Level)
-                    throw new Exception($"Command '{previousCmd.GetType()}' can not push tabulation.");
-            }
-
-			if(Config.IsMustPush(previousCmd))
-            {
-                if (previousCmd.Level >= command.Level)
-                    throw new Exception($"Command '{previousCmd.GetType()}' must use tab on next line.");
-            }
-
-            if (command is Init && command.Level != 1)
-                throw new ArgumentException($"Команда 'Init' должна быть корневой и не иметь отступов.");
-			
         }
+
+        
 
         internal static int GetCommandLevel(string line)
         {
@@ -142,9 +117,9 @@ namespace RenSharp.Core
             {
                 if (chr != '\t')
                     break;
-				level++;
-			}
-			return level;
+                level++;
+            }
+            return level;
         }
         internal static List<string> RemoveComments(List<string> code)
         {
@@ -153,12 +128,12 @@ namespace RenSharp.Core
                 .ToList();
         }
 
-		private void RemoveNullOrEmptyFromEnd(List<string> sourceCode)
-		{
-            while(string.IsNullOrWhiteSpace(sourceCode.Last()))
+        private void RemoveNullOrEmptyFromEnd(List<string> sourceCode)
+        {
+            while (string.IsNullOrWhiteSpace(sourceCode.Last()))
             {
                 sourceCode.RemoveAt(sourceCode.Count - 1);
             }
-		}
-	}
+        }
+    }
 }
