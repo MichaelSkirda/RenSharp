@@ -18,15 +18,15 @@ namespace RenSharp.Models.Commands
 			Evaluate = evaluate;
 		}
 
-		internal override void Execute(RenSharpCore renSharpCore, RenSharpContext ctx)
+		internal override void Execute(RenSharpCore core)
 		{
-			ctx.PushState();
+			core.Context.PushState();
 			string labelName = Expression;
 
 			if (Evaluate)
-				labelName = ctx.Evaluate<string>(Expression);
+				labelName = core.Context.Evaluate<string>(Expression);
 
-			renSharpCore.Goto(labelName);
+			core.Goto(labelName);
 		}
 	}
 }

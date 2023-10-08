@@ -12,7 +12,7 @@ namespace Assets.Scripts.RenSharpClient.Commands
 			Name = name;
 		}
 
-		internal override void Execute(RenSharpCore core, RenSharpContext ctx)
+		internal override void Execute(RenSharpCore core)
 		{
 			throw new System.NotImplementedException();
 		}

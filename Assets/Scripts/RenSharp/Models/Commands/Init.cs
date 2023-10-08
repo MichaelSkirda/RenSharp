@@ -19,7 +19,7 @@ namespace RenSharp.Models.Commands
 			IsPython = isPython;
 		}
 
-		internal override void Execute(RenSharpCore renSharpCore, RenSharpContext context)
+		internal override void Execute(RenSharpCore core)
 		{
 			// Do nothing
 			// No push! Init must be ingnored in runtime

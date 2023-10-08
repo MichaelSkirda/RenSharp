@@ -11,7 +11,7 @@ namespace RenSharp.Models.Commands
 	/// </summary>
 	public class Exit : Command
 	{
-		internal override void Execute(RenSharpCore core, RenSharpContext ctx)
+		internal override void Execute(RenSharpCore core)
 		{
 			
 		}

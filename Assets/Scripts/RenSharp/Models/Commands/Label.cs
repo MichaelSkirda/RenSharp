@@ -15,8 +15,9 @@ namespace RenSharp.Models.Commands
 			Name = name;
 		}
 
-		internal override void Execute(RenSharpCore renSharpCore, RenSharpContext ctx)
+		internal override void Execute(RenSharpCore core)
 		{
+			var ctx = core.Context;
 			Push(ctx.LevelStack, ctx);
 		}
 		public void Push(Stack<int> stack, RenSharpContext ctx) => stack.Push(0);

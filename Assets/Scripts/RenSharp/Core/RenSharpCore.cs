@@ -112,7 +112,7 @@ namespace RenSharp.Core
                     continue;
                 }
 
-                command.Execute(this, Context);
+                command.Execute(this);
 			} while (Configuration.IsSkip(command) || skip);
 
             return command;
@@ -181,7 +181,7 @@ namespace RenSharp.Core
 					if (command.Level <= 1)
 						break;
 
-					command.Execute(this, Context);
+					command.Execute(this);
 				}
 			}
 		}
