@@ -1,22 +1,8 @@
 
-init -999 python
-	print("foobar" + str(x))
-
-
 init 999:
 	python:
-		x = 12
-		x *= 3
-		#unity.Print("hello")
-
-init -999 python
-	print("foobar" + str(x))
-	x = char("Elizabeth")
-
+		x = rs.GetEnv("APPDATA")
 
 label start
 	"Test {x}"
 	jump start
-	label
-	if x > 5:
-		x "123123"

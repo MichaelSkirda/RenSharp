@@ -712,6 +712,7 @@ GameObject:
   - component: {fileID: 1179337589}
   - component: {fileID: 1179337588}
   - component: {fileID: 1179337592}
+  - component: {fileID: 1179337593}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -815,6 +816,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RenSharpCode: {fileID: 4900000, guid: 93a0f27bd50687d48b98fe2d86e47928, type: 3}
   Dialog: {fileID: 1661186931}
+--- !u!114 &1179337593
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1179337587}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3564c3c553ecb4fdaafeedd67d93f7e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DataItems:
+  - Name: Elizabeth
+    sprite: {fileID: 21300000, guid: 52d1cd9a9086baf43af998a1416ea41b, type: 3}
 --- !u!1 &1661186929
 GameObject:
   m_ObjectHideFlags: 0

@@ -25,7 +25,7 @@ namespace RenSharp.Core.Expressions
 		internal void Execute(string code)
 			=> Engine.Execute(code, Scope);
 
-		internal dynamic Evaluate(string code)
+		internal object Evaluate(string code)
 		{
 			code = $"_evaluation_ = ({code})";
             Engine.Execute(code, Scope);
@@ -40,10 +40,12 @@ namespace RenSharp.Core.Expressions
 			}
 		}
 
-		internal void SetVariable(string name, dynamic value)
-			=> Scope.SetVariable(name, value);
+		internal void SetVariable(string name, object value)
+		{
+			Scope.SetVariable(name, value: value);
+		}
 
-		internal dynamic GetVariable(string key)
+		internal object GetVariable(string key)
 			=> Scope.GetVariable(key);
 
 		internal T GetVariable<T>(string key)

@@ -27,7 +27,7 @@ namespace RenSharp.Core
 		private void SetupProgram(IEnumerable<string> code, Configuration config)
 		{
 			SetupProgram(config);
-			LoadProgram(code);
+			LoadProgram(code, saveScope: true);
 		}
 		private void SetupProgram(Configuration config)
         {
@@ -133,12 +133,12 @@ namespace RenSharp.Core
             return character.Attributes;
         }
 
-		public dynamic GetVariable(string name)
+		public object GetVariable(string name)
 			=> Context.GetVariable(name);
 		public T GetVariable<T>(string name)
 			=> Context.GetVariable<T>(name);
 
-		public void SetVariable(string name, dynamic value)
+		public void SetVariable(string name, object value)
 			=> Context.SetVariable(name, value);
 
 		private void ExecuteInits()

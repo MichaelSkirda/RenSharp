@@ -21,6 +21,11 @@ namespace RenSharp.Core.Expressions
 			InitPython();
 		}
 
+		internal void RecreateScope()
+		{
+
+		}
+
 		private void InitPython()
 		{
 			ImportSystemTypes();

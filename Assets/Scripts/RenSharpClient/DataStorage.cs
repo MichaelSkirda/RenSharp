@@ -1,10 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class DataStorage : MonoBehaviour
+namespace Assets.Scripts.RenSharpClient
 {
-    public (string, AudioClip) Data;
-
-    //public T Get<T>(string key) => (T)Data[key];
+	public class DataStorage : MonoBehaviour
+	{
+		public DataItem[] DataItems;
+	}
 }

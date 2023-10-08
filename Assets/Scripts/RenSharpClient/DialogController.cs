@@ -1,3 +1,4 @@
+using RenSharp.Models;
 using RenSharp.Models.Commands;
 using System.Collections;
 using TMPro;
@@ -9,7 +10,7 @@ public class DialogController : MonoBehaviour
     public TextMeshProUGUI TextField;
 	public TextMeshProUGUI NameField;
 
-	private Message Message { get; set; }
+	private MessageResult Message { get; set; }
     private string DisplayText { get; set; }
 	private string Text { get; set; }
 
@@ -63,7 +64,7 @@ public class DialogController : MonoBehaviour
 		TryStopCoroutine();
 		DisplayText = text;
 	}
-	public void SetMessage(Message message)
+	public void SetMessage(MessageResult message)
     {
         Message = message;
 	}
@@ -80,13 +81,13 @@ public class DialogController : MonoBehaviour
         StartCoroutine(Coroutine);
 	}
 
-	public void DrawText(Message message)
+	public void DrawText(MessageResult message)
 	{
 		Message = message;
 		DrawText(clear: true);
 	}
 
-	public void AppendText(Message message)
+	public void AppendText(MessageResult message)
 	{
 		Message = message;
 		DrawText(clear: false);

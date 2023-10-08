@@ -1,9 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
 
-public class DataItem : MonoBehaviour
+namespace Assets.Scripts.RenSharpClient
 {
-    public string Key;
-    public Sprite Value;
+	[Serializable]
+	public struct DataItem
+	{
+		public string Name;
+		public Sprite sprite;
+	}
 }

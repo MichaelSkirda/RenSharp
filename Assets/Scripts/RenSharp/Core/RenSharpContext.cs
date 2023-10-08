@@ -109,14 +109,14 @@ namespace RenSharp.Core
 
 			return line;
 		}
-		public T Evaluate<T>(string expression) => PyEvaluator.Evaluate(expression);
+		public T Evaluate<T>(string expression) => (T)PyEvaluator.Evaluate(expression);
 		public void ExecutePython(IEnumerable<string> lines)
 			=> PyEvaluator.Execute(lines);
 
 		public void ExecutePython(string line)
 			=> PyEvaluator.Execute(line);
 
-		internal void SetVariable(string name, dynamic value)
+		internal void SetVariable(string name, object value)
 			=> PyEvaluator.SetVariable(name, value);
 		
 		internal dynamic GetVariable(string name)

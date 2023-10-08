@@ -1,7 +1,7 @@
 ﻿using RenSharp.Interfaces;
-using RenSharp;
+using RenSharp.Models;
 using System.Collections.Generic;
-using RenSharp.Models.Commands;
+using RenSharp.Models.Commands;	
 
 namespace Assets.Scripts
 {
@@ -14,7 +14,7 @@ namespace Assets.Scripts
 			Dialog = dialog;
 		}
 
-		public void Write(Message message)
+		public void Write(MessageResult message)
 		{
 			string name = message.Character;
 
