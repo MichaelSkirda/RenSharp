@@ -1,8 +1,6 @@
 ﻿using RenSharp.Core;
 using RenSharp.Interfaces;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace RenSharp.Models.Commands
 {
@@ -23,14 +21,20 @@ namespace RenSharp.Models.Commands
 
 		internal override void Execute(RenSharpCore core, RenSharpContext ctx)
 		{
-			Speech = ctx.InterpolateString(RawLine);
-
 			Attributes attributes = core.GetCharacterAttributes(Character);
-			Attributes.AddAttributes(attributes);
+			attributes.AddAttributes(Attributes);
+
+			MessageResult result = new MessageResult()
+			{
+				RawLine = RawLine,
+				Speech = ctx.InterpolateString(RawLine),
+				Character = Character,
+				Attributes = attributes
+			};
 
 			IWriter writer = core.Writer;
 			if (writer != null)
-				writer.Write(this);
+				writer.Write(result);
 		}
 	}
 }

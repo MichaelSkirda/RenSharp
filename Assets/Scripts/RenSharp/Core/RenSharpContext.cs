@@ -98,7 +98,7 @@ namespace RenSharp.Core
 
 			foreach(string expression in expressions)
 			{
-				string value = ExecuteExpression<object>(expression).ToString();
+				string value = Evaluate<object>(expression).ToString();
 
 				line = line.Replace("{" + expression + "}", value);
 			}
@@ -109,17 +109,21 @@ namespace RenSharp.Core
 
 			return line;
 		}
-		internal T ExecuteExpression<T>(string expression) => PyEvaluator.Evaluate(expression);
-		internal void ExecutePython(IEnumerable<string> lines)
+		public T Evaluate<T>(string expression) => PyEvaluator.Evaluate(expression);
+		public void ExecutePython(IEnumerable<string> lines)
 			=> PyEvaluator.Execute(lines);
+
+		public void ExecutePython(string line)
+			=> PyEvaluator.Execute(line);
+
+		internal void SetVariable(string name, dynamic value)
+			=> PyEvaluator.SetVariable(name, value);
 		
-		internal void SetVariable(string name, object value)
-		{
-			var keyValue = new KeyValuePair<string, object>(name, value);
-			PyEvaluator.SetVariable(keyValue);
-		}
-		internal void GetVariable(string name)
+		internal dynamic GetVariable(string name)
 			=> PyEvaluator.GetVariable(name);
+
+		internal T GetVariable<T>(string name)
+			=> PyEvaluator.GetVariable<T>(name);
 		#endregion
 	}
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using RenSharp.Core.Exceptions;
+using RenSharp.Core.Expressions;
 using RenSharp.Core.Read;
 using RenSharp.Interfaces;
 using RenSharp.Models;
@@ -12,10 +13,10 @@ namespace RenSharp.Core
 {
 	public class RenSharpCore
 	{
-		private RenSharpProgram Program => Context.Program;
 		public Configuration Configuration { get; set; }
 		public IWriter Writer { get; set; }
-		private RenSharpContext Context { get; set; }
+		public RenSharpContext Context { get; set; }
+		private RenSharpProgram Program => Context.Program;
 		private RenSharpReader Reader { get; set; }
 		private bool HasStarted { get; set; } = false;
 
@@ -132,7 +133,15 @@ namespace RenSharp.Core
             return character.Attributes;
         }
 
-        private void ExecuteInits()
+		public dynamic GetVariable(string name)
+			=> Context.GetVariable(name);
+		public T GetVariable<T>(string name)
+			=> Context.GetVariable<T>(name);
+
+		public void SetVariable(string name, dynamic value)
+			=> Context.SetVariable(name, value);
+
+		private void ExecuteInits()
         {
 			List<Init> inits = Context.Program.Code
 				.OfType<Init>()

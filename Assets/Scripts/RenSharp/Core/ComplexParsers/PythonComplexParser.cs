@@ -18,6 +18,9 @@ namespace RenSharp.Core.ComplexParsers
 			{
 				ctx.SourceLine++;
 				string line = ctx.LineText;
+				if (string.IsNullOrEmpty(line))
+					continue;
+
 				int level = RenSharpReader.GetCommandLevel(line);
 
 				if (IsValid(level, blockStart) == false)

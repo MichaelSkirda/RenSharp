@@ -1,18 +1,13 @@
 ﻿using RenSharp.Interfaces;
-using RenSharp.Models.Commands;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using RenSharp.Models;
 
 namespace RSTests
 {
 	internal class TestWriter : IWriter
 	{
-		internal List<Message> WritedMessage { get; set; } = new List<Message>();
+		internal List<MessageResult> WritedMessage { get; set; } = new List<MessageResult>();
 
-		public void Write(Message message)
+		public void Write(MessageResult message)
 		{
 			WritedMessage.Add(message);
 		}

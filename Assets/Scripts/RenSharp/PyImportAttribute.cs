@@ -13,6 +13,7 @@ namespace RenSharp
 	public class PyImportAttribute : Attribute
 	{
 		public static List<ImportMethod> MethodImports { get; private set; } = new List<ImportMethod>();
+		public static List<ImportType> StaticTypeImports { get; private set; } = new List<ImportType>();
 		public static List<ImportType> TypeImports { get; private set; } = new List<ImportType>();
 
 
@@ -27,7 +28,7 @@ namespace RenSharp
 		{
 			Type attr = typeof(PyImportAttribute);
 			MethodImports = new List<ImportMethod>();
-			TypeImports = new List<ImportType>();
+			StaticTypeImports = new List<ImportType>();
 
 			var assemblies = AppDomain.CurrentDomain
 				.GetAssemblies()
@@ -43,10 +44,7 @@ namespace RenSharp
 					var types = assembly.GetTypes();
 					domainTypes.AddRange(types);
 				}
-				catch
-				{
-
-				}
+				catch { }
 			}
 
 			domainTypes = domainTypes.Distinct().ToList();
@@ -54,21 +52,41 @@ namespace RenSharp
 			// Get ALL methods with attribute in ALL assemblies from Domain
 			// Except methods that class contains PyImportAttribute
 			List<MethodInfo> importMethods = domainTypes
+				.Where(x => x.IsDefined(attr) == false)
 				.SelectMany(x => x.GetMethods(BindingFlags.Static | BindingFlags.Public))
-				.Where(x => x.IsDefined(attr) && x.DeclaringType.IsDefined(attr) == false)
-				.ToList();
-
-			// Get ALL types with attribute in ALL assemblies from Domain
-			List<Type> importTypes = domainTypes
 				.Where(x => x.IsDefined(attr))
 				.ToList();
 
 
-			foreach(MethodInfo method in importMethods)
+			// Get ALL types with attribute in ALL assemblies from Domain
+			List<Type> attributedTypes = domainTypes
+				.Where(x => x.IsDefined(attr))
+				.ToList();
+
+			// Get ALL static types with attribute
+			// Only static types can be both abstract and sealed
+			List<Type> importStaticTypes = attributedTypes
+				.Where(x => x.IsAbstract && x.IsSealed)
+				.ToList();
+
+			List<Type> importTypes = attributedTypes
+				.Where(x => !(x.IsAbstract && x.IsSealed))
+				.ToList();
+
+
+
+			foreach (MethodInfo method in importMethods)
 			{
 				PyImportAttribute attribute = GetPyImportAttribute(method);
 				var import = new ImportMethod(method, attribute.Name);
 				MethodImports.Add(import);
+			}
+
+			foreach(Type type in importStaticTypes)
+			{
+				PyImportAttribute attribute = GetPyImportAttribute(type);
+				var import = new ImportType(type, attribute.Name);
+				StaticTypeImports.Add(import);
 			}
 
 			foreach(Type type in importTypes)

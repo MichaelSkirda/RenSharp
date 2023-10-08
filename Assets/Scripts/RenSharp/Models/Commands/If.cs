@@ -22,7 +22,7 @@ namespace RenSharp.Models.Commands
 
 		internal override void Execute(RenSharpCore renSharpCore, RenSharpContext ctx)
 		{
-			bool result = ctx.ExecuteExpression<bool>(Expression);
+			bool result = ctx.Evaluate<bool>(Expression);
 			if (result)
 				Push(ctx.LevelStack, ctx);
 		}

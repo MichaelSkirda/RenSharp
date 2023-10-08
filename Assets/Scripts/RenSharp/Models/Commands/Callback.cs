@@ -16,7 +16,7 @@ namespace RenSharp.Models.Commands
 
 		internal override void Execute(RenSharpCore renSharpCore, RenSharpContext context)
 		{
-			_ = context.ExecuteExpression<object>(Expression);
+			_ = context.Evaluate<object>(Expression);
 		}
 	}
 }

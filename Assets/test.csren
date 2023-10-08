@@ -11,8 +11,12 @@ init 999:
 
 init -999 python
 	print("foobar" + str(x))
+	x = char("Elizabeth")
 
 
 label start
 	"Test {x}"
 	jump start
+	label
+	if x > 5:
+		x "123123"

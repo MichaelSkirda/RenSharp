@@ -1,4 +1,7 @@
-﻿using RenSharp.Models;
+﻿using RenSharp;
+using RenSharp.Models;
+using RSTests.RSAssert;
+using System.Reflection;
 
 namespace RSTests
 {
@@ -6,7 +9,7 @@ namespace RSTests
 	{
 		protected static RenSharpCore RS { get; set; }
 		internal TestWriter Writer { get; set; }
-		internal List<Message> Messages => Writer.WritedMessage;
+		internal List<MessageResult> Messages => Writer.WritedMessage;
 
 		static TestBase()
 		{
@@ -20,8 +23,14 @@ namespace RSTests
 		protected void ExecuteUntilExit(string path)
 		{
 			RS.LoadProgram(path, false);
+			string? assembly = Assembly.GetExecutingAssembly().FullName;
+			if (assembly == null)
+				throw new NullReferenceException("Can not find currect assembly for tests.");
 			Writer = new TestWriter();
+			RenSharpAssert assert = CreateAssert();
+
 			RS.Writer = Writer;
+			RS.SetVariable("Assert", assert);
 
 			if (RS == null)
 				throw new ArgumentException("RenSharpCore is null!");
@@ -29,10 +38,22 @@ namespace RSTests
 			Command? command = null;
 			while((command is Exit) == false)
 			{
-				command = RS.ReadNext();
+				try
+				{
+					command = RS.ReadNext();
+				}
+				catch(Exception ex)
+				{
+					throw;
+				}
 			}
 		}
 
-
+		private RenSharpAssert CreateAssert()
+		{
+			var messagesAssert = new MessagesAssert(Messages);
+			var assert = new RenSharpAssert(messagesAssert);
+			return assert;
+		}
 	}
 }

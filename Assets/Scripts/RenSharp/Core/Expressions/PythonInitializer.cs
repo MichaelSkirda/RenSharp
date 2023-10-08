@@ -1,15 +1,11 @@
 ﻿using IronPython.Hosting;
 using IronPython.Runtime;
 using Microsoft.Scripting.Hosting;
-using Microsoft.Scripting.Runtime;
 using RenSharp.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Security.AccessControl;
-using System.Text;
-using static IronPython.Modules._ast;
 
 namespace RenSharp.Core.Expressions
 {
@@ -31,10 +27,20 @@ namespace RenSharp.Core.Expressions
 			AddClrReferences();
 
 			List<ImportMethod> methods = PyImportAttribute.MethodImports;
+			List<ImportType> staticTypes = PyImportAttribute.StaticTypeImports;
 			List<ImportType> types = PyImportAttribute.TypeImports;
 
 			ImportMethods(methods);
+			ImportStaticTypes(staticTypes);
 			ImportTypes(types);
+		}
+
+		private void ImportTypes(List<ImportType> types)
+		{
+			string importTypes = types
+				.Select(x => $"import {x.Type.Namespace}.{x.Type.Name} as {x.Name}")
+				.ToPythonCode();
+			Engine.Execute(importTypes, Scope);
 		}
 
 		private void ImportMethods(IEnumerable<ImportMethod> methods)
@@ -48,7 +54,7 @@ namespace RenSharp.Core.Expressions
 			Engine.Execute(importMethods, Scope);
 		}
 
-		private void ImportTypes(IEnumerable<ImportType> types)
+		private void ImportStaticTypes(IEnumerable<ImportType> types)
 		{
 			foreach (ImportType import in types)
 			{
@@ -97,6 +103,7 @@ namespace RenSharp.Core.Expressions
 			// Find assemblies of it's types
 			List<string> assemblies = PyImportAttribute.MethodImports
 				.Select(m => m.MethodInfo.DeclaringType)
+				.Union(PyImportAttribute.StaticTypeImports.Select(x => x.Type))
 				.Union(PyImportAttribute.TypeImports.Select(x => x.Type))
 				.Select(x => x.Assembly.FullName)
 				.Distinct()

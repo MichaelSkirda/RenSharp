@@ -43,18 +43,61 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="CommandTests\IfTests\5_biggerThan_2_rssetinit.csren">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="CommandTests\IfTests\py\5_biggerThan_2_initPy.csren">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="CommandTests\IfTests\py\5_biggerThan_2_initPyBlock.csren">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="CommandTests\IfTests\py\5_biggerThan_2_initPyol.csren">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="CommandTests\IfTests\py\5_biggerThan_2_pyol.csren">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="CommandTests\IfTests\py\5_biggerThan_2_rsset.csren">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="CommandTests\IfTests\py\5_biggerThan_2_rssetinit.csren">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="CommandTests\MathTests\5_plus_3.csren">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="CommandTests\MathTests\brackets_test.csren">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="CommandTests\MathTests\order_test.csren">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="CommandTests\MathTests\repeat_5.csren">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="CommandTests\RepeatTests\repeat_5.csren">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="CommandTests\RepeatTests\repeat_5_byvar.csren">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="CommandTests\RepeatTests\repeat_5_byvar_init.csren">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="CommandTests\ValidationTests\empty.csren">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="CommandTests\ValidationTests\nostart.csren">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="CommandTests\WhileTests\while_10times.csren">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="CommandTests\ValidationTests\" />
+    <Folder Include="CommandTests\RepeatTests\" />
+    <Folder Include="CommandTests\WhileTests\" />
   </ItemGroup>
 
 </Project>

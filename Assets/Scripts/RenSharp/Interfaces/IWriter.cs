@@ -1,12 +1,9 @@
-﻿using RenSharp.Models.Commands;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using RenSharp.Models;
 
 namespace RenSharp.Interfaces
 {
 	public interface IWriter
 	{
-		void Write(Message message);
+		void Write(MessageResult message);
 	}
 }

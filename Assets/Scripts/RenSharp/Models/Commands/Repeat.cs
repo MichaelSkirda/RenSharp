@@ -20,7 +20,7 @@ namespace RenSharp.Models.Commands
 		internal override void Execute(RenSharpCore renSharpCore, RenSharpContext ctx)
 		{
 			if(Times == null)
-				Times = ctx.ExecuteExpression<int>(Expression);
+				Times = ctx.Evaluate<int>(Expression);
 
 			if (Repeated < Times.Value)
 			{

@@ -1,3 +1,5 @@
+using RenSharp.Models;
+
 namespace RSTests.CommandTests
 {
     public class IfTest : TestBase
@@ -14,7 +16,7 @@ namespace RSTests.CommandTests
         public void Five_BiggerThan_Two(string path)
         {
             ExecuteUntilExit(path);
-            Message message = Messages.First();
+            MessageResult message = Messages.First();
 
             Assert.Single(Messages);
             Assert.Equal("nobody", message.Character);

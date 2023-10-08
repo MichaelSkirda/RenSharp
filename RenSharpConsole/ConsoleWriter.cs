@@ -1,16 +1,11 @@
 ﻿using RenSharp.Interfaces;
-using RenSharp.Models.Commands;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using RenSharp.Models;
 
 namespace RenSharpConsole
 {
 	internal class ConsoleWriter : IWriter
 	{
-		public void Write(Message message)
+		public void Write(MessageResult message)
 		{
 			string speaker = message.Attributes.GetSpeaker();
 			string speech = message.Speech;

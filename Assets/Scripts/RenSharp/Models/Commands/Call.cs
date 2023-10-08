@@ -24,7 +24,7 @@ namespace RenSharp.Models.Commands
 			string labelName = Expression;
 
 			if (Evaluate)
-				labelName = ctx.ExecuteExpression<string>(Expression);
+				labelName = ctx.Evaluate<string>(Expression);
 
 			renSharpCore.Goto(labelName);
 		}

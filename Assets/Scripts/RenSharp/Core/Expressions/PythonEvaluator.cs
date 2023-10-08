@@ -1,12 +1,5 @@
-﻿using IronPython.Hosting;
-using Microsoft.Scripting.Hosting;
-using Microsoft.Scripting.Runtime;
-using RenSharp.Models;
-using System;
+﻿using Microsoft.Scripting.Hosting;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
 
 namespace RenSharp.Core.Expressions
 {
@@ -26,8 +19,11 @@ namespace RenSharp.Core.Expressions
 		internal void Execute(IEnumerable<string> lines)
 		{
 			string code = lines.ToPythonCode();
-			Engine.Execute(code, Scope);
+			Execute(code);
 		}
+
+		internal void Execute(string code)
+			=> Engine.Execute(code, Scope);
 
 		internal dynamic Evaluate(string code)
 		{
@@ -40,14 +36,17 @@ namespace RenSharp.Core.Expressions
 		{
 			foreach (var keyValue in keyValues)
 			{
-				SetVariable(keyValue);
+				SetVariable(keyValue.Key, keyValue.Value);
 			}
 		}
 
-		internal void SetVariable(KeyValuePair<string, object> keyValue)
-			=> Scope.SetVariable(keyValue.Key, keyValue.Value);
+		internal void SetVariable(string name, dynamic value)
+			=> Scope.SetVariable(name, value);
 
-		internal object GetVariable(string key)
+		internal dynamic GetVariable(string key)
 			=> Scope.GetVariable(key);
+
+		internal T GetVariable<T>(string key)
+			=> Scope.GetVariable<T>(key);
 	}
 }

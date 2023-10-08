@@ -1,0 +1,3 @@
+label start:
+	repeat 5:
+		"Hello!"
