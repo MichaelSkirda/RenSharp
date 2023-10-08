@@ -14,8 +14,9 @@ namespace RenSharp.Models.Commands
 			Expression = expression;
 		}
 
-		internal override void Execute(RenSharpCore renSharpCore, RenSharpContext ctx)
+		internal override void Execute(RenSharpCore core)
 		{
+			var ctx = core.Context;
 			bool result = ctx.Evaluate<bool>(Expression);
 			if (result)
 				Push(ctx.LevelStack, ctx);

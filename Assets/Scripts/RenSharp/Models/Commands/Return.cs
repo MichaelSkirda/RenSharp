@@ -16,8 +16,9 @@ namespace RenSharp.Models.Commands
 			IsSoft = isSoft;
 		}
 
-		internal override void Execute(RenSharpCore renSharpCore, RenSharpContext ctx)
+		internal override void Execute(RenSharpCore core)
 		{
+			var ctx = core.Context;
 			if(string.IsNullOrEmpty(Expression) == false)
 			{
 				string exp = ctx.InterpolateString(Expression);

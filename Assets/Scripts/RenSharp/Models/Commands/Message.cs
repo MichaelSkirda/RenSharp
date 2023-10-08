@@ -19,7 +19,7 @@ namespace RenSharp.Models.Commands
 			Attributes = new Attributes(attributes);
 		}
 
-		internal override void Execute(RenSharpCore core, RenSharpContext ctx)
+		internal override void Execute(RenSharpCore core)
 		{
 			Attributes attributes = core.GetCharacterAttributes(Character);
 			attributes.AddAttributes(Attributes);
@@ -27,7 +27,7 @@ namespace RenSharp.Models.Commands
 			MessageResult result = new MessageResult()
 			{
 				RawLine = RawLine,
-				Speech = ctx.InterpolateString(RawLine),
+				Speech = core.Context.InterpolateString(RawLine),
 				Character = Character,
 				Attributes = attributes
 			};

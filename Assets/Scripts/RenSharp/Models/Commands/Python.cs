@@ -12,9 +12,9 @@ namespace RenSharp.Models.Commands
 		public List<string> Commands { get; set; } = new List<string>();
 		public Python() { }
 
-		internal override void Execute(RenSharpCore core, RenSharpContext ctx)
+		internal override void Execute(RenSharpCore core)
 		{
-			ctx.ExecutePython(Commands);
+			core.Context.ExecutePython(Commands);
 		}
 
 	}
