@@ -1,14 +1,11 @@
 ﻿using RenSharp.Core;
 using RenSharp.Core.ComplexParsers;
-using RenSharp.Models;
 using RenSharp.Models.Commands;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace RenSharp
 {
-	internal static class DefaultConfiguration
+	public static class DefaultConfiguration
 	{
 		public static Configuration GetDefaultConfig()
 			=> new Configuration().UseDefault().UseCoreCommands();

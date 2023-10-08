@@ -23,10 +23,15 @@ public class CommandProccessor : MonoBehaviour
 
 	void Update()
     {
-		if (IsPaused)
+		if (Input.GetKeyDown(KeyCode.Mouse0) == false && Input.GetKeyDown(KeyCode.Space) == false)
 			return;
 
-		if (Input.GetKeyDown(KeyCode.Mouse0) == false && Input.GetKeyDown(KeyCode.Space) == false)
+		ReadNext();
+	}
+
+	public void ReadNext()
+	{
+		if (IsPaused)
 			return;
 
 		if (Dialog.HasAnimationFinished() == false)
