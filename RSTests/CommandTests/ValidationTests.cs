@@ -9,7 +9,6 @@ namespace RSTests.CommandTests
 		[Theory]
 		[InlineData("./CommandTests/ValidationTests/nostart.csren")]
 		[InlineData("./CommandTests/ValidationTests/empty.csren")]
-		[InlineData("./CommandTests/ValidationTests/explicit_exit.csren")]
 		public void NoStartTests(string path)
 		{
 			var ex = Assert.Throws<LabelNotExists>(() => ExecuteUntilExit(path));

@@ -29,7 +29,7 @@ namespace RSTests
 			Writer = new TestWriter();
 			RenSharpAssert assert = CreateAssert();
 
-			RS.Writer = Writer;
+			RS.Configuration.Writer = Writer;
 			RS.SetVariable("Assert", assert);
 
 			if (RS == null)
