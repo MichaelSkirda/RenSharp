@@ -5,7 +5,7 @@ using System.Text;
 
 namespace RenSharp.Models.Commands
 {
-	internal class Call : Command
+	public class Call : Command
 	{
 		public string Expression { get; set; }
 		public bool Evaluate { get; set; }
@@ -18,7 +18,7 @@ namespace RenSharp.Models.Commands
 			Evaluate = evaluate;
 		}
 
-		internal override void Execute(RenSharpCore core)
+		public override void Execute(RenSharpCore core)
 		{
 			core.Context.PushState();
 			string labelName = Expression;

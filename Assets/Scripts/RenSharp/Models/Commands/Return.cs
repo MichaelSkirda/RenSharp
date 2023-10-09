@@ -5,7 +5,7 @@ using System.Text;
 
 namespace RenSharp.Models.Commands
 {
-	internal class Return : Command
+	public class Return : Command
 	{
 		public string Expression { get; set; }
 		public bool IsSoft { get; set; }
@@ -16,7 +16,7 @@ namespace RenSharp.Models.Commands
 			IsSoft = isSoft;
 		}
 
-		internal override void Execute(RenSharpCore core)
+		public override void Execute(RenSharpCore core)
 		{
 			var ctx = core.Context;
 			if(string.IsNullOrEmpty(Expression) == false)

@@ -6,7 +6,7 @@ using System.Text;
 
 namespace RenSharp.Models.Commands
 {
-	internal class Repeat : Command, IPushable
+	public class Repeat : Command, IPushable
 	{
 		public string Expression { get; set; }
 		public int? Times { get; private set; } = null;
@@ -17,7 +17,7 @@ namespace RenSharp.Models.Commands
 			Expression = expression;
 		}
 
-		internal override void Execute(RenSharpCore core)
+		public override void Execute(RenSharpCore core)
 		{
 			var ctx = core.Context;
 			if(Times == null)

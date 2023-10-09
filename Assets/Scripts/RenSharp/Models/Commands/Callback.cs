@@ -5,16 +5,16 @@ using System.Text;
 
 namespace RenSharp.Models.Commands
 {
-	internal class Callback : Command
+	public class Callback : Command
 	{
-		internal string Expression { get; set; }
+		public string Expression { get; set; }
 
 		public Callback(string expression)
 		{
 			Expression = expression;
 		}
 
-		internal override void Execute(RenSharpCore core)
+		public override void Execute(RenSharpCore core)
 		{
 			_ = core.Context.Evaluate<object>(Expression);
 		}

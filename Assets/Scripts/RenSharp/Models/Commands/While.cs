@@ -6,15 +6,15 @@ using System.Text;
 
 namespace RenSharp.Models.Commands
 {
-	internal class While : Command, IPushable
+	public class While : Command, IPushable
 	{
-		private string Expression { get; set; }
+		public string Expression { get; set; }
 		public While(string expression)
 		{
 			Expression = expression;
 		}
 
-		internal override void Execute(RenSharpCore core)
+		public override void Execute(RenSharpCore core)
 		{
 			var ctx = core.Context;
 			bool result = ctx.Evaluate<bool>(Expression);

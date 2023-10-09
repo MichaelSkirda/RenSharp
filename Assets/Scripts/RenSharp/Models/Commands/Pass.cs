@@ -5,9 +5,9 @@ using System.Text;
 
 namespace RenSharp.Models.Commands
 {
-	internal class Pass : Command
+	public class Pass : Command
 	{
-		internal override void Execute(RenSharpCore core)
+		public override void Execute(RenSharpCore core)
 		{
 
         } // Do nothing

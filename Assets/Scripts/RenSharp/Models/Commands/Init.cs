@@ -6,7 +6,7 @@ using System.Text;
 
 namespace RenSharp.Models.Commands
 {
-	internal class Init : Command, IPushable
+	public class Init : Command, IPushable
 	{
 		public int Priority { get; set; }
 		public bool IsPython { get; set; }
@@ -19,7 +19,7 @@ namespace RenSharp.Models.Commands
 			IsPython = isPython;
 		}
 
-		internal override void Execute(RenSharpCore core)
+		public override void Execute(RenSharpCore core)
 		{
 			// Do nothing
 			// No push! Init must be ingnored in runtime

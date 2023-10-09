@@ -20,7 +20,7 @@ namespace RenSharp.Models.Commands
 			IsRoot = isRoot;
 		}
 
-		internal override void Execute(RenSharpCore core)
+		public override void Execute(RenSharpCore core)
 		{
 			var ctx = core.Context;
 			bool result = ctx.Evaluate<bool>(Expression);

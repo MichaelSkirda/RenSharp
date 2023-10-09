@@ -18,7 +18,7 @@ namespace RenSharp.Models.Commands
 			Evaluate = evaluate;
 		}
 
-		internal override void Execute(RenSharpCore core)
+		public override void Execute(RenSharpCore core)
 		{
 			string labelName = Expression;
 			if (Evaluate)

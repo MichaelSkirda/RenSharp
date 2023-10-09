@@ -7,12 +7,12 @@ using System.Text;
 namespace RenSharp.Models.Commands
 {
 	// Contains whole 'python:' block
-	internal class Python : Command
+	public class Python : Command
 	{
 		public List<string> Commands { get; set; } = new List<string>();
 		public Python() { }
 
-		internal override void Execute(RenSharpCore core)
+		public override void Execute(RenSharpCore core)
 		{
 			core.Context.ExecutePython(Commands);
 		}

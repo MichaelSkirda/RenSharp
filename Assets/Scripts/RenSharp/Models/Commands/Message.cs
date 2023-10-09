@@ -19,7 +19,7 @@ namespace RenSharp.Models.Commands
 			Attributes = new Attributes(attributes);
 		}
 
-		internal override void Execute(RenSharpCore core)
+		public override void Execute(RenSharpCore core)
 		{
 			Attributes attributes = core.GetCharacterAttributes(Character);
 			attributes.AddAttributes(Attributes);
@@ -32,7 +32,7 @@ namespace RenSharp.Models.Commands
 				Attributes = attributes
 			};
 
-			IWriter writer = core.Writer;
+			IWriter writer = core.Configuration.Writer;
 			if (writer != null)
 				writer.Write(result);
 		}

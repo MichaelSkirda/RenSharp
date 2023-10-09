@@ -16,7 +16,7 @@ namespace RenSharp.Models.Commands
 			Attributes = new Attributes(attributes);
 		}
 
-		internal override void Execute(RenSharpCore core)
+		public override void Execute(RenSharpCore core)
 		{
 
 		}
