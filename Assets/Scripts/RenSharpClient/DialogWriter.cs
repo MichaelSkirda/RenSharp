@@ -1,7 +1,5 @@
 ﻿using RenSharp.Interfaces;
 using RenSharp.Models;
-using System.Collections.Generic;
-using RenSharp.Models.Commands;	
 
 namespace Assets.Scripts
 {

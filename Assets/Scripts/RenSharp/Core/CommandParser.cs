@@ -152,7 +152,5 @@ namespace RenSharp.Core
 			return new Call($"\"{args[1]}\"", evaluate: false);
 		}
 		internal static Exit ParseExit() => new Exit();
-		private static string ToWord(this IEnumerable<string> words) => string.Join(" ", words);
-
 	}
 }

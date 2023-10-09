@@ -3,11 +3,11 @@ using RenSharp.Core;
 
 public static class RSUnityConfig
 {
-	public static Configuration GetConfig()
+	public static Configuration GetDefault()
 	{
 		Configuration config = DefaultConfiguration.GetDefaultConfig();
 
-		config.SetCommand("hard", (words, _) => CommandParser.ParseReturn(words));
+		config.SetCommand("show", (words, _) => CommandParsers.ParseShow(words));
 
 		return config;
 	}

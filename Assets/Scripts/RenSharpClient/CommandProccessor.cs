@@ -1,4 +1,5 @@
 using Assets.Scripts;
+using RenSharp;
 using RenSharp.Core;
 using RenSharp.Models;
 using UnityEngine;
@@ -15,10 +16,12 @@ public class CommandProccessor : MonoBehaviour
 	void Start()
     {
 		string[] lines = RenSharpCode.text.Split('\n');
+		Configuration config = RSUnityConfig.GetDefault();
 
-		RenSharp = new RenSharpCore(lines);
 		DialogWriter writer = new DialogWriter(Dialog);
-		RenSharp.Writer = writer;
+		config.Writer = writer;
+
+		RenSharp = new RenSharpCore(lines, config);
 	}
 
 	void Update()

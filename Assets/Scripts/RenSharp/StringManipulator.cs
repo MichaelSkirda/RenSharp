@@ -2,9 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace RenSharp
 {
@@ -74,5 +72,7 @@ namespace RenSharp
 
         internal static string ToPythonCode(this IEnumerable<string> str)
             => string.Join(Environment.NewLine, str);
+
+		public static string ToWord(this IEnumerable<string> words) => string.Join(" ", words);
 	}
 }

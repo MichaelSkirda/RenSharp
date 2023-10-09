@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Assets.Scripts.RenSharpClient
 {
 	[Serializable]
-	public struct DataItem
+	public struct SpriteItem
 	{
 		public string Name;
 		public Sprite sprite;
