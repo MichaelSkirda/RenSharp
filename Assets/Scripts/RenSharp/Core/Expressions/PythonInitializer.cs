@@ -14,9 +14,9 @@ namespace RenSharp.Core.Expressions
 		internal ScriptEngine Engine { get; set; }
 		internal ScriptScope Scope { get; set; }
 
-		internal PythonInitializer()
+		internal PythonInitializer(ScriptEngine engine)
 		{
-			Engine = Python.CreateEngine();
+			Engine = engine;
 			Scope = Engine.CreateScope();
 			InitPython();
 		}

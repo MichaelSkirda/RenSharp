@@ -5,13 +5,21 @@ namespace RenSharp.Core.Expressions
 {
 	internal class PythonEvaluator
 	{
-		private ScriptEngine Engine { get; set; }
+		private static ScriptEngine _engine;
+		private static ScriptEngine Engine
+		{
+			get
+			{
+				if(_engine == null)
+					_engine = Python.CreateEngine();
+				return _engine;
+			}
+		}
 		private ScriptScope Scope { get; set; }
 
 		internal PythonEvaluator()
 		{
-			var initializer = new PythonInitializer();
-			Engine = initializer.Engine;
+			var initializer = new PythonInitializer(Engine);
 			Scope = initializer.Scope;
 		}
 
