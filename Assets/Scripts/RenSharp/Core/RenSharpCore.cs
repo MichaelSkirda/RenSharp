@@ -14,7 +14,6 @@ namespace RenSharp.Core
 	public class RenSharpCore
 	{
 		public Configuration Configuration { get; set; }
-		public IWriter Writer { get; set; }
 		public RenSharpContext Context { get; set; }
 		private RenSharpProgram Program => Context.Program;
 		private RenSharpReader Reader { get; set; }
@@ -37,7 +36,6 @@ namespace RenSharp.Core
 			if (config == null)
 				config = DefaultConfiguration.GetDefaultConfig();
 
-            Writer = config.Writer;
 			Configuration = config;
 			RecreateReader();
 		}

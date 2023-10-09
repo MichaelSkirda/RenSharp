@@ -9,10 +9,13 @@ internal class Program
 {
 	private static void Main(string[] args)
 	{
+		IFormatter formatter = new OutputFormatter();
+		IWriter writer = new ConsoleWriter(formatter);
+
+		Configuration config = ConsoleConfig.GetDefaultConfig(formatter, writer);
+
 		string path = "./test.csren";
-		IWriter writer = new ConsoleWriter();
-		var renSharp = new RenSharpCore(path);
-		renSharp.Writer = writer;
+		var renSharp = new RenSharpCore(path, config);
 
 		while (true)
 		{

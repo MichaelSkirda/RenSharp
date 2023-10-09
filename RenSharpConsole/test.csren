@@ -2,7 +2,10 @@ init 999:
 	x = 42
 
 label start:
-	if x > 5:
-		"x bigger than 5"
-	else:
-		"x lower than 5"
+	"Hello, world!"
+	color 62
+	"Wow! Such beautiful color!"
+	color 130
+	"No so beautiful..."
+	color 15
+	jump start
