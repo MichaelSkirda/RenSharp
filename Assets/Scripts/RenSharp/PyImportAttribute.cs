@@ -49,17 +49,16 @@ namespace RenSharp
 
 			domainTypes = domainTypes.Distinct().ToList();
 
-			// Get ALL methods with attribute in ALL assemblies from Domain
-			// Except methods that class contains PyImportAttribute
-			List<MethodInfo> importMethods = domainTypes
-				.Where(x => x.IsDefined(attr) == false)
-				.SelectMany(x => x.GetMethods(BindingFlags.Static | BindingFlags.Public))
+			// Get ALL types with attribute in ALL assemblies from Domain
+			List<Type> attributedTypes = domainTypes
 				.Where(x => x.IsDefined(attr))
 				.ToList();
 
-
-			// Get ALL types with attribute in ALL assemblies from Domain
-			List<Type> attributedTypes = domainTypes
+			// Get ALL methods with attribute in ALL assemblies from Domain
+			// Except methods that class contains PyImportAttribute
+			List<MethodInfo> importMethods = domainTypes
+				.Except(attributedTypes)
+				.SelectMany(x => x.GetMethods(BindingFlags.Static | BindingFlags.Public))
 				.Where(x => x.IsDefined(attr))
 				.ToList();
 
