@@ -712,8 +712,6 @@ GameObject:
   - component: {fileID: 1179337589}
   - component: {fileID: 1179337588}
   - component: {fileID: 1179337592}
-  - component: {fileID: 1179337593}
-  - component: {fileID: 1179337594}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -795,6 +793,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1661186930}
+  - {fileID: 1416944463}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -817,40 +816,79 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RenSharpCode: {fileID: 4900000, guid: 93a0f27bd50687d48b98fe2d86e47928, type: 3}
   Dialog: {fileID: 1661186931}
---- !u!114 &1179337593
+  ImageController: {fileID: 1416944465}
+--- !u!1 &1416944462
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1416944463}
+  - component: {fileID: 1416944465}
+  - component: {fileID: 1416944466}
+  m_Layer: 5
+  m_Name: RenSharp
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1416944463
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1416944462}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1179337591}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -2000, y: -2000}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1416944465
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1179337587}
+  m_GameObject: {fileID: 1416944462}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7e2b242c1f79c240b8d0694a3c8f17c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Data: {fileID: 1416944466}
+  CharacterPrefab: {fileID: 7475213838404286, guid: c147268a2ca5da54eb6596d202b0abed, type: 3}
+  Parent: {fileID: 1179337587}
+--- !u!114 &1416944466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1416944462}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3564c3c553ecb4fdaafeedd67d93f7e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _spriteItems:
-  - Name: eliz normal
-    sprite: {fileID: 21300000, guid: 52d1cd9a9086baf43af998a1416ea41b, type: 3}
-  - Name: eliz happy
-    sprite: {fileID: 21300000, guid: 52d1cd9a9086baf43af998a1416ea41b, type: 3}
-  - Name: john stress
-    sprite: {fileID: 21300000, guid: 90c8309ef4e387a42903840bef8a5dd0, type: 3}
---- !u!114 &1179337594
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1179337587}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e7e2b242c1f79c240b8d0694a3c8f17c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Data: {fileID: 0}
-  CharacterPrefab: {fileID: 0}
-  Parent: {fileID: 0}
+  - Name: eliz sad
+    Sprite: {fileID: 21300000, guid: 52d1cd9a9086baf43af998a1416ea41b, type: 3}
+  - Name: Eliz Happy
+    Sprite: {fileID: 21300000, guid: f2f33639717c3b143baa8606efdeaf9c, type: 3}
+  - Name: John Norm
+    Sprite: {fileID: 21300000, guid: 90c8309ef4e387a42903840bef8a5dd0, type: 3}
 --- !u!1 &1661186929
 GameObject:
   m_ObjectHideFlags: 0
@@ -887,8 +925,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 180}
-  m_SizeDelta: {x: 1920, y: 360}
+  m_AnchoredPosition: {x: -0.5, y: 179}
+  m_SizeDelta: {x: 1921, y: 360}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1661186931
 MonoBehaviour:
