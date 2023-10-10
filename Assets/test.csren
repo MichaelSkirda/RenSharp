@@ -3,6 +3,11 @@ init 999:
 	python:
 		x = rs.GetEnv("APPDATA")
 
+init -999 python:
+	y = "foobar"
+
 label start
 	"Test {x}"
+	show eliz sad
+	"After show"
 	jump start

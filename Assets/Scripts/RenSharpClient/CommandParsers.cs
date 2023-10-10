@@ -1,14 +1,17 @@
-
 using Assets.Scripts.RenSharpClient.Commands;
-using UnityEngine;
+using RenSharp;
+using System.Collections.Generic;
+using System.Linq;
 
 internal static class CommandParsers
 {
 
-	internal static Show ParseShow(string[] words)
+	internal static Show ParseShow(string[] words, ImageController controller)
 	{
-
-		return new Show(null, null, null, null);
+		string name = words[1];
+		string details = words.Skip(2).ToWord();
+		var attributes = new List<string>();
+		return new Show(name, details, attributes, controller);
 	}
 
 }

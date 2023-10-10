@@ -1,13 +1,12 @@
 using RenSharp;
-using RenSharp.Core;
 
 public static class RSUnityConfig
 {
-	public static Configuration GetDefault()
+	public static Configuration GetDefault(ImageController imageController)
 	{
 		Configuration config = DefaultConfiguration.GetDefaultConfig();
 
-		config.SetCommand("show", (words, _) => CommandParsers.ParseShow(words));
+		config.SetCommand("show", (words, _) => CommandParsers.ParseShow(words, imageController));
 
 		return config;
 	}

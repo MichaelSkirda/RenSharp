@@ -5,4 +5,6 @@ init 999:
 
 label start
 	"Test {x}"
+	show eliz sad
+	"After show"
 	jump start

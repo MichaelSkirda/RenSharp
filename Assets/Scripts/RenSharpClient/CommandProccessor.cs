@@ -10,13 +10,15 @@ public class CommandProccessor : MonoBehaviour
 	public TextAsset RenSharpCode;
 	public DialogController Dialog;
 
+	[SerializeField]
+	private ImageController ImageController;
     private RenSharpCore RenSharp { get; set; }
 	public bool IsPaused { get; set; } = false;
 
 	void Start()
     {
 		string[] lines = RenSharpCode.text.Split('\n');
-		Configuration config = RSUnityConfig.GetDefault();
+		Configuration config = RSUnityConfig.GetDefault(ImageController);
 
 		DialogWriter writer = new DialogWriter(Dialog);
 		config.Writer = writer;

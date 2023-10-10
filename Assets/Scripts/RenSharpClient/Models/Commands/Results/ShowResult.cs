@@ -8,9 +8,10 @@ namespace Assets.Scripts.RenSharpClient.Commands.Results
 		internal string Details { get; set; }
 		internal Attributes attributes { get; set; }
 
-		public ShowResult(string name, Attributes attributes)
+		public ShowResult(string name, string details, Attributes attributes)
 		{
 			Name = name;
+			Details = details;
 			this.attributes = attributes;
 		}
 	}

@@ -7,6 +7,6 @@ namespace Assets.Scripts.RenSharpClient
 	public struct SpriteItem
 	{
 		public string Name;
-		public Sprite sprite;
+		public Sprite Sprite;
 	}
 }

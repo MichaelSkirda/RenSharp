@@ -22,7 +22,7 @@ namespace Assets.Scripts.RenSharpClient.Commands
 
 		public override void Execute(RenSharpCore core)
 		{
-			ShowResult character = new ShowResult(Name, Attributes);
+			ShowResult character = new ShowResult(Name, Details, Attributes);
 			Controller.ShowCharacter(character);
 		}
 	}
