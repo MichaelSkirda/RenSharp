@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using RenSharp;
-using Assets.Scripts.RenSharpClient.Commands;
 using System.IO;
 
 namespace Assets.Scripts.RenSharpClient

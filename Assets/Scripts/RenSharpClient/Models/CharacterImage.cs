@@ -1,6 +1,4 @@
-﻿
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 
 namespace Assets.Scripts.RenSharpClient.Models
 {

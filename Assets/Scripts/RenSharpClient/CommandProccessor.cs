@@ -1,4 +1,5 @@
 using Assets.Scripts;
+using Assets.Scripts.RenSharpClient.Controllers;
 using RenSharp;
 using RenSharp.Core;
 using RenSharp.Models;
@@ -12,13 +13,16 @@ public class CommandProccessor : MonoBehaviour
 
 	[SerializeField]
 	private ImageController ImageController;
-    private RenSharpCore RenSharp { get; set; }
+	[SerializeField]
+	private SoundController SoundController;
+
+	private RenSharpCore RenSharp { get; set; }
 	public bool IsPaused { get; set; } = false;
 
 	void Start()
     {
 		string[] lines = RenSharpCode.text.Split('\n');
-		Configuration config = RSUnityConfig.GetDefault(ImageController);
+		Configuration config = RSUnityConfig.GetDefault(ImageController, SoundController);
 
 		DialogWriter writer = new DialogWriter(Dialog);
 		config.Writer = writer;
