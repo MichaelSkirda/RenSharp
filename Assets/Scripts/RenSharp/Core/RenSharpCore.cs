@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using RenSharp.Core.Exceptions;
-using RenSharp.Core.Expressions;
 using RenSharp.Core.Read;
-using RenSharp.Interfaces;
 using RenSharp.Models;
 using RenSharp.Models.Commands;
 
@@ -28,6 +26,7 @@ namespace RenSharp.Core
 			SetupProgram(config);
 			LoadProgram(code, saveScope: true);
 		}
+
 		private void SetupProgram(Configuration config)
         {
 			PyImportAttribute.ReloadCallbacks();
@@ -39,6 +38,7 @@ namespace RenSharp.Core
 			Configuration = config;
 			RecreateReader();
 		}
+
 		public void RecreateReader() => Reader = new RenSharpReader(Configuration);
 
 		public void LoadProgram(string path, bool saveScope = false)
@@ -109,6 +109,10 @@ namespace RenSharp.Core
                     skip = true;
                     continue;
                 }
+
+				Command backwardCommand = command.Rollback();
+				if(backwardCommand != null)
+					Context.RollbackStack.Push(backwardCommand);
 
                 command.Execute(this);
 			} while (Configuration.IsSkip(command) || skip);

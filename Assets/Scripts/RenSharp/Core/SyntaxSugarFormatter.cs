@@ -3,8 +3,6 @@ using RenSharp.Models.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace RenSharp.Core
@@ -35,23 +33,10 @@ namespace RenSharp.Core
 
 		internal static string ColonSugar(string line)
 		{
+			// Colons at end are optional
 			if(line.EndsWith(":"))
 				return line.Substring(0, line.Length - 1);
 			return line;
-		}
-
-		internal static string CallbackSugar(string line)
-		{
-			//TODO
-			return line;
-			/*List<string> methodNames = CallbackAttribute.Callbacks.Keys
-				.Select(x => x)
-				.ToList();
-
-			// If line starts with any method name
-			if(methodNames.Any(x => line.StartsWith(x)))
-				return "callback " + line;
-			return line; */
 		}
 
 		internal static string SetSugar(string line)

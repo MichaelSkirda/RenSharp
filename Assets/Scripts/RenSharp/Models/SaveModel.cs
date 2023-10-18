@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RenSharp.Models
 {
-	internal class SaveModel
+	public class SaveModel
 	{
 
 	}

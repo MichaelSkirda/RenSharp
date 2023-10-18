@@ -59,5 +59,18 @@ namespace RenSharp.Core.Expressions
 
 		internal T GetVariable<T>(string key)
 			=> Scope.GetVariable<T>(key);
+
+		internal Dictionary<string, object> GetVariables()
+		{
+			IEnumerable<string> keys = Scope.GetVariableNames();
+			var variables = new Dictionary<string, object>();
+
+			foreach(string key in keys)
+			{
+				variables[key] = Scope.GetVariable(key);
+			}
+
+			return variables;
+		}
 	}
 }

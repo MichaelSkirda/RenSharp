@@ -18,5 +18,17 @@ namespace RenSharpConsole.Commands
 		{
 			Formatter.SetFormat(ColorCode);
 		}
+
+		public override Command Rollback()
+		{
+			string currentColor = Formatter.GetCurrentColor();
+			TextColor command = new TextColor(currentColor, Formatter);
+
+			command.Line = Line;
+			command.SourceLine = SourceLine;
+			command.Level = Level;
+
+			return base.Rollback();
+		}
 	}
 }

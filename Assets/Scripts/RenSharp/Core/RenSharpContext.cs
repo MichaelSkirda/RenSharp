@@ -12,14 +12,18 @@ namespace RenSharp.Core
     {
 		internal RenSharpProgram Program { get; set; }
 		private Stack<StackFrame> Stack { get; set; }
+		internal Stack<Command> RollbackStack { get; private set; }
 		private PythonEvaluator PyEvaluator { get; set; }
 
+		internal StackFrame CurrentFrame { get; set; }
 		internal Stack<int> LevelStack => CurrentFrame.LevelStack;
 		internal int Level => LevelStack.Count + 1;
-		internal StackFrame CurrentFrame { get; set; }
+
 		public RenSharpContext()
 		{
 			Stack = new Stack<StackFrame>();
+			RollbackStack = new Stack<Command>();
+
 			PyEvaluator = new PythonEvaluator();
 			CurrentFrame = new StackFrame();
 		}

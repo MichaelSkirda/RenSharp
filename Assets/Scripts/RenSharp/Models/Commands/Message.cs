@@ -6,17 +6,17 @@ namespace RenSharp.Models.Commands
 {
     public class Message : Command
 	{
-		private string RawLine { get; set; }
-		public string Speech { get; set; }
+		private string Speech { get; set; }
 		public string Character { get; set; }
 		public Attributes Attributes { get; set; }
+		public IEnumerable<string> RawAttributes { get; set; }
 
 		public Message(string speech, string character, IEnumerable<string> attributes = null)
 		{
 			Speech = speech;
-			RawLine = speech;
 			Character = character;
 			Attributes = new Attributes(attributes);
+			RawAttributes = attributes;
 		}
 
 		public override void Execute(RenSharpCore core)
@@ -26,8 +26,7 @@ namespace RenSharp.Models.Commands
 
 			MessageResult result = new MessageResult()
 			{
-				RawLine = RawLine,
-				Speech = core.Context.InterpolateString(RawLine),
+				Speech = core.Context.InterpolateString(Speech),
 				Character = Character,
 				Attributes = attributes
 			};
@@ -35,6 +34,17 @@ namespace RenSharp.Models.Commands
 			IWriter writer = core.Configuration.Writer;
 			if (writer != null)
 				writer.Write(result);
+		}
+
+		public override Command Rollback()
+		{
+			var command = new Message(Speech, Character, RawAttributes);
+
+			command.Line = Line;
+			command.SourceLine = SourceLine;
+			command.Level = Level;
+
+			return command;
 		}
 	}
 }

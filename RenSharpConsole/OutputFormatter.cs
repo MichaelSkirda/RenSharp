@@ -25,6 +25,7 @@ namespace RenSharpConsole
 			return $"\u001b[38;5;{7}m{input}";
 		}
 
+		public string GetCurrentFormat => Code;
 		public void SetFormat(string format)
 		{
 			Code = format;

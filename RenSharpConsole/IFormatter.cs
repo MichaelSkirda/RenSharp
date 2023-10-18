@@ -5,6 +5,8 @@ namespace RenSharpConsole
 	{
 		string Format(string input);
 		string FormatDefault(string input);
+
+		string GetCurrentColor();
 		void SetFormat(string format);
 	}
 }
