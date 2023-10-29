@@ -7,7 +7,7 @@ namespace Assets.Scripts.RenSharpClient.Storage
 	public class SoundStorage : MonoBehaviour
 	{
 		[SerializeField]
-		private SoundItem[] Data { get; set; }
+		private SoundItem[] Data;
 
 		public AudioClip GetAudio(string name)
 		{

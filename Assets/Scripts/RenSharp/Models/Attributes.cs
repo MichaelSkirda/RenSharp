@@ -1,16 +1,24 @@
-﻿using System;
+﻿using RenSharp.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace RenSharp.Models
 {
 	public class Attributes
 	{
+		public string this[string key]
+		{
+			get => values[key];
+		}
+
 		private Dictionary<string, string> values = new Dictionary<string, string>();
 		public Attributes(IEnumerable<string> attributes) => AddAttributes(attributes);
-		public string GetAttributeValue(string key) => values[key];
-		public void AddAttributes(Attributes attributes) => AddAttributes(attributes.KeyValues());
+		public Attributes(Dictionary<string, string> attributes) => AddAttributes(attributes);
+
+		public void AddAttributes(Attributes attributes, bool rewrite = true) => AddAttributes(attributes.KeyValues(), rewrite);
+		public void AddDefaultAttributes(Configuration config)
+			=> AddAttributes(config.GetDefaultAttrbutes(), rewrite: false);
 		private IEnumerable<string> KeyValues() => values.Select(x => $"{x.Key}={x.Value}");
 
 		public void AddAttributes(IEnumerable<string> attributes, bool rewrite = true)
@@ -20,6 +28,9 @@ namespace RenSharp.Models
 				AddAttribute(attribute, rewrite);
 			}
 		}
+		public void AddAttributes(Dictionary<string, string> attributes)
+			=> AddAttributes(attributes.Select(kv => $"{kv.Key}={kv.Value}"));
+		
 
 		private void AddAttribute(string attribute, bool rewrite)
 		{
@@ -44,6 +55,8 @@ namespace RenSharp.Models
 					values[pair.Key] = pair.Value;
 			}
 		}
+
+		public string GetAttributeValue(string key) => values[key];
 
 		public int GetDelay()
 		{

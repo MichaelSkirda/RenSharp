@@ -7,13 +7,14 @@ namespace Assets.Scripts.RenSharpClient.Controllers
 {
 	public class SoundController : MonoBehaviour
 	{
-		private AudioSource MusicSource { get; set; }
-		private List<AudioSource> SoundSources { get; set; }
+		private List<AudioSource> SoundSources { get; set; } = new List<AudioSource>();
 
 		[SerializeField]
-		private SoundStorage SoundStorage { get; set; }
+		private SoundStorage SoundStorage;
 		[SerializeField]
-		private AudioSource AudioSourcePrefab { get; set; }
+		private AudioSource AudioSourcePrefab;
+		[SerializeField]
+		private AudioSource MusicSource;
 
 		public void PlaySound(string name)
 		{

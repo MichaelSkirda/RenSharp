@@ -1,17 +1,17 @@
 using Assets.Scripts.RenSharpClient;
 using Assets.Scripts.RenSharpClient.Commands.Results;
 using Assets.Scripts.RenSharpClient.Models;
-using System.Collections;
+using Assets.Scripts.RenSharpClient.Storage;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class ImageController : MonoBehaviour
 {
 	[SerializeField]
-	private SpriteStorage Data;
+	private SpriteStorage Sprites;
+	[SerializeField]
+	private PointStorage Points;
 	[SerializeField]
 	private GameObject CharacterPrefab;
 	[SerializeField]
@@ -24,7 +24,7 @@ public class ImageController : MonoBehaviour
 		Characters = new Dictionary<string, GameObject>();
 	}
 
-	internal void ShowCharacter(ShowResult show)
+	internal void Show(ShowResult show)
 	{
 		GameObject obj;
 		bool isExist = Characters.TryGetValue(show.Name, out obj);
@@ -32,15 +32,18 @@ public class ImageController : MonoBehaviour
 		if (!isExist)
 			obj = Instantiate(CharacterPrefab, Parent.transform);
 
-		CharacterImage toSet = Data.GetCharacterSprite(show.Name, show.Details);
+		CharacterImage toSet = Sprites.GetCharacterSprite(show.Name, show.Details);
 		RectTransform rect = obj.GetComponent<RectTransform>();
-		float multiplier = 900 / toSet.Sprite.rect.height;
 
 		rect.anchorMin = new Vector2(0.5f, 0f);
 		rect.anchorMax = new Vector2(0.5f, 0f);
 
-		rect.sizeDelta = new Vector2(toSet.Sprite.rect.width * multiplier, toSet.Sprite.rect.height * multiplier);
-		rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, rect.rect.height / 2);
+		rect.sizeDelta = GetSize(toSet.Sprite.rect);
+
+		float x = GetX(show);
+		float y = rect.rect.height / 2;
+
+		rect.anchoredPosition = new Vector2(x, y);
 
 
 		Image characterImage = obj.GetComponent<Image>();
@@ -48,7 +51,21 @@ public class ImageController : MonoBehaviour
 		Characters[show.Name] = obj;
 	}
 
-	internal void HideCharacter(string name)
+	private Vector2 GetSize(Rect rect)
+	{
+		float multiplier = 900 / rect.height;
+		return new Vector2(rect.width * multiplier, rect.height * multiplier);
+	}
+
+	private float GetX(ShowResult show)
+	{
+		string showAt = show.attributes["at"];
+		RectTransform transform = Points.Find(showAt).Point;
+
+		return transform.anchoredPosition.x;
+	}
+
+	internal void Hide(string name)
 	{
 		GameObject character;
 		Characters.TryGetValue(name, out character);
@@ -59,4 +76,17 @@ public class ImageController : MonoBehaviour
 		Destroy(character);
 		Characters.Remove(name);
 	}
+
+	internal void HideAll()
+	{
+		foreach(KeyValuePair<string, GameObject> character in Characters)
+		{
+			string name = character.Key;
+			GameObject obj = character.Value;
+
+			Destroy(obj);
+			Characters.Remove(name);
+		}
+	}
+
 }

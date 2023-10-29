@@ -1,7 +1,8 @@
-using Assets.Scripts.RenSharpClient.Commands;
+using Assets.Scripts.RenSharpClient;
 using Assets.Scripts.RenSharpClient.Controllers;
 using Assets.Scripts.RenSharpClient.Models.Commands;
 using RenSharp;
+using RenSharp.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,14 +10,50 @@ using System.Linq;
 internal static class CommandParsers
 {
 
+	private static List<string> ReservedWords = new List<string>()
+	{
+		
+
+		// Control
+		"label",
+		"jump",
+		"call",
+
+		// Images
+		"show",
+		"hide",
+		"scene",
+
+		// Sound
+		"play",
+		"stop",
+	};
+
+	private static List<string> AttributesNames = new List<string>()
+	{
+		// Attributes
+		"at",
+		"with",
+	};
+
+	static CommandParsers()
+	{
+		ReservedWords.AddRange(AttributesNames);
+	}
+
 	internal static Show ParseShow(string[] words, ImageController controller)
 	{
 		if (words.Count() < 1)
 			throw new ArgumentException(" оманда 'show' должна указывать какой спрайт показать.");
 
 		string name = words[1];
-		string details = words.Skip(2).ToWord();
-		var attributes = new List<string>();
+		if(ReservedWords.Contains(name))
+			throw new ArgumentException($"—лово '{words[1]}' зарезервированно. ¬ы не можете использовать его как им€.");
+
+		string details = words.Skip(2).Until(ReservedWords).ToWord();
+		IEnumerable<string> attributesWords = words.Skip(1).From(ReservedWords);
+		Attributes attributes = AttributeParser.ParseAttributes(AttributesNames, attributesWords);
+
 		return new Show(name, details, attributes, controller);
 	}
 

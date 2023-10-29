@@ -3,7 +3,7 @@ using RenSharp.Core;
 using RenSharp.Models;
 using System.Collections.Generic;
 
-namespace Assets.Scripts.RenSharpClient.Commands
+namespace Assets.Scripts.RenSharpClient.Models.Commands
 {
 	public class Show : Command
 	{
@@ -12,18 +12,19 @@ namespace Assets.Scripts.RenSharpClient.Commands
 		public Attributes Attributes { get; set; }
 		public ImageController Controller { get; set; }
 
-		public Show(string name, string details, IEnumerable<string> attributes, ImageController controller)
+		public Show(string name, string details, Attributes attributes, ImageController controller)
 		{
 			Name = name;
 			Details = details;
-			Attributes = new Attributes(attributes);
+			Attributes = attributes;
 			Controller = controller;
 		}
 
 		public override void Execute(RenSharpCore core)
 		{
+			Attributes.AddDefaultAttributes(core.Configuration);
 			ShowResult character = new ShowResult(Name, Details, Attributes);
-			Controller.ShowCharacter(character);
+			Controller.Show(character);
 		}
 	}
 }

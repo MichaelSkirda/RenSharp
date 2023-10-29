@@ -8,6 +8,7 @@ init -999 python:
 
 label start
 	"Test {x}"
-	show eliz sad
+	play sound shot
+	show eliz sad at left
 	"After show"
 	jump start

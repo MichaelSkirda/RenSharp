@@ -21,17 +21,19 @@ namespace RenSharp.Models.Commands
 
 		public override void Execute(RenSharpCore core)
 		{
-			Attributes attributes = core.GetCharacterAttributes(Character);
-			attributes.AddAttributes(Attributes);
+			Configuration config = core.Configuration;
+			Attributes characterAttributes = core.GetCharacterAttributes(Character);
+			characterAttributes.AddAttributes(Attributes);
+			characterAttributes.AddDefaultAttributes(config);
 
 			MessageResult result = new MessageResult()
 			{
 				Speech = core.Context.InterpolateString(Speech),
 				Character = Character,
-				Attributes = attributes
+				Attributes = characterAttributes
 			};
 
-			IWriter writer = core.Configuration.Writer;
+			IWriter writer = config.Writer;
 			if (writer != null)
 				writer.Write(result);
 		}

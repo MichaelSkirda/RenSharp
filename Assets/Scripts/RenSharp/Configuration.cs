@@ -1,18 +1,16 @@
 ﻿using RenSharp.Core.Read;
 using RenSharp.Interfaces;
 using RenSharp.Models;
-using RenSharp.Models.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace RenSharp
 {
     public class Configuration
 	{
 		private List<Type> SkipCommands = new List<Type>();
-		private Dictionary<string, string> DefaultAttributes = new Dictionary<string, string>();
+		private Dictionary<string, string> DefaultAttributes { get; set; } = new Dictionary<string, string>();
 
 
 		public Dictionary<string, Func<string[], Configuration, Command>> CommandParsers { get; set; }
@@ -84,6 +82,8 @@ namespace RenSharp
 		public string GetDefaultValue(string attributeName) => DefaultAttributes[attributeName];
 		public string GetDefaultKeyValueString(string attributeName)
 			=> $"{attributeName}={DefaultAttributes[attributeName]}";
+		public Attributes GetDefaultAttrbutes()
+			=> new Attributes(DefaultAttributes);
 
 		public IWriter Writer { get; set; }
 	}

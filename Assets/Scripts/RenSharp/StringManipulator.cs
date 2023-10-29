@@ -70,6 +70,38 @@ namespace RenSharp
             };
 		}
 
+        internal static IEnumerable<string> Until(this IEnumerable<string> words, IEnumerable<string> until)
+        {
+            foreach (string word in words)
+            {
+                if (until.Contains(word))
+                    yield break;
+                yield return word;
+            }
+        }
+
+        internal static IEnumerable<string> From(this IEnumerable<string> words, IEnumerable<string> from)
+        {
+            int? startIndex = null;
+            List<string> _words = words.ToList();
+
+            for(int i = 0; i < words.Count(); i++)
+            {
+                string word = _words[i];
+
+				if (from.Contains(word))
+                {
+                    startIndex = i;
+                    break;
+                }
+            }
+
+            if (startIndex == null)
+                return Enumerable.Empty<string>();
+            return words.Skip(startIndex.Value);
+        }
+
+
         internal static string ToPythonCode(this IEnumerable<string> str)
             => string.Join(Environment.NewLine, str);
 

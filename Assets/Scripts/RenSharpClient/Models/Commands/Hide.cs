@@ -1,7 +1,7 @@
 ﻿using RenSharp.Core;
 using RenSharp.Models;
 
-namespace Assets.Scripts.RenSharpClient.Commands
+namespace Assets.Scripts.RenSharpClient.Models.Commands
 {
 	internal class Hide : Command
 	{
@@ -16,7 +16,7 @@ namespace Assets.Scripts.RenSharpClient.Commands
 
 		public override void Execute(RenSharpCore core)
 		{
-			Controller.HideCharacter(Name);
+			Controller.Hide(Name);
 		}
 	}
 }
