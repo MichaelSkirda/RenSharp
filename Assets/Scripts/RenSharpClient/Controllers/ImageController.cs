@@ -38,7 +38,7 @@ public class ImageController : MonoBehaviour
 		rect.anchorMin = new Vector2(0.5f, 0f);
 		rect.anchorMax = new Vector2(0.5f, 0f);
 
-		rect.sizeDelta = GetSize(toSet.Sprite.rect);
+		rect.sizeDelta = GetSize(show, toSet.Sprite.rect);
 
 		float x = GetX(show);
 		float y = rect.rect.height / 2;
@@ -51,9 +51,27 @@ public class ImageController : MonoBehaviour
 		Characters[show.Name] = obj;
 	}
 
-	private Vector2 GetSize(Rect rect)
+	private Vector2 GetSize(ShowResult show, Rect rect)
 	{
-		float multiplier = 900 / rect.height;
+		string fullscreen = show.attributes["fullscreen"];
+		float multiplier;
+
+		// TODO replace constants 1920 and 1080
+		
+		if (fullscreen == "height")
+			multiplier = 1080 / rect.height;
+		else if (fullscreen == "width" || fullscreen == string.Empty)
+			multiplier = 1920 / rect.width;
+		else
+			multiplier = 1;
+
+		switch(fullscreen)
+		{
+			case "height":
+				multiplier = 1080 / rect.height;
+				break;
+		}
+
 		return new Vector2(rect.width * multiplier, rect.height * multiplier);
 	}
 

@@ -14,6 +14,7 @@ public static class RSUnityConfig
 		config.SetCommand("play", (words, _) => CommandParsers.ParsePlay(words, soundController));
 
 		config.SetDefault("at", "center"); // if not specified sprites appears at center
+		config.SetDefault("fullscreen", "false");
 
 		config.Skip<Show>();
 		config.Skip<Hide>();

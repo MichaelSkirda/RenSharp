@@ -34,6 +34,7 @@ internal static class CommandParsers
 		// Attributes
 		"at",
 		"with",
+		"fullscreen"
 	};
 
 	static CommandParsers()

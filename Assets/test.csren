@@ -7,7 +7,8 @@ init -999 python:
 	y = "foobar"
 
 label start
-	"Test {x}"
+	show office1
+	"{y} {x}"
 	play sound shot
 	show eliz sad at left
 	"After show"
