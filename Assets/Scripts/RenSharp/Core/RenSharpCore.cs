@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using RenSharp.Core.Exceptions;
-using RenSharp.Core.Read;
+using RenSharp.Core.Parse;
 using RenSharp.Models;
 using RenSharp.Models.Commands;
 
@@ -14,7 +14,7 @@ namespace RenSharp.Core
 		public Configuration Configuration { get; set; }
 		public RenSharpContext Context { get; set; }
 		private RenSharpProgram Program => Context.Program;
-		private RenSharpReader Reader { get; set; }
+		private RenSharpParser Parser { get; set; }
 		private bool HasStarted { get; set; } = false;
 
         public RenSharpCore(string path, Configuration config = null) => SetupProgram(File.ReadAllLines(path), config);
@@ -29,17 +29,19 @@ namespace RenSharp.Core
 
 		private void SetupProgram(Configuration config)
         {
-			PyImportAttribute.ReloadCallbacks();
-			Context = new RenSharpContext();
-
 			if (config == null)
 				config = DefaultConfiguration.GetDefaultConfig();
 
+			PyImportAttribute.ReloadCallbacks();
 			Configuration = config;
-			RecreateReader();
+			Context = new RenSharpContext();
+			Parser = new RenSharpParser(Configuration);
 		}
 
-		public void RecreateReader() => Reader = new RenSharpReader(Configuration);
+		public void Rollback()
+		{
+
+		}
 
 		public void LoadProgram(string path, bool saveScope = false)
 			=> LoadProgram(File.ReadAllLines(path), saveScope);
@@ -48,7 +50,7 @@ namespace RenSharp.Core
 			if (saveScope == false)
 				Context.RecreateScope();
 
-			var program = Reader.ParseCode(code);
+			var program = Parser.ParseCode(code);
 
 			Context.Program = new RenSharpProgram(program);
 			HasStarted = false;
@@ -64,13 +66,9 @@ namespace RenSharp.Core
 			if (HasStarted)
 				return;
 			HasStarted = true;
-			ExecuteInits();
 
+			ExecuteInits();
 			Label main = Program.GetLabel("start");
-			if (main == null)
-				throw new Exception("Программа обязана иметь точку входа start");
-			if (main.Level != 1)
-				throw new ArgumentException("Лейбл 'start' не должен иметь табуляции");
 			Context.Goto(main);
 		}
 

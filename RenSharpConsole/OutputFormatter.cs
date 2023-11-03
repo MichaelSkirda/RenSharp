@@ -30,5 +30,8 @@ namespace RenSharpConsole
 		{
 			Code = format;
 		}
+
+		public string GetCurrentColor()
+			=> Code;
 	}
 }

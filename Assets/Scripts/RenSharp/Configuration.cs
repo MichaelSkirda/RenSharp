@@ -1,4 +1,4 @@
-﻿using RenSharp.Core.Read;
+﻿using RenSharp.Core.Parse;
 using RenSharp.Interfaces;
 using RenSharp.Models;
 using System;
@@ -16,8 +16,8 @@ namespace RenSharp
 		public Dictionary<string, Func<string[], Configuration, Command>> CommandParsers { get; set; }
 			= new Dictionary<string, Func<string[], Configuration, Command>>();
 
-		public Dictionary<Type, Func<ReaderContext, Command, List<Command>>> ComplexCommandParsers { get; set; }
-			= new Dictionary<Type, Func<ReaderContext, Command, List<Command>>>();
+		public Dictionary<Type, Func<ParserContext, Command, List<Command>>> ComplexCommandParsers { get; set; }
+			= new Dictionary<Type, Func<ParserContext, Command, List<Command>>>();
 
 		public Dictionary<Type, List<Predicate<Command>>> IsComplexPredicates { get; set; }
 			= new Dictionary<Type, List<Predicate<Command>>>();
@@ -26,7 +26,7 @@ namespace RenSharp
 
 		internal List<Type> MustPushStack { get; set; } = new List<Type>();
 
-		public List<Command> ParseComplex(ReaderContext ctx, Command command)
+		public List<Command> ParseComplex(ParserContext ctx, Command command)
 			=> ComplexCommandParsers[command.GetType()](ctx, command);
 		public bool CanPush(Command command) => AllowedToPushStack.Contains(command.GetType());
 		public void SetCommand(string command, Func<string[], Configuration, Command> Parser)
@@ -47,7 +47,7 @@ namespace RenSharp
 			IsComplexPredicates[typeof(T)].Add(predicate);
 		}
 
-		public void AddComplex(Type type, Func<ReaderContext, Command, List<Command>> Parser)
+		public void AddComplex(Type type, Func<ParserContext, Command, List<Command>> Parser)
 			=> ComplexCommandParsers[type] = Parser;
 		public bool IsMustPush(Command command) => MustPushStack.Contains(command.GetType());
 		public void MustPush<T>()

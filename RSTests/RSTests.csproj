@@ -87,8 +87,20 @@
     <None Update="CommandTests\ValidationTests\empty.csren">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="CommandTests\ValidationTests\init_1000.csren">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="CommandTests\ValidationTests\init_minus_1000.csren">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="CommandTests\ValidationTests\nostart.csren">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="CommandTests\ValidationTests\repeating_labels.csren">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="CommandTests\ValidationTests\repeating_starts.csren">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="CommandTests\WhileTests\while_10times.csren">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

@@ -2,11 +2,11 @@
 using RenSharp.Models;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 using RenSharp.Core.Exceptions;
+using System.Data;
 
-namespace RenSharp.Core.Read
+namespace RenSharp.Core.Parse
 {
 	internal class RenSharpValidator
 	{
@@ -45,7 +45,13 @@ namespace RenSharp.Core.Read
 
 		}
 
-		internal void Validate(List<Command> commands)
+		internal void Validate(IEnumerable<Command> commands)
+		{
+			AssertNoRepeatingLabels(commands);
+			AssertStartExist(commands);
+		}
+
+		private void AssertNoRepeatingLabels(IEnumerable<Command> commands)
 		{
 			IEnumerable<string> repeatingNames = commands
 				.OfType<Label>()
@@ -53,18 +59,20 @@ namespace RenSharp.Core.Read
 				.Where(x => x.Count() > 1)
 				.Select(x => x.Key);
 
-			if(repeatingNames.Count() > 0)
-			{
-				throw new ArgumentException(Messages.ReapitingLabelNames(repeatingNames));
-			}
+			if (repeatingNames.Count() > 0)
+				throw new SyntaxErrorException(Messages.ReapitingLabelNames(repeatingNames));
+		}
 
+		private void AssertStartExist(IEnumerable<Command> commands)
+		{
 			Label start = commands
 				.OfType<Label>()
 				.FirstOrDefault(x => x.Name == "start");
 
 			if (start == null)
-				throw new LabelNotExists(Messages.StartNotExist);
-			
+				throw new LabelNotExists("Программа обязана иметь точку входа start");
+			if (start.Level != 1)
+				throw new SyntaxErrorException("Лейбл 'start' не должен иметь табуляции");
 		}
 	}
 }

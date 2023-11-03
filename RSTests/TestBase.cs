@@ -23,29 +23,19 @@ namespace RSTests
 		protected void ExecuteUntilExit(string path)
 		{
 			RS.LoadProgram(path, false);
-			string? assembly = Assembly.GetExecutingAssembly().FullName;
-			if (assembly == null)
-				throw new NullReferenceException("Can not find currect assembly for tests.");
+			
 			Writer = new TestWriter();
 			RenSharpAssert assert = CreateAssert();
 
 			RS.Configuration.Writer = Writer;
 			RS.SetVariable("Assert", assert);
 
-			if (RS == null)
-				throw new ArgumentException("RenSharpCore is null!");
-
-			Command? command = null;
-			while((command is Exit) == false)
+			while (true)
 			{
-				try
-				{
-					command = RS.ReadNext();
-				}
-				catch(Exception ex)
-				{
-					throw;
-				}
+				Command? command = RS.ReadNext();
+
+				if (command is Exit)
+					break;
 			}
 		}
 

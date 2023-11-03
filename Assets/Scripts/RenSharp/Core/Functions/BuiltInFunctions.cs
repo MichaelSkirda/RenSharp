@@ -2,7 +2,7 @@
 
 namespace RenSharp.Core.Functions
 {
-	[PyImport("rs")]
+	[PyImport("RS")]
 	public class BuiltInFunctions
 	{
 		private RenSharpCore Core { get; set; }
@@ -13,7 +13,7 @@ namespace RenSharp.Core.Functions
 			Core = core;
 		}
 
-		[PyImport("clearRollback")]
+		[PyImport("clear_rollback")]
 		public void ClearRollback() => Ctx.RollbackStack.Clear();
 
 		#region static

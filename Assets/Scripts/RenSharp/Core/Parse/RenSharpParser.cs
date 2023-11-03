@@ -1,12 +1,12 @@
 ﻿using RenSharp.Models;
-using RenSharp.Models.Commands;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 
-namespace RenSharp.Core.Read
+namespace RenSharp.Core.Parse
 {
-    public class RenSharpReader
+    public class RenSharpParser
     {
         private Dictionary<string, Func<string[], Configuration, Command>> Parsers { get; set; }
             = new Dictionary<string, Func<string[], Configuration, Command>>();
@@ -14,7 +14,7 @@ namespace RenSharp.Core.Read
         private RenSharpValidator Validator { get; set; }
         private Configuration Config { get; set; }
 
-        public RenSharpReader(Configuration config)
+        public RenSharpParser(Configuration config)
         {
             Config = config;
             Parsers = Config.CommandParsers;
@@ -23,7 +23,7 @@ namespace RenSharp.Core.Read
 
         internal List<Command> ParseCode(IEnumerable<string> codeLines)
         {
-            ReaderContext ctx = new ReaderContext();
+            ParserContext ctx = new ParserContext();
             codeLines = codeLines.Append("exit");
 
             ctx.ParseFunc = ParseCommands;
@@ -46,7 +46,7 @@ namespace RenSharp.Core.Read
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception($"at line {ctx.SourceLine}. Commans is '{ctx.LineText}'", ex);
+                    throw new SyntaxErrorException($"at line {ctx.SourceLine}. Commans is '{ctx.LineText}'", ex);
                 }
             }
 
@@ -54,7 +54,7 @@ namespace RenSharp.Core.Read
             return ctx.Commands;
         }
 
-        internal List<Command> ParseCommands(ReaderContext ctx)
+        internal List<Command> ParseCommands(ParserContext ctx)
         {
             Command command = ParseCommand(ctx);
             List<Command> parsed = new List<Command>() { command };
@@ -65,7 +65,7 @@ namespace RenSharp.Core.Read
             return parsed;
         }
 
-        private Command ParseCommand(ReaderContext ctx)
+        private Command ParseCommand(ParserContext ctx)
         {
 
             string line = "";

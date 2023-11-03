@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using RenSharp.Core.Read;
+using RenSharp.Core.Parse;
 using RenSharp.Models;
 using RenSharp.Models.Commands;
 
@@ -9,7 +9,7 @@ internal static class IfComplexParser
 {
     // Todo rename rootIf. Actually it's can be not root.
     // Not root and root if - at all almost same.
-    internal static List<Command> Parse(ReaderContext ctx, If rootIf)
+    internal static List<Command> Parse(ParserContext ctx, If rootIf)
     {
         List<Command> commands = new List<Command>();
         int endIfLine;

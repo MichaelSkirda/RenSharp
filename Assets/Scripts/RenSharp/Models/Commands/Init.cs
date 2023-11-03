@@ -1,8 +1,6 @@
 ﻿using RenSharp.Core;
 using RenSharp.Interfaces;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace RenSharp.Models.Commands
 {
@@ -13,8 +11,6 @@ namespace RenSharp.Models.Commands
 
 		public Init(int priority, bool isPython)
 		{
-			if (priority < -999 || priority > 999)
-				throw new ArgumentException("Priority of init can not be higher 999 and lower -999.");
 			Priority = priority;
 			IsPython = isPython;
 		}

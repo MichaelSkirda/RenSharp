@@ -1,0 +1,11 @@
+init 1000
+	"do nothing"
+	"zero messages"
+
+label start
+	"foobar"
+	"hello"
+
+label start
+	"hello"
+	"foobar"
