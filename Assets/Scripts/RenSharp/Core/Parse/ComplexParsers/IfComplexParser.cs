@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using RenSharp.Core.Parse;
 using RenSharp.Models;
 using RenSharp.Models.Commands;
@@ -27,10 +26,9 @@ internal static class IfComplexParser
             foreach(Command command in parsed)
             {
                 if (IsValid(command, rootIf) == false)
-                    throw new ArgumentException($"Can not parse command {command.GetType()}");
+                    throw new ArgumentException($"Не получилось прочесть команду '{command.GetType()}'");
             }
             commands.AddRange(parsed);
-
         }
 
         foreach(Command command in commands)

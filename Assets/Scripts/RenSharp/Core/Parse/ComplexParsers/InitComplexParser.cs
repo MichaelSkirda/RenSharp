@@ -10,14 +10,17 @@ namespace RenSharp.Core.Parse.ComplexParsers
         public static List<Command> Parse(ParserContext ctx, Init initStart)
         {
             ctx.Line++;
+
+            // Virtual root cmd
             var python = new Python()
             {
                 Line = ctx.Line,
                 SourceLine = ctx.SourceLine,
-                Level = initStart.Level // parse like same level with initStart 
+                Level = initStart.Level
             };
             PythonComplexParser.Parse(ctx, python);
-            // But actually it's level bigger
+            
+            // Как будто это просто комана 'python' внутри init
             python.Level = initStart.Level + 1;
             return new List<Command> { python };
         }

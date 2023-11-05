@@ -11,16 +11,30 @@ namespace RenSharp
 	{
 		private List<Type> SkipCommands = new List<Type>();
 		private Dictionary<string, string> DefaultAttributes { get; set; } = new Dictionary<string, string>();
+		private Dictionary<string, object> Values { get; set; } = new Dictionary<string, object>();
 
+		public T GetValueOrDefault<T>(string key)
+		{
+			try
+			{
+				// Won't catch key not found
+				return (T)Values[key];
+			}
+			catch(InvalidCastException)
+			{
+				return default;
+			}
+		}
+		public void SetValue(string key, object value) => Values[key] = value;
 
 		public Dictionary<string, Func<string[], Configuration, Command>> CommandParsers { get; set; }
-			= new Dictionary<string, Func<string[], Configuration, Command>>();
+			= new();
 
 		public Dictionary<Type, Func<ParserContext, Command, List<Command>>> ComplexCommandParsers { get; set; }
-			= new Dictionary<Type, Func<ParserContext, Command, List<Command>>>();
+			= new();
 
 		public Dictionary<Type, List<Predicate<Command>>> IsComplexPredicates { get; set; }
-			= new Dictionary<Type, List<Predicate<Command>>>();
+			= new();
 
 		internal List<Type> AllowedToPushStack { get; set; } = new List<Type>();
 

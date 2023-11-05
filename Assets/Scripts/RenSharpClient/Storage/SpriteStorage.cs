@@ -12,40 +12,52 @@ namespace Assets.Scripts.RenSharpClient
 	{
 		[SerializeField]
 		private SpriteItem[] _spriteItems;
-		internal Dictionary<string, List<CharacterImage>> CharactersSprites { get; set; }
+		private Dictionary<string, List<RenSharpImage>> CharactersSprites { get; set; }
 
-		public CharacterImage GetCharacterSprite(string name, string details)
+		public RenSharpImage GetSprite(string name, string details)
 		{
-			List<CharacterImage> characterSprites;
+			List<RenSharpImage> characterSprites;
 
 			bool exist = CharactersSprites.TryGetValue(name, out characterSprites);
 			if(!exist)
 				throw new FileNotFoundException($"Не получилось найти спрайт персонажа '{name} {details}'");
 
-			CharacterImage sprite = characterSprites.FirstOrDefault(x => x.Details == details);
+			RenSharpImage sprite = characterSprites.FirstOrDefault(x => x.Details == details);
 			if(sprite == null)
 				throw new FileNotFoundException($"Не получилось найти спрайт персонажа '{name} {details}'");
 
 			return sprite;
 		}
 
-		private void SetCharacterSprite(string name, CharacterImage sprite)
+		public IEnumerable<RenSharpImage> GetSprites(string name)
 		{
-			List<CharacterImage> characterSprites;
+			List<RenSharpImage> characterSprites;
+
+			bool notExist = !CharactersSprites.TryGetValue(name, out characterSprites);
+			if (notExist)
+				throw new FileNotFoundException($"Не получилось найти спрайт персонажа '{name}'");
+
+			return characterSprites;
+		}
+
+		private void SetSprite(string name, RenSharpImage sprite)
+		{
+			List<RenSharpImage> characterSprites;
 			bool exist = CharactersSprites.TryGetValue(name, out characterSprites);
 
 			if (!exist)
 			{
-				characterSprites = new List<CharacterImage>();
+				characterSprites = new List<RenSharpImage>();
 				CharactersSprites[name] = characterSprites;
 			}
 
 			characterSprites.Add(sprite);
 		}
 
+
 		void Start()
 		{
-			CharactersSprites = new Dictionary<string, List<CharacterImage>>();
+			CharactersSprites = new Dictionary<string, List<RenSharpImage>>();
 
 			foreach(SpriteItem item in _spriteItems)
 			{
@@ -57,8 +69,12 @@ namespace Assets.Scripts.RenSharpClient
 				string name = words[0];
 				string details = words.Skip(1).ToWord();
 
-				CharacterImage sprite = new CharacterImage(details, item.Sprite);
-				SetCharacterSprite(name, sprite);
+				Sprite sprite = item.Sprite;
+				float height = sprite.rect.height;
+				float width = sprite.rect.width;
+
+				RenSharpImage image = new RenSharpImage(details, item.Sprite, height, width);
+				SetSprite(name, image);
 			}
 		}
 	}

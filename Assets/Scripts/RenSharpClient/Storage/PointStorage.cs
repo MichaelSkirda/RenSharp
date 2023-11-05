@@ -11,5 +11,10 @@ namespace Assets.Scripts.RenSharpClient.Storage
 
 		public PointItem Find(string name)
 			=> pointItems.First(x => x.Name == name);
+
+		private void Start()
+		{
+			
+		}
 	}
 }

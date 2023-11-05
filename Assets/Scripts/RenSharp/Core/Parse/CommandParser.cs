@@ -70,11 +70,6 @@ namespace RenSharp.Core.Parse
         }
         internal static Message ParseMessage(string[] words, Configuration config)
         {
-            // Example:
-            // say Eliz "Hello, Alex! How are you?" no-clear delay=50
-            // say nobody "Hello, It's test message" delay=20
-            //    ^       ^ (splitter)   ^         ^   ^ (index 3)
-            // (index 0)              (index 1)  (splitter)
             string line = string.Join(" ", words);
 
             Regex valueInQuotes = new Regex(@"""(?:[^""\\]|\\.)*""");

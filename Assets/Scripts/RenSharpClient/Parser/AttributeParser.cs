@@ -1,5 +1,4 @@
-﻿using Microsoft.Scripting.Actions;
-using RenSharp.Models;
+﻿using RenSharp.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +12,8 @@ namespace Assets.Scripts.RenSharpClient
 		{
 			var attributes = new Dictionary<string, string>();
 
-			string currentKey = null ;
+			// Null to fall with exception if first word not keyword
+			string currentKey = null;
 
 			foreach (string word in words)
 			{

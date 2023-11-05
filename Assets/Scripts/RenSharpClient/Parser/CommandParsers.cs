@@ -12,8 +12,6 @@ internal static class CommandParsers
 
 	private static List<string> ReservedWords = new List<string>()
 	{
-		
-
 		// Control
 		"label",
 		"jump",
@@ -44,7 +42,7 @@ internal static class CommandParsers
 
 	internal static Show ParseShow(string[] words, ImageController controller)
 	{
-		if (words.Count() < 1)
+		if (words.Count() < 2)
 			throw new ArgumentException(" оманда 'show' должна указывать какой спрайт показать.");
 
 		string name = words[1];
@@ -56,6 +54,22 @@ internal static class CommandParsers
 		Attributes attributes = AttributeParser.ParseAttributes(AttributesNames, attributesWords);
 
 		return new Show(name, details, attributes, controller);
+	}
+
+	internal static Image ParseImage(string[] words, ImageController controller)
+	{
+		if (words.Count() < 2)
+			throw new ArgumentException(" оманда 'image' должна указывать им€ спрайта из ImageController.");
+
+		string name = words[1];
+		string details = words.Skip(2).ToWord();
+		if (string.IsNullOrWhiteSpace(details))
+			details = string.Empty;
+
+		var attributes = new Attributes();
+
+		var image = new Image(name, details, attributes, controller);
+		return image;
 	}
 
 	internal static Hide ParseHide(string[] words, ImageController controller)

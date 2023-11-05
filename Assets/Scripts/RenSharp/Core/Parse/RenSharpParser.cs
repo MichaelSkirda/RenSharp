@@ -67,7 +67,6 @@ namespace RenSharp.Core.Parse
 
         private Command ParseCommand(ParserContext ctx)
         {
-
             string line = "";
             while (string.IsNullOrWhiteSpace(line))
             {

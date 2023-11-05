@@ -526,6 +526,8 @@ MonoBehaviour:
     Sprite: {fileID: 21300000, guid: f2f33639717c3b143baa8606efdeaf9c, type: 3}
   - Name: John Norm
     Sprite: {fileID: 21300000, guid: 90c8309ef4e387a42903840bef8a5dd0, type: 3}
+  - Name: office1
+    Sprite: {fileID: 21300000, guid: 3e933e641f08705458c071e857295505, type: 3}
 --- !u!1 &280653068
 GameObject:
   m_ObjectHideFlags: 0
@@ -948,7 +950,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2141159380}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -984,8 +986,44 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Sprites: {fileID: 122114285}
   Points: {fileID: 1154914162}
-  CharacterPrefab: {fileID: 7475213838404286, guid: c147268a2ca5da54eb6596d202b0abed, type: 3}
-  Parent: {fileID: 1179337587}
+  SpritePrefab: {fileID: 7475213838404286, guid: c147268a2ca5da54eb6596d202b0abed, type: 3}
+  Parent: {fileID: 1004272737}
+--- !u!1 &1004272737
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1004272738}
+  m_Layer: 5
+  m_Name: SpritesActive
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1004272738
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1004272737}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2141159380}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: -500}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1154914160
 GameObject:
   m_ObjectHideFlags: 0
@@ -1192,7 +1230,7 @@ RectTransform:
   - {fileID: 280653069}
   - {fileID: 346254122}
   m_Father: {fileID: 2141159380}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1325,7 +1363,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2141159380}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1364,7 +1402,7 @@ RectTransform:
   - {fileID: 122114284}
   - {fileID: 1154914161}
   m_Father: {fileID: 2141159380}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1403,7 +1441,7 @@ RectTransform:
   - {fileID: 435686581}
   - {fileID: 28861154}
   m_Father: {fileID: 2141159380}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
@@ -1452,6 +1490,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1004272738}
   - {fileID: 1661186930}
   - {fileID: 1416944463}
   - {fileID: 983735844}
