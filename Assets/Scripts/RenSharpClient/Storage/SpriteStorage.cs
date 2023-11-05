@@ -73,7 +73,7 @@ namespace Assets.Scripts.RenSharpClient
 				float height = sprite.rect.height;
 				float width = sprite.rect.width;
 
-				RenSharpImage image = new RenSharpImage(details, item.Sprite, height, width);
+				RenSharpImage image = new RenSharpImage(details, item.Sprite, width, height);
 				SetSprite(name, image);
 			}
 		}

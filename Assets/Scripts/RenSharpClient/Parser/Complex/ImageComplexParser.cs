@@ -22,18 +22,16 @@ namespace Assets.Scripts.RenSharpClient.Parser.Complex
 		internal static List<Command> Parse(ParserContext ctx, Image rootCmd)
 		{
 			// Парсим только манды которые ровно на таб больше Image
-			int expectedTab = rootCmd.Level + 1;
+			int expectedLevel = rootCmd.Level + 1;
 			Attributes attributes = rootCmd.Attributes;
 
 			while (true)
 			{
 				int beforeParseLine = ctx.SourceLine;
+				string lineText = ctx.NextNotEmptyLine();
 
-				ctx.SourceLine++;
-				string lineText = ctx.LineText;
-
-				int actualTab = RenSharpParser.GetCommandLevel(lineText);
-				if (actualTab > expectedTab)
+				int actualLevel = RenSharpParser.GetCommandLevel(lineText);
+				if (actualLevel > expectedLevel)
 					throw new ArgumentException($"Неожиданный таб в команде '{lineText}'");
 
 				string trimmedLine = lineText.Trim();
@@ -41,14 +39,16 @@ namespace Assets.Scripts.RenSharpClient.Parser.Complex
 				if (trimmedLine == string.Empty || trimmedLine.Length <= 0)
 					continue;
 
-				string[] lineWords = trimmedLine.Split(' ');
-
-				if (actualTab < expectedTab)
+				if (actualLevel < expectedLevel)
 				{
 					// Stop parsing
 					ctx.SourceLine = beforeParseLine;
 					break;
 				}
+
+				string[] lineWords = trimmedLine.Split(' ');
+
+				
 
 				string name = lineWords[0];
 				bool unallowedName = !AttributeAllowedNames.Contains(name);
@@ -64,7 +64,7 @@ namespace Assets.Scripts.RenSharpClient.Parser.Complex
 				attributes.AddAttribute(name, value, rewrite: true);
 			}
 
-			return new List<Command>() { rootCmd };
+			return new List<Command>();
 		}
 	}
 }

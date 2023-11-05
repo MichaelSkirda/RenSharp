@@ -27,6 +27,23 @@ namespace RenSharp.Core.Parse
             set => _parseSingle = value;
         }
 
+        internal string NextNotEmptyLine()
+        {
+            while(true)
+            {
+                SourceLine++;
+                string line = LineText;
+                string trimmedLine = line.Trim();
+
+                if (string.IsNullOrWhiteSpace(trimmedLine))
+                    continue;
+
+                if (trimmedLine.StartsWith('#'))
+                    continue;
+
+                return line;
+            }
+        }
         internal List<Command> ParseCommands() => _parseFunc(this);
         internal Command ParseSingle() => _parseSingle(this);
         internal Command SeekNext()

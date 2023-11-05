@@ -58,15 +58,20 @@ public class ImageController : MonoBehaviour
 		string fullscreen = show.attributes["fullscreen"];
 		float multiplier;
 
-		int screenHeight = config.GetValueOrDefault<int>("screen_height");
-		int screenWidth = config.GetValueOrDefault<int>("screen_width");
 
 		// –аст€гивает по высоте и ширине
 		// ≈сли fullscreen не указано использует обычный размер
 		if (fullscreen == "height")
-			multiplier = screenHeight / rect.height; 
+		{
+			int screenHeight = config.GetValueOrDefault<int>("screen_height");
+			multiplier = screenHeight / rect.height;
+
+		}
 		else if (fullscreen == "width" || fullscreen == string.Empty)
+		{
+			int screenWidth = config.GetValueOrDefault<int>("screen_width");
 			multiplier = screenWidth / rect.width;
+		}
 		else
 		{
 			float width = image.Width;

@@ -1,10 +1,8 @@
 
 init 999:
 
-	image alex
-		height 500
-		width 900
-		zoom .5
+	image eliz
+		height 900
 
 	python:
 		x = RS.GetEnv("APPDATA")
