@@ -24,6 +24,7 @@ public static class RSUnityConfig
 		config.Skip<Show>();
 		config.Skip<Hide>();
 		config.Skip<Play>();
+		config.Skip<Image>();
 
 		config.SetValue("screen_height", 1080);
 		config.SetValue("screen_width", 1920);

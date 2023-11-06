@@ -1,11 +1,15 @@
 using Assets.Scripts.RenSharpClient;
 using Assets.Scripts.RenSharpClient.Commands.Results;
 using Assets.Scripts.RenSharpClient.Models;
+using Assets.Scripts.RenSharpClient.Models.Commands.Results;
 using Assets.Scripts.RenSharpClient.Storage;
+using Microsoft.Cci;
 using RenSharp;
+using RenSharp.Models;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using static IronPython.Modules._ast;
 
 public class ImageController : MonoBehaviour
 {
@@ -115,38 +119,39 @@ public class ImageController : MonoBehaviour
 		}
 	}
 
-	internal void SetSize(string name, string details, int? width, int? height)
+	internal void SetSize(ImageResult imageResult)
 	{
+		IEnumerable<RenSharpImage> images;
+
+		int? height = imageResult.Height;
+		int? width = imageResult.Width;
+		float zoom = imageResult.Zoom;
+		string name = imageResult.Name;
+		string details = imageResult.Details;
+
 		bool hasDetails = !string.IsNullOrWhiteSpace(details);
 
 		if (hasDetails)
-			SetSizeSignle(name, details, width, height);
+		{
+			RenSharpImage image = Sprites.GetSprite(name, details);
+			images = new List<RenSharpImage>() { image };
+		}
 		else
-			SetSizeAll(name, width, height);
-	}
-
-	internal void SetSizeSignle(string name, string details, int? width, int? height)
-	{
-		RenSharpImage image = Sprites.GetSprite(name, details);
-		SetSize(image, width, height);
-	}
-
-	internal void SetSizeAll(string name, int? width, int? height)
-	{
-		IEnumerable<RenSharpImage> images = Sprites.GetSprites(name);
+		{
+			images = Sprites.GetSprites(name);
+		}
 
 		foreach (RenSharpImage image in images)
 		{
-			SetSize(image, width, height);
+			if (height != null)
+				image.Height = height.Value * zoom;
+			else
+				image.Height *= zoom;
+
+			if (width != null)
+				image.Width = width.Value * zoom;
+			else
+				image.Width *= zoom;
 		}
 	}
-
-	internal void SetSize(RenSharpImage image, int? width, int? height)
-	{
-		if (height != null)
-			image.Height = height.Value;
-		if (width != null)
-			image.Width = width.Value;
-	}
-
 }

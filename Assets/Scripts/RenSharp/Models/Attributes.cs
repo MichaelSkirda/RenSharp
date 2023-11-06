@@ -26,6 +26,18 @@ namespace RenSharp.Models
 			return result;
 		}
 
+		public float? GetFloatOrNull(string key)
+		{
+			bool notFound = !values.TryGetValue(key, out string str);
+			if (notFound)
+				return null;
+
+			bool notParsed = !float.TryParse(str, out float result);
+			if (notParsed)
+				return null;
+			return result;
+		}
+
 		private Dictionary<string, string> values { get; set; } = new Dictionary<string, string>();
 
 		public Attributes() { }

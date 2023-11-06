@@ -1,4 +1,5 @@
-﻿using RenSharp.Core;
+﻿using Assets.Scripts.RenSharpClient.Models.Commands.Results;
+using RenSharp.Core;
 using RenSharp.Models;
 
 namespace Assets.Scripts.RenSharpClient.Models.Commands
@@ -22,8 +23,20 @@ namespace Assets.Scripts.RenSharpClient.Models.Commands
 		{
 			int? width = Attributes.GetIntOrNull("width");
 			int? height = Attributes.GetIntOrNull("height");
+			float? zoom = Attributes.GetFloatOrNull("zoom");
+			if (zoom == null)
+				zoom = 1f;
 
-			Controller.SetSize(Name, Details, width, height);
+			var image = new ImageResult()
+			{
+				Width = width,
+				Height = height,
+				Zoom = zoom.Value,
+				Name = Name,
+				Details = Details
+			};
+
+			Controller.SetSize(image);
 		}
 	}
 }
