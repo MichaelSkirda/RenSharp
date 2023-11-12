@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace RenSharp.Models
@@ -13,6 +14,14 @@ namespace RenSharp.Models
 
 		public bool TryGetValue(string key, out string result)
 			=> values.TryGetValue(key, out result);
+
+		public string GetValueOrNull(string key)
+		{
+			bool hasValue = TryGetValue(key, out string result);
+			if (hasValue)
+				return result;
+			return null;
+		}
 
 		public int? GetIntOrNull(string key)
 		{
@@ -32,10 +41,15 @@ namespace RenSharp.Models
 			if (notFound)
 				return null;
 
-			bool notParsed = !float.TryParse(str, out float result);
-			if (notParsed)
+			try
+			{
+				float result = float.Parse(str, CultureInfo.InvariantCulture);
+				return result;
+			}
+			catch
+			{
 				return null;
-			return result;
+			}
 		}
 
 		private Dictionary<string, string> values { get; set; } = new Dictionary<string, string>();

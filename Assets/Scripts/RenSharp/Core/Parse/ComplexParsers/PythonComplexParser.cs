@@ -28,8 +28,6 @@ namespace RenSharp.Core.Parse.ComplexParsers
                 blockStart.Commands.Add(line.Substring(minTab));
             }
 
-
-
             // Must be empty. All commands contains in blockStart
             return new List<Command>();
         }

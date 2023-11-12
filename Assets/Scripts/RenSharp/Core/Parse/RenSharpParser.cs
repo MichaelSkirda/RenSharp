@@ -28,6 +28,8 @@ namespace RenSharp.Core.Parse
 
             ctx.ParseFunc = ParseCommands;
             ctx.ParseSingleFunc = ParseCommand;
+            ctx.ParseAboveFunc = ParseAbove;
+
             ctx.SourceCode = codeLines.ToList();
             ctx.SourceCode = RemoveComments(ctx.SourceCode);
             // Обязательно. Когда complex parser читает он не проверяет есть ли следующая строчка
@@ -54,9 +56,31 @@ namespace RenSharp.Core.Parse
             return ctx.Commands;
         }
 
-        internal List<Command> ParseCommands(ParserContext ctx)
+        private List<Command> ParseAbove(ParserContext ctx, int level)
         {
-            Command command = ParseCommand(ctx);
+            var result = new List<Command>();
+
+            while(true)
+            {
+                int previousLine = ctx.Line;
+                int previousSouceLine = ctx.SourceLine;
+
+                List<Command> parsed = ParseCommands(ctx);
+                if (parsed == null || parsed.Count() <= 0)
+                    throw new ArgumentException($"Не получилось выполнить парсинг 'ParseAbove'. Строчка: '{previousSouceLine}'.");
+                if (parsed[0].Level <= level)
+                {
+                    ctx.Line = previousLine;
+                    ctx.SourceLine = previousSouceLine;
+                    return result;
+                }
+                result.AddRange(parsed);
+            }
+        }
+
+        private List<Command> ParseCommands(ParserContext ctx)
+        {
+            Command command = ctx.ParseSingle();
             List<Command> parsed = new List<Command>() { command };
 
             if (Config.IsComplex(command))

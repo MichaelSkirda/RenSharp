@@ -14,20 +14,15 @@ namespace RenSharp.Core.Parse
         internal string LineText => SourceCode[SourceLine - 1];
         internal bool HasNextSourceLine => SourceLine < SourceCode.Count;
 
-        private Func<ParserContext, List<Command>> _parseFunc;
-        private Func<ParserContext, Command> _parseSingle;
+        internal Func<ParserContext, List<Command>> ParseFunc { private get; set; }
+		internal Func<ParserContext, Command> ParseSingleFunc { private get; set; }
+        internal Func<ParserContext, int, List<Command>> ParseAboveFunc { private get; set; }
 
-        internal Func<ParserContext, List<Command>> ParseFunc
-        {
-            set => _parseFunc = value;
-        }
+		internal List<Command> ParseCommands() => ParseFunc(this);
+		internal Command ParseSingle() => ParseSingleFunc(this);
+        internal List<Command> ParseAbove(int level) => ParseAboveFunc(this, level);
 
-        internal Func<ParserContext, Command> ParseSingleFunc
-        {
-            set => _parseSingle = value;
-        }
-
-        internal string NextNotEmptyLine()
+		internal string NextNotEmptyLine()
         {
             while(true)
             {
@@ -44,8 +39,7 @@ namespace RenSharp.Core.Parse
                 return line;
             }
         }
-        internal List<Command> ParseCommands() => _parseFunc(this);
-        internal Command ParseSingle() => _parseSingle(this);
+        
         internal Command SeekNext()
         {
             int line = Line;

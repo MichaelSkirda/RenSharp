@@ -1,7 +1,7 @@
 init 999:
 
 	image eliz
-		zoom .5
+		
 
 	python:
 		x = RS.GetEnv("APPDATA")

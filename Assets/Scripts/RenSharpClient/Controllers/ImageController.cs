@@ -6,7 +6,9 @@ using Assets.Scripts.RenSharpClient.Storage;
 using Microsoft.Cci;
 using RenSharp;
 using RenSharp.Models;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using static IronPython.Modules._ast;
@@ -123,9 +125,17 @@ public class ImageController : MonoBehaviour
 	{
 		IEnumerable<RenSharpImage> images;
 
-		int? height = imageResult.Height;
-		int? width = imageResult.Width;
+		string widthStr = imageResult.Width;
+		string heightStr = imageResult.Height;
+
 		float zoom = imageResult.Zoom;
+
+		float width;
+		float height;
+
+		bool hasWidth = float.TryParse(widthStr, out width);
+		bool hasHeight = float.TryParse(heightStr, out height);
+
 		string name = imageResult.Name;
 		string details = imageResult.Details;
 
@@ -141,17 +151,61 @@ public class ImageController : MonoBehaviour
 			images = Sprites.GetSprites(name);
 		}
 
+		if(heightStr == "auto")
+		{
+			if (hasWidth == false)
+				throw new ArgumentException("Параметр width обязан иметь значение при height auto");
+			ResizeHeightAuto(images, width, zoom);
+		}
+		else if(widthStr == "auto")
+		{
+			if (hasHeight == false)
+				throw new ArgumentException("Параметр height обязан иметь значение при width auto");
+			ResizeWidthAuto(images, height, zoom);
+		}
+		else
+		{
+			RenSharpImage image = images.FirstOrDefault();
+			if (image == null)
+				throw new ArgumentException($"Персонаж с именем '{name} {details}' не найден.");
+			if(hasHeight == false)
+				height = image.Height;
+			if(hasWidth == false)
+				width = image.Width;
+			ResizeDefault(images, width, height, zoom);
+		}
+	}
+
+	private void ResizeDefault(IEnumerable<RenSharpImage> images, float width, float height, float zoom)
+	{
+		foreach(RenSharpImage image in images)
+		{
+			image.Height = height * zoom;
+			image.Width = width * zoom;
+		}
+	}
+
+	private void ResizeHeightAuto(IEnumerable<RenSharpImage> images, float width, float zoom)
+	{
 		foreach (RenSharpImage image in images)
 		{
-			if (height != null)
-				image.Height = height.Value * zoom;
-			else
-				image.Height *= zoom;
+			width *= zoom;
+			float multiplier = width / image.Width;
 
-			if (width != null)
-				image.Width = width.Value * zoom;
-			else
-				image.Width *= zoom;
+			image.Width = width;
+			image.Height *= multiplier;
+		}
+	}
+
+	private void ResizeWidthAuto(IEnumerable<RenSharpImage> images, float height, float zoom)
+	{
+		foreach (RenSharpImage image in images)
+		{
+			height *= zoom;
+			float multiplier = height / image.Height;
+
+			image.Width *= multiplier;
+			image.Height = height;
 		}
 	}
 }

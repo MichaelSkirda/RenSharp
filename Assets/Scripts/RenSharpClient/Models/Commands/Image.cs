@@ -21,8 +21,8 @@ namespace Assets.Scripts.RenSharpClient.Models.Commands
 
 		public override void Execute(RenSharpCore core)
 		{
-			int? width = Attributes.GetIntOrNull("width");
-			int? height = Attributes.GetIntOrNull("height");
+			string width = Attributes.GetValueOrNull("width");
+			string height = Attributes.GetValueOrNull("height");
 			float? zoom = Attributes.GetFloatOrNull("zoom");
 			if (zoom == null)
 				zoom = 1f;
