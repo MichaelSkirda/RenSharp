@@ -1,4 +1,5 @@
 ﻿using RenSharp.Core;
+using RenSharp.Core.Parse;
 
 namespace RenSharp.Models
 {
@@ -12,5 +13,11 @@ namespace RenSharp.Models
 
 		public bool IsNot<T>() where T : Command => !(this is T);
 		public bool Is<T>() where T : Command => this is T;
+		public void SetLine(ParserContext ctx)
+		{
+			ctx.Line++;
+			Line = ctx.Line;
+			SourceLine = ctx.SourceLine;
+		}
 	}
 }
