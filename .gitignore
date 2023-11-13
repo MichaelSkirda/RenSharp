@@ -80,7 +80,11 @@ RSTests/obj/
 Assets/Scripts/RenSharp/obj/
 Assets/Scripts/RenSharp/bin/
 
+Assets/Scripts/obj/
+Assets/Scripts/bin/
+
 !RenSharpConsole/*.csproj
 !Assets/Scripts/RenSharp/RenSharp.csproj
+!Assets/Scripts/RenSharp.csproj
 !RSTests/RSTests.csproj
 *.meta
