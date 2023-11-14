@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RenSharpConsole", "RenSharp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RSTests", "RSTests\RSTests.csproj", "{9CF1ADF7-E69B-4C7E-AEBA-58EF3D3525CB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RenSharp", "Assets\Scripts\RenSharp.csproj", "{1D186AA2-7598-4CFF-A3C4-C01E74A34AC2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RenSharpCore", "Assets\Scripts\RenSharp\RenSharpCore.csproj", "{96ADED56-6077-4A9D-B86E-DB9DFE0B14B2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +29,10 @@ Global
 		{9CF1ADF7-E69B-4C7E-AEBA-58EF3D3525CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9CF1ADF7-E69B-4C7E-AEBA-58EF3D3525CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9CF1ADF7-E69B-4C7E-AEBA-58EF3D3525CB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1D186AA2-7598-4CFF-A3C4-C01E74A34AC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1D186AA2-7598-4CFF-A3C4-C01E74A34AC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1D186AA2-7598-4CFF-A3C4-C01E74A34AC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1D186AA2-7598-4CFF-A3C4-C01E74A34AC2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96ADED56-6077-4A9D-B86E-DB9DFE0B14B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96ADED56-6077-4A9D-B86E-DB9DFE0B14B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96ADED56-6077-4A9D-B86E-DB9DFE0B14B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96ADED56-6077-4A9D-B86E-DB9DFE0B14B2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

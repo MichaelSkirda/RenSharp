@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Assets\Scripts\RenSharp\RenSharp.csproj" />
+    <ProjectReference Include="..\Assets\Scripts\RenSharp\RenSharpCore.csproj" />
   </ItemGroup>
 
   <ItemGroup>
