@@ -76,7 +76,15 @@ namespace RenSharp.Core.Parse
             return line;
         }
 
-        private static bool TryParseIncrement(string expression, out string result)
+        internal static string SpaceAfterIfNotNeccessary(string line)
+        {
+            if (line.StartsWith("if("))
+                return "if (" + line.Substring(3);
+            return line;
+        }
+
+
+		private static bool TryParseIncrement(string expression, out string result)
         {
             string name = expression.Replace("--", "").Replace("++", "");
 
