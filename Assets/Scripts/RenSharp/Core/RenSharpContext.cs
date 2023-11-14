@@ -11,7 +11,7 @@ namespace RenSharp.Core
     public class RenSharpContext
     {
 		internal RenSharpProgram Program { get; set; }
-		private Stack<StackFrame> Stack { get; set; }
+		private Stack<StackFrame> CallStack { get; set; }
 		internal Stack<Command> RollbackStack { get; private set; }
 		private PythonEvaluator PyEvaluator { get; set; }
 
@@ -21,7 +21,7 @@ namespace RenSharp.Core
 
 		public RenSharpContext()
 		{
-			Stack = new Stack<StackFrame>();
+			CallStack = new Stack<StackFrame>();
 			RollbackStack = new Stack<Command>();
 
 			PyEvaluator = new PythonEvaluator();
@@ -32,34 +32,35 @@ namespace RenSharp.Core
 
 		internal void Goto(Command command)
 		{
+			// Some commands may PushState before rewrite stack. Than stack frame will be saved
 			Program.Goto(command.Line);
-			RewriteStack(command);
+			RewriteLevelStack(command);
 		}
 
 		#region StackState
 		public void PushState()
 		{
 			CurrentFrame.Line = Program.Current.Line;
-			var frame = new StackFrame();
-			Stack.Push(frame);
+			CallStack.Push(CurrentFrame);
+			CurrentFrame = new StackFrame();
 		}
 
 		internal void PopState()
 		{
-			CurrentFrame = Stack.Pop();
+			CurrentFrame = CallStack.Pop();
 			int line = CurrentFrame.Line;
 			Program.Goto(line + 1);
 		}
 
 		internal bool TryPopState()
 		{
-			if (Stack.Count > 0)
+			if (CallStack.Count > 0)
 				return false;
 			PopState();
 			return true;
 		}
 
-		internal void RewriteStack(Command command)
+		internal void RewriteLevelStack(Command command)
 		{
 			LevelStack.Clear();
 			int line = command.Line;
@@ -67,7 +68,10 @@ namespace RenSharp.Core
 
 			Stack<int> levelStack = new Stack<int>();
 
-			while (levelStack.Count + 1 < command.Level)
+			// После того как мы прыгнули на строчку мы идем назад
+			// И ищем все команды, которые увеличивали табуляцию.
+			// У этих команд вызываем метод Push, чтобы составить новый levelStack.
+			while (levelStack.Count < command.Level - 1)
 			{
 				line--;
 				Command cmd = Program[line];

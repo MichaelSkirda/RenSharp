@@ -69,7 +69,7 @@ namespace RenSharp.Core
 
 			ExecuteInits();
 			Label main = Program.GetLabel("start");
-			Context.Goto(main);
+			Goto(main);
 		}
 
         public Command ReadNext()
@@ -152,7 +152,7 @@ namespace RenSharp.Core
 			foreach (Init init in inits)
 			{
 				Command initStart = Program[init.Line + 1];
-				Context.Goto(initStart);
+				Goto(initStart);
 				Command command;
 
 				while (true)
