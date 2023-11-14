@@ -18,12 +18,24 @@ internal class Program
 
 		while (true)
 		{
-			Command command = renSharp.ReadNext();
-
 			ConsoleKey key = Console.ReadKey().Key;
 
 			if (key == ConsoleKey.LeftArrow)
-				renSharp.Rollback();
+			{
+				try
+				{
+					renSharp.Rollback();
+				}
+				catch
+				{
+                    Console.WriteLine("Rollback пустой.");
+                }
+				continue;
+			}
+			Command command = renSharp.ReadNext();
+
+
+			
 		}
 	}
 }

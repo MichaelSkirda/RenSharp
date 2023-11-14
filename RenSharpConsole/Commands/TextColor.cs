@@ -28,7 +28,7 @@ namespace RenSharpConsole.Commands
 			command.SourceLine = SourceLine;
 			command.Level = Level;
 
-			return base.Rollback();
+			return command;
 		}
 	}
 }

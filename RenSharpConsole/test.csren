@@ -13,18 +13,18 @@ init 999:
 
 
 label start:
-	"foo"
+	"1"
 	jump expression "test_{"bar_"}" + str(123)
-	"after test"
+	"2"
 
 
 label test_bar_123:
-	"testtest"
+	"3"
 	# Soft return сработает только если был вызван call. Jump проигнорирует soft return.
 	soft return
-	"foobar"
+	"4"
 
 label test:
-	"test1"
+	"5"
 	call test_bar_123
-	"test2"
+	"6"

@@ -40,7 +40,12 @@ namespace RenSharp.Core
 
 		public void Rollback()
 		{
+			bool hasRollback = Context.RollbackStack.TryPop(out Command command);
+			if (hasRollback == false)
+				throw new InvalidOperationException("Rollback пуст");
 
+			Goto(command);
+			command.Execute(this);
 		}
 
 		public void LoadProgram(string path, bool saveScope = false)

@@ -11,11 +11,12 @@ namespace RenSharp.Core
     public class RenSharpContext
     {
 		internal RenSharpProgram Program { get; set; }
-		private Stack<StackFrame> CallStack { get; set; }
-		internal Stack<Command> RollbackStack { get; private set; }
 		private PythonEvaluator PyEvaluator { get; set; }
 
+		private Stack<StackFrame> CallStack { get; set; }
+		internal Stack<Command> RollbackStack { get; private set; }
 		internal StackFrame CurrentFrame { get; set; }
+
 		internal Stack<int> LevelStack => CurrentFrame.LevelStack;
 		internal int Level => LevelStack.Count + 1;
 
@@ -32,7 +33,7 @@ namespace RenSharp.Core
 
 		internal void Goto(Command command)
 		{
-			// Some commands may PushState before rewrite stack. Than stack frame will be saved
+			// Если был вызван 'PushState' то стек сохранен в 'CallStack'
 			Program.Goto(command.Line);
 			RewriteLevelStack(command);
 		}
