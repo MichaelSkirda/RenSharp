@@ -28,13 +28,13 @@ namespace RenSharp
 		public void SetValue(string key, object value) => Values[key] = value;
 
 		public Dictionary<string, Func<string[], Configuration, Command>> CommandParsers { get; set; }
-			= new();
+			= new Dictionary<string, Func<string[], Configuration, Command>>();
 
 		public Dictionary<Type, Func<ParserContext, Command, List<Command>>> ComplexCommandParsers { get; set; }
-			= new();
+			= new Dictionary<Type, Func<ParserContext, Command, List<Command>>>();
 
 		public Dictionary<Type, List<Predicate<Command>>> IsComplexPredicates { get; set; }
-			= new();
+			= new Dictionary<Type, List<Predicate<Command>>>();
 
 		internal List<Type> AllowedToPushStack { get; set; } = new List<Type>();
 

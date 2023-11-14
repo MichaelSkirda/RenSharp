@@ -55,7 +55,7 @@ namespace Assets.Scripts.RenSharpClient.Parser.Complex
 				{
 					break;
 				}
-				int level = RenSharpParser.GetCommandLevel(lineText);
+				int level = ctx.GetCommandLevel(lineText);
 				
 				MenuButton button = ParseButton(lineText);
 				rootCmd.Buttons.Add(button);

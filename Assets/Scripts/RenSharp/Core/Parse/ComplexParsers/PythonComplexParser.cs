@@ -17,7 +17,7 @@ namespace RenSharp.Core.Parse.ComplexParsers
                 if (string.IsNullOrEmpty(line))
                     continue;
 
-                int level = RenSharpParser.GetCommandLevel(line);
+                int level = ctx.GetCommandLevel(line);
 
                 if (IsValid(level, blockStart) == false)
                 {
