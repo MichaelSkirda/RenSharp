@@ -54,10 +54,15 @@ namespace RenSharp.Core
 
 		internal bool TryPopState()
 		{
-			if (CallStack.Count > 0)
+			try
+			{
+				PopState();
+				return true;
+			}
+			catch
+			{
 				return false;
-			PopState();
-			return true;
+			}
 		}
 
 		internal void RewriteLevelStack(Command command)
