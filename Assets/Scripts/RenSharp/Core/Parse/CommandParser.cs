@@ -146,7 +146,7 @@ namespace RenSharp.Core.Parse
             if (args.Length != 2)
                 throw new ArgumentException("Call without expression keyword can contains only 1 argument (label name).");
 
-            return new Call($"\"{args[1]}\"", evaluate: false);
+            return new Call($"{args[1]}", evaluate: false);
         }
         internal static Exit ParseExit() => new Exit();
     }
