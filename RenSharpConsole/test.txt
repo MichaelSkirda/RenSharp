@@ -12,9 +12,9 @@ init 999:
 			
 
 
-label main:
+label start:
 	"foo"
-	goto expression "test_{"bar_"}" + 123
+	jump expression "test_{"bar_"}" + 123
 	"after test"
 
 
