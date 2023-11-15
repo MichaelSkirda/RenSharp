@@ -1,7 +1,6 @@
 ﻿using RenSharp;
 using RenSharp.Core;
 using RenSharp.Interfaces;
-using RenSharp.Models;
 using RenSharpConsole;
 
 internal class Program
@@ -16,10 +15,11 @@ internal class Program
 		string path = "./test.csren";
 		var renSharp = new RenSharpCore(path, config);
 
+		renSharp.ReadNext();
+
 		while (true)
 		{
 			ConsoleKey key = Console.ReadKey().Key;
-
 			if (key == ConsoleKey.LeftArrow)
 			{
 				try
@@ -32,10 +32,8 @@ internal class Program
                 }
 				continue;
 			}
-			Command command = renSharp.ReadNext();
 
-
-			
+			renSharp.ReadNext();
 		}
 	}
 }

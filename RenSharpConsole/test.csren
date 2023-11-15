@@ -1,30 +1,5 @@
-init 999:
-	# x = sys.GetEnv("APPDATA")
-	# "{x}"
-	# $ print(x)
-
-	python:
-		fruits = ["apple", "banana", "cherry"]
-		for x in fruits:
-			if x == "banana":
-				continue
-			print(x)
-			
-
-
 label start:
-	"1"
-	jump expression "test_{"bar_"}" + str(123)
-	"2"
-
-
-label test_bar_123:
-	"3"
-	# Soft return сработает только если был вызван call. Jump проигнорирует soft return.
-	soft return
-	"4"
-
-label test:
-	"5"
-	call test_bar_123
-	"6"
+	i = 0
+	while(True):
+		i++
+		"Hello {i}"
