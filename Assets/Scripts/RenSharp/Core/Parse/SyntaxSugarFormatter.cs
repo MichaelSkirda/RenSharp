@@ -83,6 +83,13 @@ namespace RenSharp.Core.Parse
             return line;
         }
 
+        internal static string SpaceAfterWhileNotNeccessary(string line)
+        {
+			if (line.StartsWith("while("))
+				return "while (" + line.Substring(6);
+			return line;
+		}
+
 
 		private static bool TryParseIncrement(string expression, out string result)
         {
