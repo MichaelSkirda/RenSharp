@@ -38,7 +38,7 @@ namespace RenSharp.Models.Commands
 				writer.Write(result);
 		}
 
-		public override Command Rollback()
+		public override Command Rollback(RenSharpCore core)
 		{
 			var command = new Message(Speech, Character, RawAttributes);
 

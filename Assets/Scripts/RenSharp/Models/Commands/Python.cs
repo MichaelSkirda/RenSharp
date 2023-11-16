@@ -1,8 +1,6 @@
-﻿using RenSharp.Core;
-using RenSharp.Interfaces;
-using System;
+﻿using Microsoft.Scripting.Hosting;
+using RenSharp.Core;
 using System.Collections.Generic;
-using System.Text;
 
 namespace RenSharp.Models.Commands
 {
@@ -15,6 +13,19 @@ namespace RenSharp.Models.Commands
 		public override void Execute(RenSharpCore core)
 		{
 			core.Context.ExecutePython(Commands);
+		}
+
+		public override Command Rollback(RenSharpCore core)
+		{
+			ScriptScope scope = core.Context.PyEvaluator.CopyScope();
+			if (scope == null)
+				return null;
+
+			Command command = new SysSetScope(scope);
+			command.Line = Line;
+			command.SourceLine = SourceLine;
+			command.Level = Level;
+			return command;
 		}
 
 	}

@@ -1,6 +1,8 @@
 ﻿using IronPython.Hosting;
 using Microsoft.Scripting.Hosting;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace RenSharp.Core.Expressions
 {
@@ -25,6 +27,23 @@ namespace RenSharp.Core.Expressions
 		}
 
 		internal void RecreateScope() => Scope = Engine.CreateScope();
+		internal void SetScope(ScriptScope scope)
+		{
+			if (scope == null)
+				throw new ArgumentNullException("Нельзя установить 'null' как scope IronPython.");
+			Scope = scope;
+		}
+		internal ScriptScope CopyScope()
+		{
+			IEnumerable<KeyValuePair<string, dynamic>> keyValues = Scope.GetItems();
+			Dictionary<string, object> variables = keyValues
+				.Where(kv => kv.Key.StartsWith("__") == false)
+				.GroupBy(kv => kv.Key)
+				.Select(kvs => kvs.First())
+				.ToDictionary(x => x.Key, x => x.Value);
+			return Engine.CreateScope(variables);
+		}
+
 		internal void Execute(IEnumerable<string> lines)
 		{
 			string code = lines.ToPythonCode();

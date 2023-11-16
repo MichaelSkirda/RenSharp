@@ -25,6 +25,8 @@ namespace RenSharp
 			config.Skip<Pass>();
 			config.Skip<Python>();
 
+			config.Skip<SysSetScope>();
+
 
 			config.MustPush<If>();
 			config.MustPush<Repeat>();

@@ -11,7 +11,7 @@ namespace RenSharp.Core
     public class RenSharpContext
     {
 		internal RenSharpProgram Program { get; set; }
-		private PythonEvaluator PyEvaluator { get; set; }
+		internal PythonEvaluator PyEvaluator { get; set; }
 
 		private Stack<StackFrame> CallStack { get; set; }
 		internal Stack<Command> RollbackStack { get; private set; }
@@ -28,8 +28,6 @@ namespace RenSharp.Core
 			PyEvaluator = new PythonEvaluator();
 			CurrentFrame = new StackFrame();
 		}
-
-		internal void RecreateScope() => PyEvaluator.RecreateScope();
 
 		internal void Goto(Command command)
 		{

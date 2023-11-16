@@ -7,7 +7,7 @@ internal class Program
 {
 	private static void Main(string[] args)
 	{
-		IFormatter formatter = new OutputFormatter();
+        IFormatter formatter = new OutputFormatter();
 		IWriter writer = new ConsoleWriter(formatter);
 
 		Configuration config = ConsoleConfig.GetDefaultConfig(formatter, writer);

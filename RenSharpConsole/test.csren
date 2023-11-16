@@ -1,5 +1,4 @@
+
 label start:
-	i = 0
 	while(True):
-		i++
-		"Hello {i}"
+		"Hello {RS.Time()}"

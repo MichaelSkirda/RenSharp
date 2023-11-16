@@ -19,7 +19,7 @@ namespace RenSharpConsole.Commands
 			Formatter.SetFormat(ColorCode);
 		}
 
-		public override Command Rollback()
+		public override Command Rollback(RenSharpCore core)
 		{
 			string currentColor = Formatter.GetCurrentColor();
 			TextColor command = new TextColor(currentColor, Formatter);

@@ -40,12 +40,17 @@ namespace RenSharp.Core
 
 		public void Rollback()
 		{
-			bool hasRollback = Context.RollbackStack.TryPop(out Command command);
-			if (hasRollback == false)
-				throw new InvalidOperationException("Rollback пуст");
+			Command command;
 
-			Goto(command);
-			command.Execute(this);
+			do
+			{
+				bool hasRollback = Context.RollbackStack.TryPop(out command);
+				if (hasRollback == false)
+					throw new InvalidOperationException("Rollback пуст");
+
+				Goto(command);
+				command.Execute(this);
+			} while (Configuration.IsSkip(command));
 		}
 
 		public void LoadProgram(string path, bool saveScope = false)
@@ -53,7 +58,7 @@ namespace RenSharp.Core
         public void LoadProgram(IEnumerable<string> code, bool saveScope = false)
         {
 			if (saveScope == false)
-				Context.RecreateScope();
+				Context.PyEvaluator.RecreateScope();
 
 			var program = Parser.ParseCode(code);
 
@@ -113,7 +118,7 @@ namespace RenSharp.Core
                     continue;
                 }
 
-				Command backwardCommand = command.Rollback();
+				Command backwardCommand = command.Rollback(this);
 				if(backwardCommand != null)
 					Context.RollbackStack.Push(backwardCommand);
 
