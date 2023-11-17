@@ -2,19 +2,9 @@
 
 namespace RenSharp.Core.Functions
 {
-	[PyImport("RS")]
-	public class BuiltInFunctions
+	[PyImport("test")]
+	public static class BuiltInFunctions
 	{
-		private RenSharpCore Core { get; set; }
-		private RenSharpContext Ctx => Core.Context;
-
-		public BuiltInFunctions(RenSharpCore core)
-		{
-			Core = core;
-		}
-
-		[PyImport("clear_rollback")]
-		public void ClearRollback() => Ctx.RollbackStack.Clear();
 
 		#region static
 		public static int Random(int min, int max) => new Random().Next(min, max);
