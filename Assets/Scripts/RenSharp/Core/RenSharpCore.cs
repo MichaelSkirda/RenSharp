@@ -35,22 +35,34 @@ namespace RenSharp.Core
 			PyImportAttribute.ReloadCallbacks();
 			Configuration = config;
 			Context = new RenSharpContext();
+			Context.SetVariable("rs", this);
 			Parser = new RenSharpParser(Configuration);
 		}
 
 		public void Rollback()
 		{
 			Command command;
+			bool isFirst = true;
 
-			do
+			while(true)
 			{
 				bool hasRollback = Context.RollbackStack.TryPop(out command);
 				if (hasRollback == false)
 					throw new InvalidOperationException("Rollback пуст");
 
 				Goto(command);
+
+				if(command is Message && isFirst)
+				{
+					isFirst = false;
+					continue;
+				}	
 				command.Execute(this);
-			} while (Configuration.IsSkip(command));
+
+				if (Configuration.IsNotSkip(command) && isFirst == false)
+					break;
+				isFirst = false;
+			}
 		}
 
 		public void LoadProgram(string path, bool saveScope = false)
@@ -128,7 +140,10 @@ namespace RenSharp.Core
             return command;
         }
 
-        public void Goto(string labelName) => Goto(Program.GetLabel(labelName));
+		public void ClearRollback()
+			=> Context.ClearRollback();
+
+		public void Goto(string labelName) => Goto(Program.GetLabel(labelName));
         public void Goto(Command command) => Context.Goto(command);
 
         public Attributes GetCharacterAttributes(string characterName)

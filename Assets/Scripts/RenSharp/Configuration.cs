@@ -93,6 +93,9 @@ namespace RenSharp
 			return SkipCommands.Contains(type);
 		}
 
+		public bool IsNotSkip(Command command)
+			=> !IsSkip(command);
+
 		public string GetDefaultValue(string attributeName) => DefaultAttributes[attributeName];
 		public string GetDefaultKeyValueString(string attributeName)
 			=> $"{attributeName}={DefaultAttributes[attributeName]}";

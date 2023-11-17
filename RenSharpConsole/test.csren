@@ -3,4 +3,11 @@ label start:
 	i = 0
 	while(True):
 		i++
-		"Hello #{i}. Now is: {RS.Time()}"
+		"Hello {i*i}" 
+
+
+#label start:
+#	i = 0
+#	while(True):
+#		i++
+#		"Hello #{i}. Now is: {RS.Time()}"

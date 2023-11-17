@@ -90,6 +90,9 @@ namespace RenSharp.Core
 			}
 			CurrentFrame.LevelStack = levelStack.ReverseStack();
 		}
+
+		internal void ClearRollback()
+			=> RollbackStack.Clear();
 		#endregion
 
 		#region EXPRESSIONS
