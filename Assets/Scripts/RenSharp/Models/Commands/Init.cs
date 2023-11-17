@@ -19,8 +19,11 @@ namespace RenSharp.Models.Commands
 		{
 			// Do nothing
 			// No push! Init must be ingnored in runtime
+			// Works like 'if (False)'
 		}
 
 		public bool Push(RenSharpContext ctx) => false;
+
+		public bool Push(Stack<int> stack, RenSharpContext ctx) => false;
 	}
 }

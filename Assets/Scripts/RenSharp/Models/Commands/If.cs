@@ -22,11 +22,14 @@ namespace RenSharp.Models.Commands
 		}
 
 		public bool Push(RenSharpContext ctx)
+			=> Push(ctx.LevelStack, ctx);
+
+		public bool Push(Stack<int> stack, RenSharpContext ctx)
 		{
 			bool result = ctx.Evaluate<bool>(Expression);
 			if (result)
 			{
-				ctx.LevelStack.Push(EndIfLine);
+				stack.Push(EndIfLine);
 				return true;
 			}
 			return false;

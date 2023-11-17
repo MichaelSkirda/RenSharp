@@ -25,7 +25,11 @@ namespace RenSharp.Models.Commands
 			Times = null;
 			Repeated = 0;
 		}
+
 		public bool Push(RenSharpContext ctx)
+			=> Push(ctx.LevelStack, ctx);
+
+		public bool Push(Stack<int> stack, RenSharpContext ctx)
 		{
 			if (Times == null)
 				Times = ctx.Evaluate<int>(Expression);
@@ -33,7 +37,7 @@ namespace RenSharp.Models.Commands
 			if (Repeated < Times.Value)
 			{
 				Repeated++;
-				ctx.LevelStack.Push(Line);
+				stack.Push(Line);
 				return true;
 			}
 			else

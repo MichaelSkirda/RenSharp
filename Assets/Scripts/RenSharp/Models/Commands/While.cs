@@ -18,15 +18,18 @@ namespace RenSharp.Models.Commands
 		}
 
 		public bool Push(RenSharpContext ctx)
+			=> Push(ctx.LevelStack, ctx);
+
+		public bool Push(Stack<int> stack, RenSharpContext ctx)
 		{
 			bool result = ctx.Evaluate<bool>(Expression);
 			if (result)
 			{
-				ctx.LevelStack.Push(Line);
+				stack.Push(Line);
 				return true;
 			}
 			return false;
 		}
-		
+
 	}
 }

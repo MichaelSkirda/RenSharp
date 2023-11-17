@@ -53,7 +53,7 @@ namespace RenSharp.Core
 
 				Goto(command);
 
-				if(command.GetType() == typeof(Message) && isFirst)
+				if(command.GetType() == typeof(Message) && isFirst && false)
 				{
 					isFirst = false;
 					continue;

@@ -11,6 +11,7 @@ namespace RenSharp.Models.Commands
 		public override void Execute(RenSharpCore core)
 		{
 			core.Context.MessageHistory.Pop();
+			base.Execute(core);
 		}
 	}
 }

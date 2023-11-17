@@ -17,9 +17,12 @@ namespace RenSharp.Models.Commands
 		{
 
 		}
+
 		public bool Push(RenSharpContext ctx)
+			=> Push(ctx.LevelStack, ctx);
+		public bool Push(Stack<int> stack, RenSharpContext ctx)
 		{
-			ctx.LevelStack.Push(0);
+			stack.Push(0);
 			return true;
 		}
 	}

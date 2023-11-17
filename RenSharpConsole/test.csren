@@ -1,9 +1,9 @@
 
 label start:
-	i = 0
+	i = 1
 	while(True):
-		i++
 		"Hello {i*i}" 
+		$ i = i + (i * 0.1)
 
 
 #label start:
