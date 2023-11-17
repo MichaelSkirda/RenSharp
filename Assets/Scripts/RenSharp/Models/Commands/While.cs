@@ -1,8 +1,6 @@
 ﻿using RenSharp.Core;
 using RenSharp.Interfaces;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace RenSharp.Models.Commands
 {
@@ -16,13 +14,19 @@ namespace RenSharp.Models.Commands
 
 		public override void Execute(RenSharpCore core)
 		{
-			var ctx = core.Context;
-			bool result = ctx.Evaluate<bool>(Expression);
-			if (result)
-				Push(ctx.LevelStack, ctx);
+			
 		}
 
-		public void Push(Stack<int> stack, RenSharpContext ctx) => stack.Push(Line);
+		public bool Push(RenSharpContext ctx)
+		{
+			bool result = ctx.Evaluate<bool>(Expression);
+			if (result)
+			{
+				ctx.LevelStack.Push(Line);
+				return true;
+			}
+			return false;
+		}
 		
 	}
 }

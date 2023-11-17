@@ -87,7 +87,7 @@ namespace RenSharp.Core
 					IPushable pushableCmd = cmd as IPushable;
 					if (pushableCmd == null)
 						throw new ArgumentException($"Команда '{cmd.GetType()}' не реализует IPushable, но использует табуляцию.");
-					pushableCmd.Push(levelStack, this);
+					pushableCmd.Push(this);
 				}
 			}
 			CurrentFrame.LevelStack = levelStack.ReverseStack();

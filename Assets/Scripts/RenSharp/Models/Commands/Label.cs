@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using RenSharp.Core;
 using RenSharp.Interfaces;
 
@@ -17,9 +15,12 @@ namespace RenSharp.Models.Commands
 
 		public override void Execute(RenSharpCore core)
 		{
-			var ctx = core.Context;
-			Push(ctx.LevelStack, ctx);
+
 		}
-		public void Push(Stack<int> stack, RenSharpContext ctx) => stack.Push(0);
+		public bool Push(RenSharpContext ctx)
+		{
+			ctx.LevelStack.Push(0);
+			return true;
+		}
 	}
 }

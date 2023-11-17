@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using RenSharp.Core.Exceptions;
 using RenSharp.Core.Parse;
+using RenSharp.Interfaces;
 using RenSharp.Models;
 using RenSharp.Models.Commands;
 
@@ -136,6 +137,7 @@ namespace RenSharp.Core
 					Context.RollbackStack.Push(backwardCommand);
 
                 command.Execute(this);
+				(command as IPushable)?.Push(Context);
 			} while (Configuration.IsSkip(command) || skip);
 
             return command;
@@ -211,6 +213,7 @@ namespace RenSharp.Core
 						break;
 
 					command.Execute(this);
+					(command as IPushable)?.Push(Context);
 				}
 			}
 		}

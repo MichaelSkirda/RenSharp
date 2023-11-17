@@ -1,8 +1,6 @@
 ﻿using RenSharp.Core;
 using RenSharp.Interfaces;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace RenSharp.Models.Commands
 {
@@ -19,18 +17,7 @@ namespace RenSharp.Models.Commands
 
 		public override void Execute(RenSharpCore core)
 		{
-			var ctx = core.Context;
-			if(Times == null)
-				Times = ctx.Evaluate<int>(Expression);
 
-			if (Repeated < Times.Value)
-			{
-				Push(ctx.LevelStack, ctx);
-			}
-			else
-			{
-				Reset();
-			}
 		}
 
 		private void Reset()
@@ -38,10 +25,22 @@ namespace RenSharp.Models.Commands
 			Times = null;
 			Repeated = 0;
 		}
-		public void Push(Stack<int> stack, RenSharpContext ctx)
+		public bool Push(RenSharpContext ctx)
 		{
-			Repeated++;
-			stack.Push(Line);
+			if (Times == null)
+				Times = ctx.Evaluate<int>(Expression);
+
+			if (Repeated < Times.Value)
+			{
+				Repeated++;
+				ctx.LevelStack.Push(Line);
+				return true;
+			}
+			else
+			{
+				Reset();
+			}
+			return false;
 		}
 	}
 }

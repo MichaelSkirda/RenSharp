@@ -18,13 +18,18 @@ namespace RenSharp.Models.Commands
 
 		public override void Execute(RenSharpCore core)
 		{
-			var ctx = core.Context;
-			bool result = ctx.Evaluate<bool>(Expression);
-			if (result)
-				Push(ctx.LevelStack, ctx);
+
 		}
 
-		public void Push(Stack<int> stack, RenSharpContext ctx) => stack.Push(EndIfLine);
-		
+		public bool Push(RenSharpContext ctx)
+		{
+			bool result = ctx.Evaluate<bool>(Expression);
+			if (result)
+			{
+				ctx.LevelStack.Push(EndIfLine);
+				return true;
+			}
+			return false;
+		}
 	}
 }
