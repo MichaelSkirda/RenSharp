@@ -52,16 +52,17 @@ namespace RenSharp.Core
 
 				Goto(command);
 
-				if(command is Message && isFirst)
+				if(command.GetType() == typeof(Message) && isFirst)
 				{
 					isFirst = false;
 					continue;
-				}	
+				}
+				isFirst = false;
+
 				command.Execute(this);
 
-				if (Configuration.IsNotSkip(command) && isFirst == false)
+				if (Configuration.IsNotSkip(command))
 					break;
-				isFirst = false;
 			}
 		}
 
@@ -141,7 +142,10 @@ namespace RenSharp.Core
         }
 
 		public void ClearRollback()
-			=> Context.ClearRollback();
+		{
+			Context.ClearRollback();
+			Context.MessageHistory.Clear();
+		}
 
 		public void Goto(string labelName) => Goto(Program.GetLabel(labelName));
         public void Goto(Command command) => Context.Goto(command);

@@ -33,6 +33,8 @@ namespace RenSharp.Models.Commands
 				Attributes = characterAttributes
 			};
 
+			core.Context.MessageHistory.Push(result);
+
 			IWriter writer = config.Writer;
 			if (writer != null)
 				writer.Write(result);
@@ -40,7 +42,7 @@ namespace RenSharp.Models.Commands
 
 		public override Command Rollback(RenSharpCore core)
 		{
-			var command = new Message(Speech, Character, RawAttributes);
+			var command = new MessageRollback(Speech, Character, RawAttributes);
 
 			command.Line = Line;
 			command.SourceLine = SourceLine;
