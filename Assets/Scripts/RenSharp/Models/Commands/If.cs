@@ -1,10 +1,9 @@
 ﻿using RenSharp.Core;
-using RenSharp.Interfaces;
 using System.Collections.Generic;
 
 namespace RenSharp.Models.Commands
 {
-	public class If : Command, IPushable
+	public class If : PushableCommand
 	{
 		public string Expression { get; set; }
 		public int EndIfLine { get; set; }
@@ -21,10 +20,12 @@ namespace RenSharp.Models.Commands
 
 		}
 
-		public bool Push(RenSharpContext ctx)
-			=> Push(ctx.LevelStack, ctx);
+		public override void Push(Stack<int> stack, RenSharpContext ctx)
+		{
+			stack.Push(EndIfLine);
+		}
 
-		public bool Push(Stack<int> stack, RenSharpContext ctx)
+		public override bool TryPush(Stack<int> stack, RenSharpContext ctx)
 		{
 			bool result = ctx.Evaluate<bool>(Expression);
 			if (result)

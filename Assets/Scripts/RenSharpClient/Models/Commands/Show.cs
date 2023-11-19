@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.RenSharpClient.Commands.Results;
+using RenSharp;
 using RenSharp.Core;
 using RenSharp.Models;
 
@@ -21,9 +22,11 @@ namespace Assets.Scripts.RenSharpClient.Models.Commands
 
 		public override void Execute(RenSharpCore core)
 		{
-			Attributes.AddDefaultAttributes(core.Configuration);
-			ShowResult character = new ShowResult(Name, Details, Attributes);
-			Controller.Show(character, core.Configuration);
+			Configuration config = core.Configuration;
+
+			Attributes.AddDefaultAttributes(config);
+			var character = new ShowResult(Name, Details, Attributes);
+			Controller.Show(character, config);
 		}
 	}
 }

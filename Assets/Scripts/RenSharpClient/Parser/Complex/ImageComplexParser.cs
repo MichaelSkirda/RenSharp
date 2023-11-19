@@ -30,7 +30,7 @@ namespace Assets.Scripts.RenSharpClient.Parser.Complex
 				int beforeParseLine = ctx.SourceLine;
 				string lineText = ctx.NextNotEmptyLine();
 
-				int actualLevel = RenSharpParser.GetCommandLevel(lineText);
+				int actualLevel = ctx.GetCommandLevel(lineText);
 				if (actualLevel > expectedLevel)
 					throw new ArgumentException($"Неожиданный таб в команде '{lineText}'");
 
@@ -64,7 +64,7 @@ namespace Assets.Scripts.RenSharpClient.Parser.Complex
 				attributes.AddAttribute(name, value, rewrite: true);
 			}
 
-			return new List<Command>();
+			return new List<Command>() { rootCmd };
 		}
 	}
 }

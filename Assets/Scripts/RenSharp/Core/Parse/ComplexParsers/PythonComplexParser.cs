@@ -29,7 +29,7 @@ namespace RenSharp.Core.Parse.ComplexParsers
             }
 
             // Must be empty. All commands contains in blockStart
-            return new List<Command>();
+            return new List<Command>() { blockStart };
         }
 
         private static bool IsValid(int level, Python startBlock)

@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using RenSharp.Core;
-using RenSharp.Interfaces;
 
 namespace RenSharp.Models.Commands
 {
-    public class Label : Command, IPushable
+    public class Label : PushableCommand
 	{
 		public string Name { get; set; }
 
@@ -18,9 +17,12 @@ namespace RenSharp.Models.Commands
 
 		}
 
-		public bool Push(RenSharpContext ctx)
-			=> Push(ctx.LevelStack, ctx);
-		public bool Push(Stack<int> stack, RenSharpContext ctx)
+		public override void Push(Stack<int> stack, RenSharpContext ctx)
+		{
+			stack.Push(0);
+		}
+
+		public override bool TryPush(Stack<int> stack, RenSharpContext ctx)
 		{
 			stack.Push(0);
 			return true;

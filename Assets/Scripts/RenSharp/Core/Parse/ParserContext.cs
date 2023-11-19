@@ -31,7 +31,7 @@ namespace RenSharp.Core.Parse
 			List<Command> parsed = new List<Command>() { command };
 
 			if (Config.IsComplex(command))
-				parsed.AddRange(Config.ParseComplex(this, command));
+				parsed = Config.ParseComplex(this, command);
 
 			return parsed;
 		}
@@ -45,6 +45,11 @@ namespace RenSharp.Core.Parse
 				line = LineText;
 			}
 
+			return ParseCommand(line);
+		}
+
+		internal Command ParseCommand(string line)
+		{
 			int level = GetCommandLevel(line);
 
 			line = line.Trim();

@@ -2,7 +2,7 @@
 
 namespace RenSharp.Core.Functions
 {
-	[PyImport("test")]
+	[PyImport("rsys")]
 	public static class BuiltInFunctions
 	{
 

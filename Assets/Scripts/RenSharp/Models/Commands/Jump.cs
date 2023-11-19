@@ -23,7 +23,8 @@ namespace RenSharp.Models.Commands
 			string labelName = Expression;
 			if (Evaluate)
 			{
-				labelName = core.Context.InterpolateString(Expression);
+				// TODO I don't know why there is InterpolateString. Find out why.
+				//labelName = core.Context.InterpolateString(Expression);
 				labelName = core.Context.Evaluate<string>(labelName);
 			}
 			core.Goto(labelName);

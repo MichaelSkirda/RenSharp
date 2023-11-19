@@ -41,7 +41,7 @@ namespace RenSharp.Core.Parse
                 }
                 catch (Exception ex)
                 {
-                    throw new SyntaxErrorException($"at line {ctx.SourceLine}. Commans is '{ctx.LineText}'", ex);
+                    throw new SyntaxErrorException($"at line {ctx.SourceLine}. Command is '{ctx.LineText}'", ex);
                 }
             }
 

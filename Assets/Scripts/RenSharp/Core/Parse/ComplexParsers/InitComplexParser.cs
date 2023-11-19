@@ -1,5 +1,4 @@
-﻿using RenSharp.Core.Parse;
-using RenSharp.Models;
+﻿using RenSharp.Models;
 using RenSharp.Models.Commands;
 using System.Collections.Generic;
 
@@ -22,7 +21,7 @@ namespace RenSharp.Core.Parse.ComplexParsers
             
             // Как будто это просто комана 'python' внутри init
             python.Level = initStart.Level + 1;
-            return new List<Command> { python };
+            return new List<Command> { initStart, python };
         }
     }
 }

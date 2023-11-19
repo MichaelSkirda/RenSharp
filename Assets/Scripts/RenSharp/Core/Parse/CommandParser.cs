@@ -1,9 +1,11 @@
 ﻿using RenSharp.Models.Commands;
+using RenSharp.Models.Parse;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text.RegularExpressions;
+using UnityEditor.Search;
 
 namespace RenSharp.Core.Parse
 {
@@ -68,22 +70,25 @@ namespace RenSharp.Core.Parse
 
             return new Character(name, attributes);
         }
+
         internal static Message ParseMessage(string[] words, Configuration config)
         {
             string line = string.Join(" ", words);
 
-            Regex valueInQuotes = new Regex(@"""(?:[^""\\]|\\.)*""");
-            Match match = valueInQuotes.Match(line);
+            StringFirstQuotes quotes = BetweenQuotesFirst(line);
 
-            string command = line.Substring(0, match.Index).Trim(); // 'say Eliz'
-            string text = match.Value.Substring(1, match.Value.Length - 2).Trim().Replace("\\\"", "\"");
-            string attrs = line.Substring(match.Index + match.Length).Trim();   // 'no-clear delay=50'
+            string command = quotes.Before;
+            string text = quotes.Between;
+            string attrs = quotes.After;
 
             string[] attributes = attrs
                 .Split(' ')
                 .Where(x => string.IsNullOrWhiteSpace(x) == false)
                 .ToArray();   // 'no-clear delay=50' -> ['no-clear', 'delay=50']
-            string character = command.Split(' ')[1]; // 'say Eliz' -> 'Eliz'
+            string character = command
+                .Split(' ')
+                .Skip(1)
+                .FirstOrDefault();
 
             Message message = new Message(text, character, attributes);
 
@@ -97,12 +102,33 @@ namespace RenSharp.Core.Parse
 
             return message;
         }
-        internal static Repeat ParseRepeat(string[] words)
+
+		public static StringFirstQuotes BetweenQuotesFirst(string text)
+		{
+			// All values between quotes. Ignores escaped \" quotes.
+			Regex valueInQuotes = new Regex(@"""(?:[^""\\]|\\.)*""");
+			Match match = valueInQuotes.Match(text);
+
+			string before = text.Substring(0, match.Index).Trim(); // 'say Eliz'
+            // Substring to not include quotes (") symbols. We ignore first and last quote (")
+			string between = match.Value.Substring(1, match.Value.Length - 2).Trim().Replace("\\\"", "\"");
+			string after = text.Substring(match.Index + match.Length).Trim();   // 'no-clear delay=50'
+
+			return new StringFirstQuotes()
+            {
+                Before = before,
+                Between = between,
+                After = after
+            };
+		}
+
+		internal static Repeat ParseRepeat(string[] words)
         {
             string expression = string.Join(" ", words.Skip(1));
 
             return new Repeat(expression);
         }
+
         internal static Init ParseInit(string[] words)
         {
             if (words.Length < 1 || words.Length > 3)

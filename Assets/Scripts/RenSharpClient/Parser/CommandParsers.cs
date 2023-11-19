@@ -104,4 +104,5 @@ internal static class CommandParsers
 		return new Play(name, isMusic, controller);
 	}
 
+	internal static Menu ParseMenu(MenuController controller) => new Menu(controller);
 }

@@ -1,19 +1,11 @@
-init 999:
-
-	image eliz
-		
-
-	python:
-		x = RS.GetEnv("APPDATA")
-
-
-init -999 python:
-	y = "foobar"
-
 label start
-	show office1
-	"{y} {x}"
-	play sound shot
-	show eliz sad at left
-	"After show"
+	"RenSharp v1.0 release soon!"
+	menu:
+		"Very soon!"
+		"Hooray!":
+			"Very good news!"
+			"I'm glad to hear."
+		"I'll be cool":
+			"Sure"
+	"End of menu"
 	jump start

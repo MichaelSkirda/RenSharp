@@ -528,6 +528,42 @@ MonoBehaviour:
     Sprite: {fileID: 21300000, guid: 90c8309ef4e387a42903840bef8a5dd0, type: 3}
   - Name: office1
     Sprite: {fileID: 21300000, guid: 3e933e641f08705458c071e857295505, type: 3}
+--- !u!1 &170385605
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 170385606}
+  m_Layer: 5
+  m_Name: ButtonsActive
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &170385606
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 170385605}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 951140203}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &280653068
 GameObject:
   m_ObjectHideFlags: 0
@@ -919,6 +955,45 @@ MonoBehaviour:
     AudioClip: {fileID: 8300000, guid: 041d47cce63a20e43884c885197b3b72, type: 3}
   - Name: phonecall
     AudioClip: {fileID: 8300000, guid: 0203f661ebb0a4b49ab761b4688895f9, type: 3}
+--- !u!1 &951140202
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 951140203}
+  m_Layer: 5
+  m_Name: SceneObjects
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &951140203
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 951140202}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1004272738}
+  - {fileID: 170385606}
+  - {fileID: 1298339066}
+  m_Father: {fileID: 2141159380}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 1920, y: 1080}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &983735843
 GameObject:
   m_ObjectHideFlags: 0
@@ -930,6 +1005,7 @@ GameObject:
   - component: {fileID: 983735844}
   - component: {fileID: 983735846}
   - component: {fileID: 983735845}
+  - component: {fileID: 983735847}
   m_Layer: 5
   m_Name: Controllers
   m_TagString: Untagged
@@ -988,6 +1064,20 @@ MonoBehaviour:
   Points: {fileID: 1154914162}
   SpritePrefab: {fileID: 7475213838404286, guid: c147268a2ca5da54eb6596d202b0abed, type: 3}
   Parent: {fileID: 1004272737}
+--- !u!114 &983735847
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 983735843}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f684f74b1d585f44a77b3d7d8bba158, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Parent: {fileID: 170385606}
+  ButtonPrefab: {fileID: 4713149825990204151, guid: e5dd88b691e1b6e44a1981a9aa6519a6, type: 3}
 --- !u!1 &1004272737
 GameObject:
   m_ObjectHideFlags: 0
@@ -1011,17 +1101,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1004272737}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2141159380}
+  m_Father: {fileID: 951140203}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -500}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: 0, y: 50}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1154914160
@@ -1198,6 +1288,7 @@ MonoBehaviour:
   Dialog: {fileID: 1661186931}
   ImageController: {fileID: 983735846}
   SoundController: {fileID: 983735845}
+  MenuController: {fileID: 983735847}
 --- !u!1 &1260607262
 GameObject:
   m_ObjectHideFlags: 0
@@ -1230,7 +1321,7 @@ RectTransform:
   - {fileID: 280653069}
   - {fileID: 346254122}
   m_Father: {fileID: 2141159380}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1362,8 +1453,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2141159380}
-  m_RootOrder: 4
+  m_Father: {fileID: 951140203}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1445,7 +1536,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: -0.5, y: -247.94824}
+  m_AnchoredPosition: {x: 0, y: 180}
   m_SizeDelta: {x: 1921, y: 360}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1661186931
@@ -1490,11 +1581,10 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1004272738}
+  - {fileID: 951140203}
   - {fileID: 1661186930}
   - {fileID: 1416944463}
   - {fileID: 983735844}
-  - {fileID: 1298339066}
   - {fileID: 1260607263}
   m_Father: {fileID: 1179337591}
   m_RootOrder: 0
@@ -1502,5 +1592,5 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}

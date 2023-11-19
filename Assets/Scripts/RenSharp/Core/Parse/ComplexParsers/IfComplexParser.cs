@@ -10,7 +10,7 @@ internal static class IfComplexParser
     // Not root and root if - at all almost same.
     internal static List<Command> Parse(ParserContext ctx, If rootIf)
     {
-        List<Command> commands = new List<Command>();
+        List<Command> commands = new List<Command>() { rootIf };
         int endIfLine;
         while (true)
         {

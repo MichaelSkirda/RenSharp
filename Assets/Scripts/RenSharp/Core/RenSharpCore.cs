@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Assets.Scripts.RenSharp.Core.Exceptions;
 using RenSharp.Core.Exceptions;
 using RenSharp.Core.Parse;
 using RenSharp.Interfaces;
@@ -12,6 +13,7 @@ namespace RenSharp.Core
 {
 	public class RenSharpCore
 	{
+		public bool IsPaused { get; private set; } = false;
 		public Configuration Configuration { get; set; }
 		public RenSharpContext Context { get; set; }
 		private RenSharpProgram Program => Context.Program;
@@ -100,6 +102,8 @@ namespace RenSharp.Core
         {
 			if (!HasStarted)
 				Start();
+			if (IsPaused)
+				throw new RenSharpPausedException("RenSharp находится на паузе.");
 
             Command command;
 			bool skip;
@@ -137,7 +141,7 @@ namespace RenSharp.Core
 					Context.RollbackStack.Push(backwardCommand);
 
                 command.Execute(this);
-				(command as IPushable)?.Push(Context);
+				(command as IPushable)?.TryPush(Context);
 			} while (Configuration.IsSkip(command) || skip);
 
             return command;
@@ -171,6 +175,9 @@ namespace RenSharp.Core
 
 		public void SetVariable(string name, object value)
 			=> Context.SetVariable(name, value);
+
+		public void Pause() => IsPaused = true;
+		public void Resume() => IsPaused = false;
 
 		private void ExecuteInits()
         {
@@ -213,7 +220,6 @@ namespace RenSharp.Core
 						break;
 
 					command.Execute(this);
-					(command as IPushable)?.Push(Context);
 				}
 			}
 		}

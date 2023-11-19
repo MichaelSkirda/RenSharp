@@ -1,10 +1,9 @@
 ﻿using RenSharp.Core;
-using RenSharp.Interfaces;
 using System.Collections.Generic;
 
 namespace RenSharp.Models.Commands
 {
-	public class Repeat : Command, IPushable
+	public class Repeat : PushableCommand
 	{
 		public string Expression { get; set; }
 		public int? Times { get; private set; } = null;
@@ -26,25 +25,32 @@ namespace RenSharp.Models.Commands
 			Repeated = 0;
 		}
 
-		public bool Push(RenSharpContext ctx)
-			=> Push(ctx.LevelStack, ctx);
-
-		public bool Push(Stack<int> stack, RenSharpContext ctx)
+		public override void Push(Stack<int> stack, RenSharpContext ctx)
 		{
 			if (Times == null)
 				Times = ctx.Evaluate<int>(Expression);
 
+			Repeated++;
+
 			if (Repeated < Times.Value)
+				stack.Push(Line);
+			else
+				stack.Push(0);
+		}
+
+		public override bool TryPush(Stack<int> stack, RenSharpContext ctx)
+		{
+			if (Times == null)
+				Times = ctx.Evaluate<int>(Expression);
+
+			if(Repeated < Times.Value)
 			{
 				Repeated++;
 				stack.Push(Line);
 				return true;
 			}
-			else
-			{
-				Reset();
-			}
 			return false;
 		}
+
 	}
 }
