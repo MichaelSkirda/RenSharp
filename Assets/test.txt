@@ -1,3 +1,6 @@
+init:
+	$ i = 0;
+
 label start
 	"RenSharp v1.0 release soon!"
 	menu:
@@ -7,5 +10,7 @@ label start
 			"I'm glad to hear."
 		"It will be cool":
 			"Sure"
+		"Invisible button" if i > 0:
 	"End of menu"
+	i++
 	jump start

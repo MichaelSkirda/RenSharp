@@ -98,11 +98,11 @@ namespace RenSharp.Core
 			Goto(main);
 		}
 
-        public Command ReadNext()
+        public Command ReadNext(bool force = false)
         {
 			if (!HasStarted)
 				Start();
-			if (IsPaused)
+			if (IsPaused && force == false)
 				throw new RenSharpPausedException("RenSharp находится на паузе.");
 
             Command command;

@@ -42,6 +42,7 @@ public class MenuController : MonoBehaviour
 			{
 				Clear();
 				core.Goto(menuButton.Label);
+				core.ReadNext(true);
 				core.Resume();
 			});
 

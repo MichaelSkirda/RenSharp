@@ -111,8 +111,14 @@ namespace Assets.Scripts.RenSharpClient.Parser.Complex
 			if (afterQuotes == ":")
 				return new MenuButton(buttonText, label);
 			else if (afterQuotes.StartsWith("if"))
-				return new MenuButton(buttonText, label, afterQuotes.Substring(2)); // Delete if keyword save only predicate
-			
+			{
+				// Delete if keyword save only predicate
+				// Delete colon ':' at end
+				afterQuotes = afterQuotes.Substring(2);
+				afterQuotes = afterQuotes.Substring(0, afterQuotes.Length - 1);
+				return new MenuButton(buttonText, label, afterQuotes);
+			}
+
 			throw new ArgumentException($"Не получается пропасить кнопку меню {line}");
 		}
 
