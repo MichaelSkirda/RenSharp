@@ -1,7 +1,7 @@
-using Assets.Scripts.RenSharpClient.Controllers;
-using Assets.Scripts.RenSharpClient.Models.Commands;
-using Assets.Scripts.RenSharpClient.Parser.Complex;
 using RenSharp;
+using RenSharpClient.Controllers;
+using RenSharpClient.Models.Commands;
+using RenSharpClient.Parser.Complex;
 
 public static class UnityConfigDefault
 {
@@ -13,6 +13,8 @@ public static class UnityConfigDefault
 		config.SetCommand("show", (words, _) => CommandParsers.ParseShow(words, imageController));
 		config.SetCommand("hide", (words, _) => CommandParsers.ParseHide(words, imageController));
 		config.SetCommand("image", (words, _) => CommandParsers.ParseImage(words, imageController));
+		config.SetCommand("scene", (words, _) => CommandParsers.ParseScene(words, imageController));
+
 		config.SetCommand("play", (words, _) => CommandParsers.ParsePlay(words, soundController));
 		config.SetCommand("menu", (_, _) => CommandParsers.ParseMenu(menuController));
 
@@ -26,9 +28,12 @@ public static class UnityConfigDefault
 		config.SetDefault("fullscreen", "false");
 
 		config.Skip<Show>();
+		config.Skip<Scene>();
 		config.Skip<Hide>();
+
 		config.Skip<Play>();
 		config.Skip<Image>();
+		config.Skip<MenuRollback>();
 
 		config.MustPush<Menu>();
 
@@ -36,6 +41,7 @@ public static class UnityConfigDefault
 		config.SetValue("screen_width", 1920);
 		config.SetValue("gui_btn_gap", 50f);
 		config.SetValue("gui_btn_first_gap", 25f);
+		config.SetValue("rollback_cooldown", 300);
 
 		return config;
 	}

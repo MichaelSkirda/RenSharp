@@ -8,55 +8,58 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MenuController : MonoBehaviour
+namespace RenSharpClient.Controllers
 {
-	[SerializeField]
-	private Transform Parent;
-	[SerializeField]
-	private GameObject ButtonPrefab;
-
-	public void Clear()
+	public class MenuController : MonoBehaviour
 	{
-		foreach (Transform child in Parent.transform)
+		[SerializeField]
+		private Transform Parent;
+		[SerializeField]
+		private GameObject ButtonPrefab;
+
+		public void Clear()
 		{
-			Destroy(child.gameObject);
-		}
-	}
-
-	public void Show(IEnumerable<MenuButton> buttonsEnum, RenSharpCore core)
-	{
-		Configuration config = core.Configuration;
-		List<MenuButton> menuButtons = buttonsEnum.ToList();
-		float gap = config.GetValueOrDefault<float>("gui_btn_gap");
-		float firstGap = config.GetValueOrDefault<float>("gui_btn_first_gap");
-
-		for (int i = 0; i < menuButtons.Count; i++)
-		{
-			var menuButton = menuButtons[i];
-			GameObject buttonObj = Instantiate(ButtonPrefab, Parent);
-
-			TextMeshProUGUI text = buttonObj.GetComponentInChildren<TextMeshProUGUI>();
-			Button button = buttonObj.GetComponent<Button>();
-
-			button.onClick.AddListener(() =>
+			foreach (Transform child in Parent.transform)
 			{
-				Clear();
-				core.Goto(menuButton.Label);
-				core.ReadNext(true);
-				core.Resume();
-			});
+				Destroy(child.gameObject);
+			}
+		}
 
-			if (text == null)
-				throw new ArgumentException("Не найден компонент текст у кнопки.");
+		public void Show(IEnumerable<MenuButton> buttonsEnum, RenSharpCore core)
+		{
+			Configuration config = core.Configuration;
+			List<MenuButton> menuButtons = buttonsEnum.ToList();
+			float gap = config.GetValueOrDefault<float>("gui_btn_gap");
+			float firstGap = config.GetValueOrDefault<float>("gui_btn_first_gap");
 
-			RectTransform rect = buttonObj.GetComponent<RectTransform>();
+			for (int i = 0; i < menuButtons.Count; i++)
+			{
+				var menuButton = menuButtons[i];
+				GameObject buttonObj = Instantiate(ButtonPrefab, Parent);
 
-			float height = rect.rect.height;
+				TextMeshProUGUI text = buttonObj.GetComponentInChildren<TextMeshProUGUI>();
+				Button button = buttonObj.GetComponent<Button>();
 
-			text.text = menuButton.Text;
+				button.onClick.AddListener(() =>
+				{
+					Clear();
+					core.Goto(menuButton.Label);
+					core.ReadNext(true);
+					core.Resume();
+				});
 
-			float y = i * (gap + height) + height / 2 + firstGap;
-			rect.anchoredPosition = new Vector2(x: 0, -y);
+				if (text == null)
+					throw new ArgumentException("Не найден компонент текст у кнопки.");
+
+				RectTransform rect = buttonObj.GetComponent<RectTransform>();
+
+				float height = rect.rect.height;
+
+				text.text = menuButton.Text;
+
+				float y = i * (gap + height) + height / 2 + firstGap;
+				rect.anchoredPosition = new Vector2(x: 0, -y);
+			}
 		}
 	}
 }

@@ -6,7 +6,7 @@ using UnityEngine;
 using RenSharp;
 using System.IO;
 
-namespace Assets.Scripts.RenSharpClient
+namespace RenSharpClient.Storage
 {
 	internal class SpriteStorage : MonoBehaviour
 	{

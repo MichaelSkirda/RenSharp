@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Assets.Scripts.RenSharpClient.Storage.Items
+namespace RenSharpClient.Storage.Items
 {
 	[Serializable]
 	public struct PointItem

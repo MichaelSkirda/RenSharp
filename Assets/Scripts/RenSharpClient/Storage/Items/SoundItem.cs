@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Assets.Scripts.RenSharpClient.Storage
+namespace RenSharpClient.Storage
 {
 	[Serializable]
 	public struct SoundItem

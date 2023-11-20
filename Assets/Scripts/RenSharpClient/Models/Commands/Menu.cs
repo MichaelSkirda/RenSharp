@@ -2,11 +2,12 @@
 using RenSharp.Models;
 using RenSharp.Models.Commands;
 using RenSharp.RenSharpClient.Models;
+using RenSharpClient.Controllers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Assets.Scripts.RenSharpClient.Models.Commands
+namespace RenSharpClient.Models.Commands
 {
 	public class Menu : PushableCommand
 	{
@@ -44,6 +45,13 @@ namespace Assets.Scripts.RenSharpClient.Models.Commands
 		{
 			stack.Push(0);
 			return true;
+		}
+
+		public override Command Rollback(RenSharpCore core)
+		{
+			var rollback = new MenuRollback(Controller);
+			rollback.SetPosition(this);
+			return rollback;
 		}
 	}
 }

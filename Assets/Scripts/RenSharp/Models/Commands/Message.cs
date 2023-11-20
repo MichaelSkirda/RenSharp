@@ -22,8 +22,8 @@ namespace RenSharp.Models.Commands
 		public override void Execute(RenSharpCore core)
 		{
 			Configuration config = core.Configuration;
-			Attributes characterAttributes = core.GetCharacterAttributes(Character);
-			characterAttributes.AddAttributes(Attributes);
+			Attributes characterAttributes = Attributes;
+			characterAttributes.AddAttributes(core.GetCharacterAttributes(Character));
 			characterAttributes.AddDefaultAttributes(config);
 
 			MessageResult result = new MessageResult()

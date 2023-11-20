@@ -1,6 +1,4 @@
-﻿using RenSharp.Models;
-
-namespace Assets.Scripts.RenSharpClient.Models.Commands.Results
+﻿namespace RenSharpClient.Models.Commands.Results
 {
 	internal class ImageResult
 	{

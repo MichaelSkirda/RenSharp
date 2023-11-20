@@ -1,8 +1,8 @@
-﻿using Assets.Scripts.RenSharpClient.Storage.Items;
+﻿using RenSharpClient.Storage.Items;
 using System.Linq;
 using UnityEngine;
 
-namespace Assets.Scripts.RenSharpClient.Storage
+namespace RenSharpClient.Storage
 {
 	internal class PointStorage : MonoBehaviour
 	{

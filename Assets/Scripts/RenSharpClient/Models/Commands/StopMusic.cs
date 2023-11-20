@@ -1,6 +1,6 @@
-﻿using Assets.Scripts.RenSharpClient.Controllers;
-using RenSharp.Core;
+﻿using RenSharp.Core;
 using RenSharp.Models;
+using RenSharpClient.Controllers;
 
 namespace Assets.Scripts.RenSharpClient.Models.Models.Commands
 {

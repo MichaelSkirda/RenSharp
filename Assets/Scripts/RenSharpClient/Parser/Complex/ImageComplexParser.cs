@@ -1,14 +1,12 @@
-﻿using Assets.Scripts.RenSharpClient.Models.Commands;
-using Microsoft.Scripting.Actions;
-using RenSharp;
-using RenSharp.Core;
+﻿using RenSharp;
 using RenSharp.Core.Parse;
 using RenSharp.Models;
+using RenSharpClient.Models.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Assets.Scripts.RenSharpClient.Parser.Complex
+namespace RenSharpClient.Parser.Complex
 {
 	internal static class ImageComplexParser
 	{

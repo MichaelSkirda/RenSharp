@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-namespace Assets.Scripts.RenSharpClient.Storage
+namespace RenSharpClient.Storage
 {
 	public class SoundStorage : MonoBehaviour
 	{

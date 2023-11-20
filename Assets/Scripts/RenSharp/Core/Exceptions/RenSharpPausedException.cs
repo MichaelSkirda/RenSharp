@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Assets.Scripts.RenSharp.Core.Exceptions
+namespace RenSharp.Core.Exceptions
 {
 	public class RenSharpPausedException : Exception
 	{

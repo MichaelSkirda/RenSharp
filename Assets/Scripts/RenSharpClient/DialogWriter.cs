@@ -14,7 +14,7 @@ namespace Assets.Scripts
 
 		public void Write(MessageResult message)
 		{
-			string name = message.Character;
+			string name = message.Attributes.GetValueOrNull("name");
 
 			if (name == null)
 				name = "";

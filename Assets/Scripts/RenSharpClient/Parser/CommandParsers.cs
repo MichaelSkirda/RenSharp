@@ -1,8 +1,8 @@
 using Assets.Scripts.RenSharpClient;
-using Assets.Scripts.RenSharpClient.Controllers;
-using Assets.Scripts.RenSharpClient.Models.Commands;
 using RenSharp;
 using RenSharp.Models;
+using RenSharpClient.Controllers;
+using RenSharpClient.Models.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,6 +54,12 @@ internal static class CommandParsers
 		Attributes attributes = AttributeParser.ParseAttributes(AttributesNames, attributesWords);
 
 		return new Show(name, details, attributes, controller);
+	}
+
+	internal static Scene ParseScene(string[] words, ImageController controller)
+	{
+		Show show = ParseShow(words, controller);
+		return new Scene(show.Name, show.Details, show.Attributes, show.Controller);
 	}
 
 	internal static Image ParseImage(string[] words, ImageController controller)

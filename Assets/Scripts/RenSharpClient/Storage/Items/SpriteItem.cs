@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Assets.Scripts.RenSharpClient
+namespace RenSharpClient
 {
 	[Serializable]
 	public struct SpriteItem

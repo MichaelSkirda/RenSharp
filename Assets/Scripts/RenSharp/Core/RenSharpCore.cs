@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Assets.Scripts.RenSharp.Core.Exceptions;
 using RenSharp.Core.Exceptions;
 using RenSharp.Core.Parse;
 using RenSharp.Interfaces;
@@ -42,7 +41,7 @@ namespace RenSharp.Core
 			Parser = new RenSharpParser(Configuration);
 		}
 
-		public void Rollback()
+		public bool Rollback()
 		{
 			Command command;
 			bool isFirst = true;
@@ -51,7 +50,7 @@ namespace RenSharp.Core
 			{
 				bool hasRollback = Context.RollbackStack.TryPop(out command);
 				if (hasRollback == false)
-					throw new InvalidOperationException("Rollback пуст");
+					return false;
 
 				Goto(command);
 
@@ -67,6 +66,7 @@ namespace RenSharp.Core
 				if (Configuration.IsNotSkip(command))
 					break;
 			}
+			return true;
 		}
 
 		public void LoadProgram(string path, bool saveScope = false)

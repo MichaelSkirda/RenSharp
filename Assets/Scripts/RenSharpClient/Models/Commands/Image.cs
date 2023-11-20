@@ -1,8 +1,9 @@
-﻿using Assets.Scripts.RenSharpClient.Models.Commands.Results;
-using RenSharp.Core;
+﻿using RenSharp.Core;
 using RenSharp.Models;
+using RenSharpClient.Controllers;
+using RenSharpClient.Models.Commands.Results;
 
-namespace Assets.Scripts.RenSharpClient.Models.Commands
+namespace RenSharpClient.Models.Commands
 {
 	public class Image : Command
 	{

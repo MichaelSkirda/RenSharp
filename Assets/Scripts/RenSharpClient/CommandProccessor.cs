@@ -1,10 +1,10 @@
 using Assets.Scripts;
-using Assets.Scripts.RenSharp.Core.Exceptions;
-using Assets.Scripts.RenSharpClient.Controllers;
 using RenSharp;
 using RenSharp.Core;
 using RenSharp.Core.Exceptions;
 using RenSharp.Models;
+using RenSharpClient.Controllers;
+using System;
 using UnityEngine;
 
 public class CommandProccessor : MonoBehaviour
@@ -23,10 +23,14 @@ public class CommandProccessor : MonoBehaviour
 	private RenSharpCore RenSharp { get; set; }
 	public bool IsPaused { get; set; } = false;
 
+	private DateTime LastRollback { get; set; }
+	private int RollbackCooldown { get; set; }
+
 	void Start()
     {
 		string[] lines = RenSharpCode.text.Split('\n');
 		Configuration config = UnityConfigDefault.GetDefault(ImageController, SoundController, MenuController);
+		RollbackCooldown = config.GetValueOrDefault<int>("rollback_cooldown");
 
 		DialogWriter writer = new DialogWriter(Dialog);
 		config.Writer = writer;
@@ -36,34 +40,44 @@ public class CommandProccessor : MonoBehaviour
 
 	void Update()
     {
-		if (Input.GetKeyDown(KeyCode.Mouse0) == false && Input.GetKeyDown(KeyCode.Space) == false)
+		if (Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Space))
+			ReadNext();
+		else if (Input.GetAxis("Mouse ScrollWheel") < 0f) // backwards
+			TryRollback();
+	}
+
+	private void TryRollback()
+	{
+		if ((DateTime.Now - LastRollback).Milliseconds < RollbackCooldown)
 			return;
 
+		bool hasRollback = RenSharp.Rollback();
+		if (hasRollback == false)
+			Debug.Log("No rollback.");
+	}
+
+	private void ReadNext()
+	{
 		try
 		{
-			ReadNext();
+			if (IsPaused)
+				return;
+
+			if (Dialog.HasAnimationFinished() == false)
+			{
+				Dialog.SkipAnimation();
+				return;
+			}
+
+			Command command = RenSharp.ReadNext();
 		}
-		catch(RenSharpPausedException)
+		catch (RenSharpPausedException)
 		{
 			Debug.Log("Игра на паузе.");
 		}
-		catch(UnexpectedEndOfProgramException)
+		catch (UnexpectedEndOfProgramException)
 		{
 			Debug.Log("Конец программы.");
 		}
-	}
-
-	public void ReadNext()
-	{
-		if (IsPaused)
-			return;
-
-		if (Dialog.HasAnimationFinished() == false)
-		{
-			Dialog.SkipAnimation();
-			return;
-		}
-
-		Command command = RenSharp.ReadNext();
 	}
 }

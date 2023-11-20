@@ -1,9 +1,10 @@
-﻿using Assets.Scripts.RenSharpClient.Commands.Results;
-using RenSharp;
+﻿using RenSharp;
 using RenSharp.Core;
 using RenSharp.Models;
+using RenSharpClient.Commands.Results;
+using RenSharpClient.Controllers;
 
-namespace Assets.Scripts.RenSharpClient.Models.Commands
+namespace RenSharpClient.Models.Commands
 {
 	public class Show : Command
 	{

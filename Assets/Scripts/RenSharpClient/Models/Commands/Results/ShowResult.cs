@@ -1,6 +1,6 @@
 ﻿using RenSharp.Models;
 
-namespace Assets.Scripts.RenSharpClient.Commands.Results
+namespace RenSharpClient.Commands.Results
 {
 	internal class ShowResult
 	{

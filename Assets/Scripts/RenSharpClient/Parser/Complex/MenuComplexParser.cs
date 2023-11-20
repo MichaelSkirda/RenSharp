@@ -1,13 +1,13 @@
-﻿using Assets.Scripts.RenSharpClient.Models.Commands;
-using RenSharp.Core.Parse;
+﻿using RenSharp.Core.Parse;
 using RenSharp.Models;
 using RenSharp.Models.Commands;
 using RenSharp.Models.Parse;
 using RenSharp.RenSharpClient.Models;
+using RenSharpClient.Models.Commands;
 using System;
 using System.Collections.Generic;
 
-namespace Assets.Scripts.RenSharpClient.Parser.Complex
+namespace RenSharpClient.Parser.Complex
 {
 	internal static class MenuComplexParser
 	{

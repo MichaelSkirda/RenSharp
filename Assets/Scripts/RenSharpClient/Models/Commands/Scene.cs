@@ -1,27 +1,18 @@
 ﻿using RenSharp.Core;
 using RenSharp.Models;
-using System.Collections.Generic;
+using RenSharpClient.Controllers;
 
-namespace Assets.Scripts.RenSharpClient.Models.Commands
+namespace RenSharpClient.Models.Commands
 {
-	internal class Scene : Command
+	public class Scene : Show
 	{
-		public ImageController Controller { get; set; }
-		public IEnumerable<ImageShow> Images { get; set; }
-
-		public Scene(ImageController controller, IEnumerable<ImageShow> images)
-		{
-			Controller = controller;
-		}
+		public Scene(string name, string details, Attributes attributes, ImageController controller)
+			: base(name, details, attributes, controller) { }
 
 		public override void Execute(RenSharpCore core)
 		{
 			Controller.HideAll();
-			foreach(ImageShow image in Images)
-			{
-				// TODO
-				//Controller.ShowCharacter
-			}
+			base.Execute(core);
 		}
 	}
 }

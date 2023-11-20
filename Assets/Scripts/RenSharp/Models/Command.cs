@@ -19,5 +19,11 @@ namespace RenSharp.Models
 			Line = ctx.Line;
 			SourceLine = ctx.SourceLine;
 		}
+		public void SetPosition(Command command)
+		{
+			Line = command.Line;
+			SourceLine = command.SourceLine;
+			Level = command.Level;
+		}
 	}
 }
