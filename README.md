@@ -59,7 +59,7 @@ label start:
 ```
 label start:
 	i = 1
-	while(True):
+	while(i < 10):
 		"Hello {i}"
 		i++
 	"That's all!"
