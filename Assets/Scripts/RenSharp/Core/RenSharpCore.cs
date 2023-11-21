@@ -16,7 +16,6 @@ namespace RenSharp.Core
 		public Configuration Configuration { get; set; }
 		public RenSharpContext Context { get; set; }
 		private RenSharpProgram Program => Context.Program;
-		private RenSharpParser Parser { get; set; }
 		private bool HasStarted { get; set; } = false;
 
         public RenSharpCore(string path, Configuration config = null) => SetupProgram(File.ReadAllLines(path), config);
@@ -38,7 +37,6 @@ namespace RenSharp.Core
 			Configuration = config;
 			Context = new RenSharpContext();
 			Context.SetVariable("rs", this);
-			Parser = new RenSharpParser(Configuration);
 		}
 
 		public bool Rollback()
@@ -76,7 +74,8 @@ namespace RenSharp.Core
 			if (saveScope == false)
 				Context.PyEvaluator.RecreateScope();
 
-			var program = Parser.ParseCode(code);
+			var parser = new RenSharpParser(Configuration);
+			var program = parser.ParseCode(code);
 
 			Context.Program = new RenSharpProgram(program);
 			HasStarted = false;
