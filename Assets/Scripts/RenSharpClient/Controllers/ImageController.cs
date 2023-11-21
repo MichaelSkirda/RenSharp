@@ -37,7 +37,13 @@ namespace RenSharpClient.Controllers
 			if (!isExist)
 				obj = Instantiate(SpritePrefab, Parent.transform);
 
-			RenSharpImage toSet = Sprites.GetSprite(show.Name, show.Details);
+			RenSharpImage toSet;
+
+			if (string.IsNullOrWhiteSpace(show.Details))
+				toSet = Sprites.GetSprite(show.Name);
+			else
+				toSet = Sprites.GetSprite(show.Name, show.Details);
+
 			RectTransform rect = obj.GetComponent<RectTransform>();
 
 			rect.anchorMin = new Vector2(0.5f, 0f);
@@ -109,7 +115,7 @@ namespace RenSharpClient.Controllers
 
 		internal void HideAll()
 		{
-			foreach (KeyValuePair<string, GameObject> character in ActiveSprites)
+			foreach (KeyValuePair<string, GameObject> character in ActiveSprites.ToList())
 			{
 				string name = character.Key;
 				GameObject obj = character.Value;

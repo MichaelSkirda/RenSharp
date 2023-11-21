@@ -5,6 +5,7 @@ using RenSharp.Core.Exceptions;
 using RenSharp.Models;
 using RenSharpClient.Controllers;
 using System;
+using System.Linq;
 using UnityEngine;
 
 public class CommandProccessor : MonoBehaviour

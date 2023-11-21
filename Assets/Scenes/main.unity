@@ -519,25 +519,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3564c3c553ecb4fdaafeedd67d93f7e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _spriteItems:
-  - Name: bg_1_1
-    Sprite: {fileID: 21300000, guid: b116055e85f8e16439f9be1194ee2025, type: 3}
-  - Name: bg_1_2
-    Sprite: {fileID: 21300000, guid: 786a1b1c0cd57714ba1a21d5530e502e, type: 3}
-  - Name: bg_1_3
-    Sprite: {fileID: 21300000, guid: 6978da3ea4d355949ba28b25137c8909, type: 3}
-  - Name: bg_2_1
-    Sprite: {fileID: 21300000, guid: e808afe44867a5544be34d8d0487e995, type: 3}
-  - Name: bg_2_2
-    Sprite: {fileID: 21300000, guid: e20003c354d4f1a4db81deeb0ac58ac4, type: 3}
-  - Name: cg_0_1
-    Sprite: {fileID: 21300000, guid: 5a179a64c2ea18e45aac5423b4714bbd, type: 3}
-  - Name: cg_0_2
-    Sprite: {fileID: 21300000, guid: 74fc5405409be984e86618cf92d3db8f, type: 3}
-  - Name: cg_0_3
-    Sprite: {fileID: 21300000, guid: 3e3d1ac9b0fd6654eb28fccbea31bbad, type: 3}
-  - Name: cg_1
-    Sprite: {fileID: 21300000, guid: 7d0fd894cdcd13e419deb0b2d1add2c8, type: 3}
+  _spriteItems: []
 --- !u!1 &170385605
 GameObject:
   m_ObjectHideFlags: 0
@@ -960,11 +942,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86cce635bd2c54c4da62bc69b11eca24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Data:
-  - Name: begin
-    AudioClip: {fileID: 8300000, guid: c7629c8aed727d0458e29c4b8ce91ab3, type: 3}
-  - Name: fish
-    AudioClip: {fileID: 8300000, guid: c0ff67add8fc8624ba669f0202d917b9, type: 3}
+  Data: []
 --- !u!1 &951140202
 GameObject:
   m_ObjectHideFlags: 0

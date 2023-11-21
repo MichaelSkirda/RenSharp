@@ -3,6 +3,7 @@ using RenSharpClient.Controllers;
 using RenSharpClient.Models.Commands;
 using RenSharpClient.Parser.Complex;
 
+
 public static class UnityConfigDefault
 {
 	public static Configuration GetDefault

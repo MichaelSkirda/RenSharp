@@ -86,6 +86,8 @@ Assets/Scripts/bin/
 Assets/Graphic
 Assets/Sound
 
+Assets/Resources
+
 !RenSharpConsole/*.csproj
 !Assets/Scripts/RenSharp/RenSharp.csproj
 !Assets/Scripts/RenSharp.csproj

@@ -29,6 +29,9 @@ namespace RenSharpClient.Storage
 			return sprite;
 		}
 
+		public RenSharpImage GetSprite(string name)
+			=> GetSprite(name, "rs_default");
+
 		public IEnumerable<RenSharpImage> GetSprites(string name)
 		{
 			List<RenSharpImage> characterSprites;
@@ -40,6 +43,46 @@ namespace RenSharpClient.Storage
 			return characterSprites;
 		}
 
+		void Start()
+		{
+			CharactersSprites = new Dictionary<string, List<RenSharpImage>>();
+
+			IEnumerable<SpriteItem> images = Resources.LoadAll<Sprite>("")
+				.OfType<Sprite>()
+				.Where(x => x.name.StartsWith("bg") || x.name.StartsWith("cg"))
+				.Select(x => new SpriteItem() { Name = x.name, Sprite = x });
+
+			foreach (SpriteItem item in _spriteItems)
+			{
+				SetSprite(item);
+			}
+
+			foreach (SpriteItem item in images)
+			{
+				SetSprite(item);
+			}
+		}
+
+		private void SetSprite(SpriteItem item)
+		{
+			if (string.IsNullOrWhiteSpace(item.Name))
+				throw new ArgumentException("Имя картинки персонажа не может быть пустым.");
+
+			string[] words = item.Name.Split(" ");
+
+			string name = words[0];
+			string details = words.Skip(1).ToWord();
+			if (string.IsNullOrWhiteSpace(details))
+				details = "rs_default";
+
+			Sprite sprite = item.Sprite;
+			float height = sprite.rect.height;
+			float width = sprite.rect.width;
+
+			RenSharpImage image = new RenSharpImage(details, item.Sprite, width, height);
+			SetSprite(name, image);
+		}
+
 		private void SetSprite(string name, RenSharpImage sprite)
 		{
 			List<RenSharpImage> characterSprites;
@@ -47,34 +90,16 @@ namespace RenSharpClient.Storage
 
 			if (!exist)
 			{
-				characterSprites = new List<RenSharpImage>();
-				CharactersSprites[name] = characterSprites;
+				CharactersSprites[name] = new List<RenSharpImage>() { sprite };
 			}
-
-			characterSprites.Add(sprite);
-		}
-
-
-		void Start()
-		{
-			CharactersSprites = new Dictionary<string, List<RenSharpImage>>();
-
-			foreach(SpriteItem item in _spriteItems)
+			else
 			{
-				if (string.IsNullOrWhiteSpace(item.Name))
-					throw new ArgumentException("Имя картинки персонажа не может быть пустым.");
+				bool hasDetails = characterSprites
+					.Where(x => x.Details == sprite.Details)
+					.Any();
 
-				string[] words = item.Name.Split(" ");
-
-				string name = words[0];
-				string details = words.Skip(1).ToWord();
-
-				Sprite sprite = item.Sprite;
-				float height = sprite.rect.height;
-				float width = sprite.rect.width;
-
-				RenSharpImage image = new RenSharpImage(details, item.Sprite, width, height);
-				SetSprite(name, image);
+				if (hasDetails == false)
+					characterSprites.Add(sprite);
 			}
 		}
 	}
