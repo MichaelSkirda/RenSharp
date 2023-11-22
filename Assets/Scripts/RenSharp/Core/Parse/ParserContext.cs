@@ -82,7 +82,7 @@ namespace RenSharp.Core.Parse
 
 				List<Command> parsed = ParseCommands();
 				if (parsed == null || parsed.Count() <= 0)
-					throw new ArgumentException($"Не получилось выполнить парсинг 'ParseAbove'. Строчка: '{previousSouceLine}'.");
+					throw new ArgumentException($"Не получилось выполнить парсинг 'ParseAbove'. Строчка: '{SourceLine}'.");
 				if (parsed[0].Level <= level)
 				{
 					Line = previousLine;
@@ -124,6 +124,9 @@ namespace RenSharp.Core.Parse
 		internal int GetCommandLevel(string line)
 		{
 			int level = 1;
+			string fourSpaces = new string(' ', 4);
+			line = line.Replace(fourSpaces, "\t");
+
 			foreach (char chr in line)
 			{
 				if (chr != '\t')
