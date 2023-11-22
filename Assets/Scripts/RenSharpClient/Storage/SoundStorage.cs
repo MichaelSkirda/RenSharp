@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -7,7 +8,7 @@ namespace RenSharpClient.Storage
 	public class SoundStorage : MonoBehaviour
 	{
 		[SerializeField]
-		private SoundItem[] Data;
+		private List<SoundItem> Data;
 
 		public AudioClip GetAudio(string name)
 		{
@@ -16,6 +17,13 @@ namespace RenSharpClient.Storage
 				throw new ArgumentException($"Аудио с названием '{name}' не найдено.");
 
 			return audio.AudioClip;
+		}
+
+		public void AddAudio(string name, AudioClip clip)
+		{
+			Data.RemoveAll(x =>  x.Name == name);
+			var item = new SoundItem() { Name = name, AudioClip = clip };
+			Data.Add(item);
 		}
 	}
 }

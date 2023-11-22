@@ -1,14 +1,24 @@
 using Assets.Scripts.RenSharpClient;
 using RenSharp;
+using RenSharp.Core.Parse;
 using RenSharp.Models;
+using RenSharp.Models.Parse;
 using RenSharpClient.Controllers;
 using RenSharpClient.Models.Commands;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using UnityEngine;
 
 internal static class CommandParsers
 {
+	private static int AnonymousId { get; set; }
+	private static string GetAnonymousId()
+	{
+		AnonymousId++;
+		return $"_rs_anonymous_resource_{AnonymousId}";
+	}
 
 	private static List<string> ReservedWords = new List<string>()
 	{
@@ -106,6 +116,31 @@ internal static class CommandParsers
 		string name = words[2];
 		if (string.IsNullOrEmpty(name))
 			throw new ArgumentException("Команда 'play' должна указывать имя звука/музыки для запуска. Формат команды: 'play sound/music [name]'");
+
+		if(name.StartsWith("\""))
+		{
+			StringFirstQuotes quotedValue = CommandParser.BetweenQuotesFirst(words);
+			string path = quotedValue.Between;
+			path = Path.ChangeExtension(path, extension: null);
+
+			var data = Resources.LoadAll<AudioClip>(path).ToList();
+
+			try
+			{
+				if (data.Count > 1)
+					throw new ArgumentException($"Найдена более одного звукового файла '{path}'. Поиск идет по всем папкам Resources.");
+				else if (data.Count <= 0)
+					throw new ArgumentException($"Звуковой файл '{path}' не найден. Путь надо указывать относительно папки Resources. Поиск идет по всем папкам Resources.");
+			}
+			catch
+			{
+				data.ForEach(x => Resources.UnloadAsset(x));
+				throw;
+			}
+
+			name = GetAnonymousId();
+			controller.AddAudio(name, data.First());
+		}
 
 		return new Play(name, isMusic, controller);
 	}

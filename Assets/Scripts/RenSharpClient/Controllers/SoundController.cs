@@ -16,6 +16,9 @@ namespace RenSharpClient.Controllers
 		[SerializeField]
 		private AudioSource MusicSource;
 
+		public void AddAudio(string name, AudioClip clip)
+			=> SoundStorage.AddAudio(name, clip);
+
 		public void PlaySound(string name)
 		{
 			AudioSource freeSource = SoundSources.FirstOrDefault(x => x.isPlaying == false);

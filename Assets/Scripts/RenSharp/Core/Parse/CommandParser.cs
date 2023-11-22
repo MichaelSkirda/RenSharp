@@ -103,6 +103,8 @@ namespace RenSharp.Core.Parse
             return message;
         }
 
+        public static StringFirstQuotes BetweenQuotesFirst(string[] words)
+            => BetweenQuotesFirst(string.Join(' ', words));
 		public static StringFirstQuotes BetweenQuotesFirst(string text)
 		{
 			// All values between quotes. Ignores escaped \" quotes.

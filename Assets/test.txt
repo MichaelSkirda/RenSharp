@@ -9,6 +9,8 @@ character un name=?
 
 label start
 
+	play music "audio/music/Beginning.ogg"
+	
 	scene bg_2_2
 
 	"Утро первого января началось для Миши уже не так празднично. У него покраснело лицо и нестерпимо болело горло."
