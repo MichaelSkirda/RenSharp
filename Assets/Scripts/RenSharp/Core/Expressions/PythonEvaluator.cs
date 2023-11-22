@@ -53,6 +53,13 @@ namespace RenSharp.Core.Expressions
 		internal void Execute(string code)
 			=> Engine.Execute(code, Scope);
 
+		internal T Evaluate<T>(string code)
+		{
+			code = $"_evaluation_ = ({code})";
+			Engine.Execute(code, Scope);
+			return Scope.GetVariable<T>("_evaluation_");
+		}
+
 		internal object Evaluate(string code)
 		{
 			code = $"_evaluation_ = ({code})";

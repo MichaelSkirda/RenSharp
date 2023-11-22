@@ -1,9 +1,13 @@
 using Assets.Scripts.RenSharpClient.Models;
 using RenSharp;
+using RenSharp.Core;
 using RenSharpClient.Commands.Results;
+using RenSharpClient.Effects;
+using RenSharpClient.Models;
 using RenSharpClient.Models.Commands.Results;
 using RenSharpClient.Storage;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -22,20 +26,31 @@ namespace RenSharpClient.Controllers
 		[SerializeField]
 		private GameObject Parent;
 
-		private Dictionary<string, GameObject> ActiveSprites { get; set; }
+		private Dictionary<string, ActiveSprite> ActiveSprites { get; set; }
 
 		private void Start()
 		{
-			ActiveSprites = new Dictionary<string, GameObject>();
+			ActiveSprites = new Dictionary<string, ActiveSprite>();
 		}
 
-		internal void Show(ShowResult show, Configuration config)
+		internal IEnumerable<ActiveSprite> GetActiveSprites()
+			=> ActiveSprites.Values;
+
+		internal void Show(ShowResult show, Configuration config, RenSharpCore core)
 		{
-			GameObject obj;
-			bool isExist = ActiveSprites.TryGetValue(show.Name, out obj);
+			ActiveSprite activeSprite;
+			bool isExist = ActiveSprites.TryGetValue(show.Name, out activeSprite);
 
 			if (!isExist)
-				obj = Instantiate(SpritePrefab, Parent.transform);
+			{
+				activeSprite = new ActiveSprite()
+				{
+					Name = show.Name,
+					Details = show.Details,
+					Attributes = show.attributes
+				};
+				activeSprite.obj = Instantiate(SpritePrefab, Parent.transform);
+			}
 
 			RenSharpImage toSet;
 
@@ -44,7 +59,7 @@ namespace RenSharpClient.Controllers
 			else
 				toSet = Sprites.GetSprite(show.Name, show.Details);
 
-			RectTransform rect = obj.GetComponent<RectTransform>();
+			RectTransform rect = activeSprite.obj.GetComponent<RectTransform>();
 
 			rect.anchorMin = new Vector2(0.5f, 0f);
 			rect.anchorMax = new Vector2(0.5f, 0f);
@@ -57,9 +72,14 @@ namespace RenSharpClient.Controllers
 			rect.anchoredPosition = new Vector2(x, y);
 
 
-			Image characterImage = obj.GetComponent<Image>();
-			characterImage.sprite = toSet.Sprite;
-			ActiveSprites[show.Name] = obj;
+			Image image = activeSprite.obj.GetComponent<Image>();
+			image.sprite = toSet.Sprite;
+			ActiveSprites[show.Name] = activeSprite;
+
+			string effectMethod = show.attributes.GetValueOrNull("with");
+			var effect = core.Context.Evaluate<Func<Image, EffectData, IEnumerator>>(effectMethod);
+			var effectData = new EffectData() { IsAppear = true };
+			StartCoroutine(effect(image, effectData));
 		}
 
 		private Vector2 GetSize(ShowResult show, RenSharpImage image, Configuration config)
@@ -103,22 +123,22 @@ namespace RenSharpClient.Controllers
 
 		internal void Hide(string name)
 		{
-			GameObject character;
+			ActiveSprite character;
 			ActiveSprites.TryGetValue(name, out character);
 
 			if (character == null)
 				return;
 
-			Destroy(character);
+			Destroy(character.obj);
 			ActiveSprites.Remove(name);
 		}
 
 		internal void HideAll()
 		{
-			foreach (KeyValuePair<string, GameObject> character in ActiveSprites.ToList())
+			foreach (KeyValuePair<string, ActiveSprite> character in ActiveSprites.ToList())
 			{
 				string name = character.Key;
-				GameObject obj = character.Value;
+				GameObject obj = character.Value.obj;
 
 				Destroy(obj);
 				ActiveSprites.Remove(name);

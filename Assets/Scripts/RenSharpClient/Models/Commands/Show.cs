@@ -27,7 +27,14 @@ namespace RenSharpClient.Models.Commands
 
 			Attributes.AddDefaultAttributes(config);
 			var character = new ShowResult(Name, Details, Attributes);
-			Controller.Show(character, config);
+			Controller.Show(character, config, core);
+		}
+
+		public override Command Rollback(RenSharpCore core)
+		{
+			var hide = new Hide(Name, Controller);
+			hide.SetPosition(this);
+			return hide;
 		}
 	}
 }

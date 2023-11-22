@@ -128,7 +128,7 @@ internal static class CommandParsers
 			try
 			{
 				if (data.Count > 1)
-					throw new ArgumentException($"Найдена более одного звукового файла '{path}'. Поиск идет по всем папкам Resources.");
+					throw new ArgumentException($"Найдена более одного звукового файла '{path}'. Поиск идет по всем папкам Resources не учитывая расширения файлов.");
 				else if (data.Count <= 0)
 					throw new ArgumentException($"Звуковой файл '{path}' не найден. Путь надо указывать относительно папки Resources. Поиск идет по всем папкам Resources.");
 			}

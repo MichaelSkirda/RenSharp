@@ -2,11 +2,11 @@
 
 namespace RenSharpClient.Commands.Results
 {
-	internal class ShowResult
+	public class ShowResult
 	{
-		internal string Name { get; set; }
-		internal string Details { get; set; }
-		internal Attributes attributes { get; set; }
+		public string Name { get; set; }
+		public string Details { get; set; }
+		public Attributes attributes { get; set; }
 
 		public ShowResult(string name, string details, Attributes attributes)
 		{

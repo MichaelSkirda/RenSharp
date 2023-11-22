@@ -12,6 +12,9 @@ namespace RenSharp.Models
 			get => values[key];
 		}
 
+		public void Remove(string key)
+			=> values.Remove(key);
+
 		public bool TryGetValue(string key, out string result)
 			=> values.TryGetValue(key, out result);
 
@@ -22,7 +25,7 @@ namespace RenSharp.Models
 				return result;
 			return null;
 		}
-
+		
 		public int? GetIntOrNull(string key)
 		{
 			bool notFound = !values.TryGetValue(key, out string str);

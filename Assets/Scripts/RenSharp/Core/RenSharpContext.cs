@@ -126,7 +126,8 @@ namespace RenSharp.Core
 
 			return line;
 		}
-		public T Evaluate<T>(string expression) => (T)PyEvaluator.Evaluate(expression);
+		public T Evaluate<T>(string expression) => PyEvaluator.Evaluate<T>(expression);
+		public dynamic Evaluate(string expression) => PyEvaluator.Evaluate(expression);
 		public void ExecutePython(IEnumerable<string> lines)
 			=> PyEvaluator.Execute(lines);
 
