@@ -101,6 +101,9 @@ namespace RenSharp
             return words.Skip(startIndex.Value);
         }
 
+        internal static bool NotStartsWith(this string str, string value)
+            => !str.StartsWith(value);
+
 
         internal static string ToPythonCode(this IEnumerable<string> str)
             => string.Join(Environment.NewLine, str);

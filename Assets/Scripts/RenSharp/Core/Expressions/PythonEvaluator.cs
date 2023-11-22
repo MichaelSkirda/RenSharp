@@ -37,7 +37,7 @@ namespace RenSharp.Core.Expressions
 		{
 			IEnumerable<KeyValuePair<string, dynamic>> keyValues = Scope.GetItems();
 			Dictionary<string, object> variables = keyValues
-				.Where(kv => kv.Key.StartsWith("__") == false)
+				.Where(kv => kv.Key.NotStartsWith("__"))
 				.GroupBy(kv => kv.Key)
 				.Select(kvs => kvs.First())
 				.ToDictionary(x => x.Key, x => x.Value);
