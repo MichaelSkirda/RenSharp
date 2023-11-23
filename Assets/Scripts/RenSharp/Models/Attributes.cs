@@ -58,8 +58,16 @@ namespace RenSharp.Models
 		private Dictionary<string, string> values { get; set; } = new Dictionary<string, string>();
 
 		public Attributes() { }
-		public Attributes(IEnumerable<string> attributes) => AddAttributes(attributes);
-		public Attributes(Dictionary<string, string> attributes) => AddAttributes(attributes);
+		public Attributes(IEnumerable<string> attributes)
+		{
+			if(attributes == null)
+				attributes = new List<string>();
+			AddAttributes(attributes);
+		}
+		public Attributes(Dictionary<string, string> attributes)
+		{
+			AddAttributes(attributes);
+		}
 
 		public void AddAttributes(Attributes attributes, bool rewrite = true) => AddAttributes(attributes.KeyValues(), rewrite);
 		public void AddDefaultAttributes(Configuration config)
@@ -92,17 +100,17 @@ namespace RenSharp.Models
 			AddAttribute(pair.Key, pair.Value, rewrite);
 		}
 
-		public void AddAttribute(string name, string value, bool rewrite)
+		public void AddAttribute(string key, string value, bool rewrite)
 		{
 			if(rewrite)
 			{
-				values[name] = value;
+				values[key] = value;
 			}
 			else
 			{
-				bool hasValue = values.ContainsKey(name);
+				bool hasValue = values.ContainsKey(key);
 				if(hasValue == false)
-					values[name] = value;
+					values[key] = value;
 			}
 		}
 

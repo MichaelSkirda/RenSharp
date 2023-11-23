@@ -1,11 +1,12 @@
-character ft name=Отец
-character mi name=Миша
-character mom name=Мать
-character sv name=Света
-character ad name=Взрослые
-character md name=Врач
-character cn name=Консультант
-character un name=?
+
+define ft = Character("Отец")
+define mi = Character("Миша")
+define mom = Character("Мать")
+define sv = Character("Света")
+define ad = Character("Взрослые")
+define md = Character("Врач")
+define cn = Character("Консультант")
+define un = Character("?")
 
 label start
 

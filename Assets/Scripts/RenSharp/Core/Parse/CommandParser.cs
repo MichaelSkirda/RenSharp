@@ -62,13 +62,6 @@ namespace RenSharp.Core.Parse
             If command = new If(expression, isRoot);
             return command;
         }
-        internal static Character ParseCharacter(string[] args)
-        {
-            string name = args[1];
-            IEnumerable<string> attributes = args.Skip(2);
-
-            return new Character(name, attributes);
-        }
 
         internal static Message ParseMessage(string[] words, Configuration config)
         {
@@ -189,6 +182,10 @@ namespace RenSharp.Core.Parse
 
             return new Call($"{args[1]}", evaluate: false);
         }
+
+        internal static Define ParseDefine(string[] words)
+            => new Define(string.Join(' ', words.Skip(1)));
+
         internal static Exit ParseExit() => new Exit();
     }
 }

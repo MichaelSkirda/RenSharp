@@ -128,6 +128,10 @@ namespace RenSharp.Core.Expressions
 class RenSharpWrapper():
 	def __setattr__(self, name, value):
 		self.__dict__[name] = value
+
+def Character(name):
+	key = rs.AddCharacter(name)
+	return key
 ";
 			Engine.Execute(renSharpWrapper, Scope);
 		}

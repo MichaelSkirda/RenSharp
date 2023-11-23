@@ -13,7 +13,7 @@ namespace RenSharp.Core.Parse
         {
             // If no character - character is nobody
             if (line.StartsWith("\""))
-                line = "say nobody " + line;
+                line = "say _rs_nobody_char " + line;
 
             return line;
         }

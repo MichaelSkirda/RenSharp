@@ -24,6 +24,8 @@ namespace RenSharp
 			config.Skip<Callback>();
 			config.Skip<Pass>();
 			config.Skip<Python>();
+			config.Skip<Define>();
+			config.Skip<Init>();
 
 			config.Skip<SysSetScope>();
 
@@ -46,7 +48,6 @@ namespace RenSharp
 		public static Configuration UseCoreCommands(this Configuration config)
 		{
 			config.SetCommand("say", (words, config) => CommandParser.ParseMessage(words, config));
-			config.SetCommand("character", (words, _) => CommandParser.ParseCharacter(words));
 
 			config.SetCommand("init", (words, _) => CommandParser.ParseInit(words));
 
@@ -71,6 +72,7 @@ namespace RenSharp
 			config.SetCommand("hard", (words, _) => CommandParser.ParseReturn(words));
 
 			config.SetCommand("python", (words, _) => CommandParser.ParsePythonStart(words));
+			config.SetCommand("define", (words, _) => CommandParser.ParseDefine(words));
 			config.SetCommand("$", (words, _) => CommandParser.ParsePythonSingle(words)); // One line python
 
 			config.AddComplex(typeof(If), (ctx, rootCmd) => IfComplexParser.Parse(ctx, rootCmd as If));
