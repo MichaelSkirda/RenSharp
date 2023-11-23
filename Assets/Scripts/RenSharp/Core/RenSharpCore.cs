@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Assets.Scripts.RenSharp.Core.Repositories;
 using RenSharp.Core.Exceptions;
 using RenSharp.Core.Parse;
+using RenSharp.Core.Repositories;
 using RenSharp.Interfaces;
 using RenSharp.Models;
 using RenSharp.Models.Commands;

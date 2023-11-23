@@ -1,7 +1,7 @@
 ﻿using RenSharp.Models.Commands;
 using System.Collections.Generic;
 
-namespace Assets.Scripts.RenSharp.Core.Repositories
+namespace RenSharp.Core.Repositories
 {
 	internal class CharacterRepository
 	{
