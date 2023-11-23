@@ -140,7 +140,7 @@ namespace RenSharp.Core.Parse
 		{
 			line = SyntaxSugarFormatter.ColonSugar(line);
 			line = SyntaxSugarFormatter.CharacterSugar(line);
-			line = SyntaxSugarFormatter.MessageSugar(line, commands);
+			line = SyntaxSugarFormatter.MessageSugar(line, Config);
 			line = SyntaxSugarFormatter.SetSugar(line);
 			line = SyntaxSugarFormatter.ElseSugar(line);
 			line = SyntaxSugarFormatter.ShortenMathSugar(line);

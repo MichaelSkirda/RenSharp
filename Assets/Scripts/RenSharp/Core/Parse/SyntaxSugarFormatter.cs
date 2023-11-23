@@ -1,8 +1,5 @@
-﻿using RenSharp.Models;
-using RenSharp.Models.Commands;
+﻿using RenSharp.Models.Parse;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace RenSharp.Core.Parse
@@ -21,17 +18,23 @@ namespace RenSharp.Core.Parse
             return line;
         }
 
-        internal static string MessageSugar(string line, List<Command> commands)
+        internal static string MessageSugar(string line, Configuration config)
         {
-            // If no say command specified but character name given
-            string keyword = line.Split(' ')[0];
-            if (IsCharacter(commands, keyword))
-                line = "say " + line;
+			string firstWord = line.Split(' ')[0];
+            if (config.IsKeyword(firstWord))
+                return line;
 
+            StringFirstQuotes quotedString = CommandParser.BetweenQuotesFirst(line);
+            string name = quotedString.Before;
+
+            if (string.IsNullOrWhiteSpace(name) || quotedString.Between == null)
+                return line;
+            if(RegexMethods.IsValidCharacterName(name))
+                return "say " + line;
             return line;
-        }
+		}
 
-        internal static string ColonSugar(string line)
+		internal static string ColonSugar(string line)
         {
             // Colons at end are optional
             if (line.EndsWith(":"))
@@ -130,12 +133,6 @@ namespace RenSharp.Core.Parse
             if (line.Trim() == "else")
                 return "else if True";
             return line;
-        }
-
-        private static bool IsCharacter(List<Command> commands, string name)
-        {
-            IEnumerable<Character> characters = commands.OfType<Character>();
-            return characters.Any(x => x.Name == name);
         }
     }
 }

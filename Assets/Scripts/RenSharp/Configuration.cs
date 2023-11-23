@@ -12,6 +12,7 @@ namespace RenSharp
 		private List<Type> SkipCommands = new List<Type>();
 		private Dictionary<string, string> DefaultAttributes { get; set; } = new Dictionary<string, string>();
 		private Dictionary<string, object> Values { get; set; } = new Dictionary<string, object>();
+		private List<string> Keywords { get; set; } = new List<string>();
 
 		public T GetValueOrDefault<T>(string key)
 		{
@@ -44,13 +45,20 @@ namespace RenSharp
 			=> ComplexCommandParsers[command.GetType()](ctx, command);
 		public bool CanPush(Command command) => AllowedToPushStack.Contains(command.GetType());
 		public void SetCommand(string command, Func<string[], Configuration, Command> Parser)
-			=> CommandParsers[command] = Parser;
+		{
+			CommandParsers[command] = Parser;
+			Keywords.Add(command);
+		}
 		public void DelCommand(string key) => CommandParsers.Remove(key);
 		public void SetDefault(string key, string value) => DefaultAttributes[key] = value;
 		
 		public bool IsComplex(Command command)
 			=> IsComplexPredicates.ContainsKey(command.GetType()) 
 			&& IsComplexPredicates[command.GetType()].Any(x => x(command));
+
+		public bool IsKeyword(string word)
+			=> Keywords.Contains(word);
+
 		public void SetComplexPredicate<T>(Predicate<Command> predicate) where T : Command
 		{
 			Type type = typeof(T);

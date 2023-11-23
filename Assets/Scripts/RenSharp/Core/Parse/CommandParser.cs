@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text.RegularExpressions;
-using UnityEditor.Search;
 
 namespace RenSharp.Core.Parse
 {
@@ -111,10 +110,24 @@ namespace RenSharp.Core.Parse
 			Regex valueInQuotes = new Regex(@"""(?:[^""\\]|\\.)*""");
 			Match match = valueInQuotes.Match(text);
 
-			string before = text.Substring(0, match.Index).Trim(); // 'say Eliz'
-            // Substring to not include quotes (") symbols. We ignore first and last quote (")
-			string between = match.Value.Substring(1, match.Value.Length - 2).Trim().Replace("\\\"", "\"");
-			string after = text.Substring(match.Index + match.Length).Trim();   // 'no-clear delay=50'
+            string before = null; 
+			string between = null;
+            string after = null;
+
+            if(match.Captures.Count > 0)
+            {
+                before = text.Substring(0, match.Index).Trim(); // 'say Eliz'
+                if(match.Value.Length >= 2)
+                {
+					// Substring to not include quotes (") symbols. We ignore first and last quote (")
+					between = match.Value.Substring(1, match.Value.Length - 2).Trim().Replace("\\\"", "\"");
+				}
+                else
+                {
+                    between = string.Empty;
+                }
+				after = text.Substring(match.Index + match.Length).Trim();   // 'no-clear delay=50'
+			}
 
 			return new StringFirstQuotes()
             {
