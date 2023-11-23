@@ -161,8 +161,8 @@ namespace RenSharp.Core
                 .OfType<Character>()
                 .FirstOrDefault(x => x.Name == characterName);
 
-            if (character == null)
-                return new Attributes(new string[0]);
+			if (character == null)
+				throw new InvalidOperationException($"Персонаж с именем '{characterName}' не найден.");
 
             return character.Attributes;
         }

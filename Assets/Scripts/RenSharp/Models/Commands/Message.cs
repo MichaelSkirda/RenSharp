@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace RenSharp.Models.Commands
 {
-    public class Message : Command
+	public class Message : Command
 	{
 		private string Speech { get; set; }
 		public string Character { get; set; }
