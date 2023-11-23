@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Assets.Scripts.RenSharp.Core.Repositories;
 using RenSharp.Core.Exceptions;
 using RenSharp.Core.Parse;
 using RenSharp.Interfaces;
@@ -17,6 +18,7 @@ namespace RenSharp.Core
 		public RenSharpContext Context { get; set; }
 		private RenSharpProgram Program => Context.Program;
 		private bool HasStarted { get; set; } = false;
+		private CharacterRepository CharacterRepository { get; set; }
 
         public RenSharpCore(string path, Configuration config = null) => SetupProgram(File.ReadAllLines(path), config);
         public RenSharpCore(IEnumerable<string> code, Configuration config = null) => SetupProgram(code, config);
@@ -30,6 +32,9 @@ namespace RenSharp.Core
 
 		private void SetupProgram(Configuration config)
         {
+			CharacterRepository = new CharacterRepository();
+			string key = CharacterRepository.AddCharacter(new Character()); 
+
 			if (config == null)
 				config = DefaultConfiguration.GetDefaultConfig();
 
@@ -37,6 +42,14 @@ namespace RenSharp.Core
 			Configuration = config;
 			Context = new RenSharpContext();
 			Context.SetVariable("rs", this);
+			Context.SetVariable("_rs_nobody_char", key);
+		}
+
+		public string AddCharacter(string name)
+		{
+			var character = new Character(name);
+			string key = CharacterRepository.AddCharacter(character);
+			return key;
 		}
 
 		public bool Rollback()
@@ -157,14 +170,22 @@ namespace RenSharp.Core
 
         public Attributes GetCharacterAttributes(string characterName)
         {
-            Character character = Program.Code
-                .OfType<Character>()
-                .FirstOrDefault(x => x.Name == characterName);
+			Character character;
+            try
+			{
+				string systemName = Context.GetVariable(characterName);
+				bool exists = CharacterRepository.TryGetCharacter(systemName, out character);
+				if (exists == false)
+					throw new InvalidOperationException();
+				if (character == null)
+					throw new InvalidOperationException();
 
-			if (character == null)
+				return character.Attributes;
+			}
+			catch
+			{
 				throw new InvalidOperationException($"Персонаж с именем '{characterName}' не найден.");
-
-            return character.Attributes;
+			}
         }
 
 		public object GetVariable(string name)
@@ -180,11 +201,18 @@ namespace RenSharp.Core
 
 		private void ExecuteInits()
         {
-			List<Init> inits = Context.Program.Code
+			IEnumerable<Init> inits = Context.Program.Code
 				.OfType<Init>()
 				.OrderByDescending(x => x.Priority)
-				.ThenBy(x => x.Line)
-				.ToList();
+				.ThenBy(x => x.Line);
+
+			IEnumerable<Define> defines = Context.Program.Code
+				.OfType<Define>();
+
+			foreach(Define define in defines)
+			{
+				define.ExecuteDefine(this);
+			}
 
 			foreach (Init init in inits)
 			{
