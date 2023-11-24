@@ -5,10 +5,12 @@ using RenSharp.Models;
 using RenSharp.Models.Parse;
 using RenSharpClient.Controllers;
 using RenSharpClient.Models.Commands;
+using Scripts.RenSharpClient;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 internal static class CommandParsers
@@ -102,8 +104,8 @@ internal static class CommandParsers
 
 	internal static Play ParsePlay(string[] words, SoundController controller)
 	{
-		if (words.Count() != 3)
-			throw new ArgumentException($"Команда 'play' должна содержать 2 аргумента. Команда должна быть формата:'play sound/music [name]'. Текущее значение: '{words.ToWord()}'");
+		if (words.Count() < 3)
+			throw new ArgumentException($"Команда 'play' должна содержать минимум 2 аргумента. Команда должна быть формата:'play sound/music [name] fadein 1.5'. Текущее значение: '{words.ToWord()}'");
 
 		string channel = words[1];
 
@@ -111,32 +113,41 @@ internal static class CommandParsers
 		if (string.IsNullOrEmpty(name))
 			throw new ArgumentException("Команда 'play' должна указывать имя звука/музыки для запуска. Формат команды: 'play sound/music [name]'");
 
-		if(name.StartsWith("\""))
+		if (name.StartsWith("\"") == false)
+			throw new ArgumentException(RSExceptionMessages.NoAudioPathSpecified);
+
+		StringFirstQuotes quotedValue = CommandParser.BetweenQuotesFirst(words);
+		string path = quotedValue.Between;
+		path = Path.ChangeExtension(path, extension: null);
+
+		var audioClips = Resources.LoadAll<AudioClip>(path).ToList();
+
+		try
 		{
-			StringFirstQuotes quotedValue = CommandParser.BetweenQuotesFirst(words);
-			string path = quotedValue.Between;
-			path = Path.ChangeExtension(path, extension: null);
-
-			var audioClips = Resources.LoadAll<AudioClip>(path).ToList();
-
-			try
-			{
-				if (audioClips.Count > 1)
-					throw new ArgumentException($"Найдена более одного звукового файла '{path}'. Поиск идет по всем папкам Resources не учитывая расширения файлов.");
-				else if (audioClips.Count <= 0)
-					throw new ArgumentException($"Звуковой файл '{path}' не найден. Путь надо указывать относительно папки Resources. Поиск идет по всем папкам Resources.");
-			}
-			catch
-			{
-				audioClips.ForEach(x => Resources.UnloadAsset(x));
-				throw;
-			}
-
-			name = GetAnonymousId();
-			controller.AddAudio(name, audioClips.First());
+			if (audioClips.Count > 1)
+				throw new ArgumentException($"Найдена более одного звукового файла '{path}'. Поиск идет по всем папкам Resources не учитывая расширения файлов.");
+			else if (audioClips.Count <= 0)
+				throw new ArgumentException($"Звуковой файл '{path}' не найден. Путь надо указывать относительно папки Resources. Поиск идет по всем папкам Resources.");
+		}
+		catch
+		{
+			audioClips.ForEach(x => Resources.UnloadAsset(x));
+			throw;
 		}
 
-		return new Play(name, channel, controller);
+		name = GetAnonymousId();
+		controller.AddAudio(name, audioClips.First());
+
+		Match match = quotedValue.RegexMatch;
+		IEnumerable<string> attributesWords = words.ToWord()
+			.Substring(match.Index + match.Length)
+			.Split(' ')
+			.Where(x => string.IsNullOrWhiteSpace(x) == false);
+
+		var allowedAttributes = new string[] { "fadein" };
+		Attributes attributes = AttributeParser.ParseAttributes(allowedAttributes, attributesWords);
+
+		return new Play(name, channel, attributes, controller);
 	}
 
 	internal static Menu ParseMenu(MenuController controller) => new Menu(controller);

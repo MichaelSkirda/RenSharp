@@ -9,7 +9,7 @@ define un = Character("?")
 
 label start
 
-    play music "audio/music/Beginning.ogg"
+    play music "audio/music/Beginning.ogg" fadein 3.5
 
     scene bg_1_1 with Dissolve(2.0)
 

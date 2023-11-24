@@ -126,7 +126,8 @@ namespace RenSharp.Core.Parse
             {
                 Before = before,
                 Between = between,
-                After = after
+                After = after,
+                RegexMatch = match
             };
 		}
 
