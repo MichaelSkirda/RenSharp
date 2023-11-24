@@ -17,7 +17,8 @@ namespace RenSharpClient.Effects
 
 			if(data.IsAppear)
 			{
-				startValue = new Color(0, 0, 0);
+				startValue = sprite.color;
+				startValue.a = 0;
 				targetColor = sprite.color;
 			}
 			else
