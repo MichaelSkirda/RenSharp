@@ -7,19 +7,19 @@ namespace RenSharpClient.Models.Commands
 	internal class Play : Command
 	{
 		public string Name { get; set; }
-		public bool IsMusic { get; set; }
+		public string Channel { get; set; }
 		public SoundController Controller { get; set; }
 
-		public Play(string name, bool isMusic, SoundController controller)
+		public Play(string name, string channel, SoundController controller)
 		{
 			Name = name;
-			IsMusic = isMusic;
+			Channel = channel;
 			Controller = controller;
 		}
 
 		public override void Execute(RenSharpCore core)
 		{
-			if (IsMusic)
+			if (Channel == "music")
 				Controller.PlayMusic(Name);
 			else
 				Controller.PlaySound(Name);

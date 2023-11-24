@@ -55,7 +55,6 @@ namespace RenSharp.Core
 		public bool Rollback()
 		{
 			Command command;
-			bool isFirst = true;
 
 			while(true)
 			{
@@ -64,13 +63,6 @@ namespace RenSharp.Core
 					return false;
 
 				Goto(command);
-
-				if(command.GetType() == typeof(Message) && isFirst && false)
-				{
-					isFirst = false;
-					continue;
-				}
-				isFirst = false;
 
 				command.Execute(this);
 
@@ -173,7 +165,7 @@ namespace RenSharp.Core
 			Character character;
             try
 			{
-				string systemName = Context.GetVariable(characterName);
+				string systemName = Context.GetVariable<string>(characterName);
 				bool exists = CharacterRepository.TryGetCharacter(systemName, out character);
 				if (exists == false)
 					throw new InvalidOperationException();

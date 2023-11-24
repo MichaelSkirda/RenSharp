@@ -1,11 +1,11 @@
-character ft name=Отец
-character mi name=Миша
-character mom name=Мать
-character sv name=Света
-character ad name=Взрослые
-character md name=Врач
-character cn name=Консультант
-character un name=?
+define ft = Character("Отец")
+define mi = Character("Миша")
+define mom = Character("Мать")
+define sv = Character("Света")
+define ad = Character("Взрослые")
+define md = Character("Врач")
+define cn = Character("Консультант")
+define un = Character("?")
 
 label start
 
@@ -25,6 +25,11 @@ label start
 
     play sound "audio/sfx/fish.flac"
 
-    "end"
+    "Миша каждый день вставал с утра пораньше, чтобы покормить рыбку, затем мог часами наблюдать, как она размеренно плавает в своём аквариуме."
+
+    "Продолжалось это около месяца, а потом мальчик увидел, что питомец всплыл кверху брюхом."
+
+    "На Мишины крики быстро прибежали мама с папой и поспешили убрать трупик рыбки вместе с аквариумом куда подальше."
+
 
     jump start

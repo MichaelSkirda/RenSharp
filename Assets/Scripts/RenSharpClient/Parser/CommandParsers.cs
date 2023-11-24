@@ -105,13 +105,7 @@ internal static class CommandParsers
 		if (words.Count() != 3)
 			throw new ArgumentException($"Команда 'play' должна содержать 2 аргумента. Команда должна быть формата:'play sound/music [name]'. Текущее значение: '{words.ToWord()}'");
 
-		bool isMusic;
-		if (words[1] == "music")
-			isMusic = true;
-		else if (words[1] == "sound")
-			isMusic = false;
-		else
-			throw new ArgumentException($"Команда 'play' может включать либо музыку (play music), либо звук (play sound). Текущее значение: '{words[1]}'");
+		string channel = words[1];
 
 		string name = words[2];
 		if (string.IsNullOrEmpty(name))
@@ -123,26 +117,26 @@ internal static class CommandParsers
 			string path = quotedValue.Between;
 			path = Path.ChangeExtension(path, extension: null);
 
-			var data = Resources.LoadAll<AudioClip>(path).ToList();
+			var audioClips = Resources.LoadAll<AudioClip>(path).ToList();
 
 			try
 			{
-				if (data.Count > 1)
+				if (audioClips.Count > 1)
 					throw new ArgumentException($"Найдена более одного звукового файла '{path}'. Поиск идет по всем папкам Resources не учитывая расширения файлов.");
-				else if (data.Count <= 0)
+				else if (audioClips.Count <= 0)
 					throw new ArgumentException($"Звуковой файл '{path}' не найден. Путь надо указывать относительно папки Resources. Поиск идет по всем папкам Resources.");
 			}
 			catch
 			{
-				data.ForEach(x => Resources.UnloadAsset(x));
+				audioClips.ForEach(x => Resources.UnloadAsset(x));
 				throw;
 			}
 
 			name = GetAnonymousId();
-			controller.AddAudio(name, data.First());
+			controller.AddAudio(name, audioClips.First());
 		}
 
-		return new Play(name, isMusic, controller);
+		return new Play(name, channel, controller);
 	}
 
 	internal static Menu ParseMenu(MenuController controller) => new Menu(controller);

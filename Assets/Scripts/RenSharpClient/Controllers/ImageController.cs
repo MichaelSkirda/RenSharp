@@ -77,9 +77,12 @@ namespace RenSharpClient.Controllers
 			ActiveSprites[show.Name] = activeSprite;
 
 			string effectMethod = show.attributes.GetValueOrNull("with");
-			var effect = core.Context.Evaluate<Func<Image, EffectData, IEnumerator>>(effectMethod);
-			var effectData = new EffectData() { IsAppear = true };
-			StartCoroutine(effect(image, effectData));
+			if(effectMethod != null)
+			{
+				var effect = core.Context.Evaluate<Func<Image, EffectData, IEnumerator>>(effectMethod);
+				var effectData = new EffectData() { IsAppear = true };
+				StartCoroutine(effect(image, effectData));
+			}
 		}
 
 		private Vector2 GetSize(ShowResult show, RenSharpImage image, Configuration config)

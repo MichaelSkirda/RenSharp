@@ -1,4 +1,3 @@
-
 define ft = Character("Отец")
 define mi = Character("Миша")
 define mom = Character("Мать")
