@@ -17,6 +17,8 @@ public static class UnityConfigDefault
 		config.SetCommand("scene", (words, _) => CommandParsers.ParseScene(words, imageController));
 
 		config.SetCommand("play", (words, _) => CommandParsers.ParsePlay(words, soundController));
+		config.SetCommand("stop", (words, _) => CommandParsers.ParseStop(words, soundController));
+
 		config.SetCommand("menu", (_, _) => CommandParsers.ParseMenu(menuController));
 
 		config.AddComplex(typeof(Menu), (ctx, rootCmd) => MenuComplexParser.Parse(ctx, rootCmd as Menu));

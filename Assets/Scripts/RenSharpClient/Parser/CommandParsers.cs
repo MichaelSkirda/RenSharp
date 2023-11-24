@@ -5,6 +5,7 @@ using RenSharp.Models;
 using RenSharp.Models.Parse;
 using RenSharpClient.Controllers;
 using RenSharpClient.Models.Commands;
+using RenSharpClient.Models.Models.Commands;
 using Scripts.RenSharpClient;
 using System;
 using System.Collections.Generic;
@@ -99,6 +100,18 @@ internal static class CommandParsers
 
 		string name = words[1];
 		return new Hide(name, controller);
+	}
+
+	internal static StopMusic ParseStop(string[] words, SoundController controller)
+	{
+		if (words.Count() < 2)
+			throw new ArgumentException("Команда 'stop' должна содержать минимум 1 аргумент. Фомарт 'stop music/sound' [не обязательно fadeout X.X]");
+
+		string channel = words[1];
+
+		string[] allowedAttributes = { "fadeout" };
+		Attributes attributes = AttributeParser.ParseAttributes(allowedAttributes, words.Skip(2));
+		return new StopMusic(channel, attributes, controller);
 	}
 
 	internal static Play ParsePlay(string[] words, SoundController controller)
