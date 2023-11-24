@@ -42,7 +42,7 @@ namespace RenSharp.Core
 			Configuration = config;
 			Context = new RenSharpContext();
 			Context.SetVariable("rs", this);
-			Context.SetVariable("_rs_nobody_char", key);
+			Context.SetVariable("_rs_nobody_character", key);
 		}
 
 		public string AddCharacter(string name)

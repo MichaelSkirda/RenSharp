@@ -40,7 +40,7 @@ namespace RenSharp
 			config.SetDefault("delay", "30");
 			config.SetDefault("no-clear", "false");
 			config.SetDefault("loop", "false");
-			config.SetDefault("name", "nobody");
+			config.SetDefault("name", "_rs_nobody_name");
 
 			return config;
 		}

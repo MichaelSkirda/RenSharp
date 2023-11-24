@@ -16,7 +16,7 @@ namespace Assets.Scripts
 		{
 			string name = message.Attributes.GetValueOrNull("name");
 
-			if (name == null)
+			if (name == null || name == "_rs_nobody_name")
 				name = "";
 
 			Dialog.DrawText(message);
