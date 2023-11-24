@@ -105,7 +105,7 @@ namespace RenSharpClient.Parser.Complex
 			if (line.StartsWith("\"") == false || line.EndsWith(":") == false)
 				throw new ArgumentException("Каждая кнопка блока 'menu' должна начинаться с символа '\"' и заканчиваться символом ':''");
 
-			StringFirstQuotes quotes = CommandParser.BetweenQuotesFirst(line);
+			StringFirstQuotes quotes = RegexMethods.BetweenQuotesFirst(line);
 			string buttonText = quotes.Between;
 			string afterQuotes = quotes.After.Trim();
 			if (afterQuotes == ":")

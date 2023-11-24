@@ -10,7 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using UnityEngine;
 
 internal static class CommandParsers
@@ -109,14 +108,11 @@ internal static class CommandParsers
 
 		string channel = words[1];
 
-		string name = words[2];
-		if (string.IsNullOrEmpty(name))
-			throw new ArgumentException("Команда 'play' должна указывать имя звука/музыки для запуска. Формат команды: 'play sound/music [name]'");
-
-		if (name.StartsWith("\"") == false)
+		StringFirstQuotes quotedValue = RegexMethods.BetweenQuotesFirst(words);
+		string name = quotedValue.Between;
+		if (quotedValue == null || string.IsNullOrEmpty(name))
 			throw new ArgumentException(RSExceptionMessages.NoAudioPathSpecified);
 
-		StringFirstQuotes quotedValue = CommandParser.BetweenQuotesFirst(words);
 		string path = quotedValue.Between;
 		path = Path.ChangeExtension(path, extension: null);
 
@@ -135,14 +131,9 @@ internal static class CommandParsers
 			throw;
 		}
 
-		name = GetAnonymousId();
 		controller.AddAudio(name, audioClips.First());
 
-		Match match = quotedValue.RegexMatch;
-		IEnumerable<string> attributesWords = words.ToWord()
-			.Substring(match.Index + match.Length)
-			.Split(' ')
-			.Where(x => string.IsNullOrWhiteSpace(x) == false);
+		IEnumerable<string> attributesWords = quotedValue.After.Split(' ');
 
 		var allowedAttributes = new string[] { "fadein" };
 		Attributes attributes = AttributeParser.ParseAttributes(allowedAttributes, attributesWords);

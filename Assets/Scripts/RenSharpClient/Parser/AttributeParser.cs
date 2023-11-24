@@ -17,6 +17,8 @@ namespace Assets.Scripts.RenSharpClient
 
 			foreach (string word in words)
 			{
+				if (string.IsNullOrEmpty(word))
+					continue;
 				if (keys.Contains(word))
 				{
 					currentKey = word;

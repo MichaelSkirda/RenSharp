@@ -67,7 +67,7 @@ namespace RenSharp.Core.Parse
         {
             string line = string.Join(" ", words);
 
-            StringFirstQuotes quotes = BetweenQuotesFirst(line);
+            StringFirstQuotes quotes = RegexMethods.BetweenQuotesFirst(line);
 
             string command = quotes.Before;
             string text = quotes.Between;
@@ -95,41 +95,7 @@ namespace RenSharp.Core.Parse
             return message;
         }
 
-        public static StringFirstQuotes BetweenQuotesFirst(string[] words)
-            => BetweenQuotesFirst(string.Join(' ', words));
-		public static StringFirstQuotes BetweenQuotesFirst(string text)
-		{
-			// All values between quotes. Ignores escaped \" quotes.
-			Regex valueInQuotes = new Regex(@"""(?:[^""\\]|\\.)*""");
-			Match match = valueInQuotes.Match(text);
-
-            string before = null; 
-			string between = null;
-            string after = null;
-
-            if(match.Captures.Count > 0)
-            {
-                before = text.Substring(0, match.Index).Trim(); // 'say Eliz'
-                if(match.Value.Length >= 2)
-                {
-					// Substring to not include quotes (") symbols. We ignore first and last quote (")
-					between = match.Value.Substring(1, match.Value.Length - 2).Trim().Replace("\\\"", "\"");
-				}
-                else
-                {
-                    between = string.Empty;
-                }
-				after = text.Substring(match.Index + match.Length).Trim();   // 'no-clear delay=50'
-			}
-
-			return new StringFirstQuotes()
-            {
-                Before = before,
-                Between = between,
-                After = after,
-                RegexMatch = match
-            };
-		}
+        
 
 		internal static Repeat ParseRepeat(string[] words)
         {

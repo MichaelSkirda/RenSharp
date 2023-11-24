@@ -24,7 +24,7 @@ namespace RenSharp.Core.Parse
             if (config.IsKeyword(firstWord))
                 return line;
 
-            StringFirstQuotes quotedString = CommandParser.BetweenQuotesFirst(line);
+            StringFirstQuotes quotedString = RegexMethods.BetweenQuotesFirst(line);
             string name = quotedString.Before;
 
             if (string.IsNullOrWhiteSpace(name) || quotedString.Between == null)
