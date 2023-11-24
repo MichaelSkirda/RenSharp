@@ -48,9 +48,13 @@ namespace RenSharp.Core.Parse
 			};
 		}
 
-		public static string RemoveLiterals(string line)
+		public static int? IndexOfComment(string line)
 		{
-			return ValueInQuotes.Replace(line, "");
+			var regex = new Regex(@"\#(?=([^""]*""[^""]*"")*[^""]*$)");
+			Match match = regex.Match(line);
+			if (match.Success)
+				return match.Index;
+			return null;
 		}
 	}
 }

@@ -52,7 +52,13 @@ namespace RenSharp.Core.Parse
         internal static List<string> RemoveComments(List<string> code)
         {
             return code
-                .Select(x => x.DeleteAfter("#"))
+                .Select(line =>
+                {
+                    int? index = RegexMethods.IndexOfComment(line);
+					if (index == null)
+                        return line;
+                    return line.Remove(index.Value);
+                })
                 .ToList();
         }
 
