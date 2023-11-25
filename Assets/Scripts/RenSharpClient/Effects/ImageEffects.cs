@@ -35,6 +35,9 @@ namespace RenSharpClient.Effects
 			}
 
 			sprite.color = targetColor;
+
+			if (data.IsAppear == false)
+				UnityEngine.Object.Destroy(sprite);
 		}
 
 		[PyImport]

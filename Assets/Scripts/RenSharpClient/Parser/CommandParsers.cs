@@ -74,7 +74,7 @@ internal static class CommandParsers
 		return new Scene(show.Name, show.Details, show.Attributes, show.Controller);
 	}
 
-	internal static Image ParseImage(string[] words, ImageController controller)
+	internal static ImageCommand ParseImage(string[] words, ImageController controller)
 	{
 		if (words.Count() < 2)
 			throw new ArgumentException(" оманда 'image' должна указывать им€ спрайта из ImageController.");
@@ -86,7 +86,7 @@ internal static class CommandParsers
 
 		var attributes = new Attributes();
 
-		var image = new Image(name, details, attributes, controller);
+		var image = new ImageCommand(name, details, attributes, controller);
 		return image;
 	}
 
@@ -95,11 +95,10 @@ internal static class CommandParsers
 		if (words.Count() < 1)
 			throw new ArgumentException(" оманда 'hide' должна указывать какой спрайт спр€тать.");
 
-		if (words.Count() > 2)
-			throw new ArgumentException($" оманда 'hide' может скрывать только 1 спрайт одноверменно. Ћишние аргументы '{words.ToWord()}'.");
-
+		string[] allowedAttributes = { "with" };
+		Attributes attributes = AttributeParser.ParseAttributes(words.Skip(2), allowedAttributes);
 		string name = words[1];
-		return new Hide(name, controller);
+		return new Hide(name, attributes, controller);
 	}
 
 	internal static StopMusic ParseStop(string[] words, SoundController controller)

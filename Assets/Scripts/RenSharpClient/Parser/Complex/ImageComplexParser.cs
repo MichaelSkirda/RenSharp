@@ -17,7 +17,7 @@ namespace RenSharpClient.Parser.Complex
 			"zoom"
 		};
 
-		internal static List<Command> Parse(ParserContext ctx, Image rootCmd)
+		internal static List<Command> Parse(ParserContext ctx, ImageCommand rootCmd)
 		{
 			// Парсим только манды которые ровно на таб больше Image
 			int expectedLevel = rootCmd.Level + 1;

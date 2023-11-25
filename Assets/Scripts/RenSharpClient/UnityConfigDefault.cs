@@ -22,10 +22,10 @@ public static class UnityConfigDefault
 		config.SetCommand("menu", (_, _) => CommandParsers.ParseMenu(menuController));
 
 		config.AddComplex(typeof(Menu), (ctx, rootCmd) => MenuComplexParser.Parse(ctx, rootCmd as Menu));
-		config.AddComplex(typeof(Image), (ctx, rootCmd) => ImageComplexParser.Parse(ctx, rootCmd as Image));
+		config.AddComplex(typeof(ImageCommand), (ctx, rootCmd) => ImageComplexParser.Parse(ctx, rootCmd as ImageCommand));
 
 		config.SetComplexPredicate<Menu>(x => true);
-		config.SetComplexPredicate<Image>(x => true);
+		config.SetComplexPredicate<ImageCommand>(x => true);
 
 		config.SetDefault("at", "center"); // if not specified sprites appears at center
 		config.SetDefault("fullscreen", "false");
@@ -35,7 +35,7 @@ public static class UnityConfigDefault
 		config.Skip<Hide>();
 
 		config.Skip<Play>();
-		config.Skip<Image>();
+		config.Skip<ImageCommand>();
 		config.Skip<MenuRollback>();
 
 		config.MustPush<Menu>();

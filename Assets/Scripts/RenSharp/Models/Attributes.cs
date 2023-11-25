@@ -58,6 +58,7 @@ namespace RenSharp.Models
 		private Dictionary<string, string> values { get; set; } = new Dictionary<string, string>();
 
 		public Attributes() { }
+		public static Attributes Empty() => new Attributes();
 		public Attributes(IEnumerable<string> attributes)
 		{
 			if(attributes == null)

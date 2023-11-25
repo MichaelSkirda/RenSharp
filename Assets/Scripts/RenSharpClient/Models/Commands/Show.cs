@@ -32,7 +32,8 @@ namespace RenSharpClient.Models.Commands
 
 		public override Command Rollback(RenSharpCore core)
 		{
-			var hide = new Hide(Name, Controller);
+			Attributes attributes = Attributes.Empty();
+			var hide = new Hide(Name, attributes, Controller);
 			hide.SetPosition(this);
 			return hide;
 		}

@@ -5,14 +5,14 @@ using RenSharpClient.Models.Commands.Results;
 
 namespace RenSharpClient.Models.Commands
 {
-	public class Image : Command
+	public class ImageCommand : Command
 	{
 		public string Name { get; set; }
 		public string Details { get; set; }
 		public Attributes Attributes { get; set; }
 		public ImageController Controller { get; set; }
 
-		public Image(string name, string details, Attributes attributes, ImageController controller)
+		public ImageCommand(string name, string details, Attributes attributes, ImageController controller)
 		{
 			Name = name;
 			Details = details;

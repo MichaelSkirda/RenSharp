@@ -1,9 +1,11 @@
 using Assets.Scripts.RenSharpClient.Models;
 using RenSharp;
 using RenSharp.Core;
+using RenSharp.Models;
 using RenSharpClient.Commands.Results;
 using RenSharpClient.Effects;
 using RenSharpClient.Models;
+using RenSharpClient.Models.Commands;
 using RenSharpClient.Models.Commands.Results;
 using RenSharpClient.Storage;
 using System;
@@ -26,7 +28,7 @@ namespace RenSharpClient.Controllers
 		[SerializeField]
 		private GameObject Parent;
 
-		private Dictionary<string, ActiveSprite> ActiveSprites { get; set; }
+		internal Dictionary<string, ActiveSprite> ActiveSprites { get; set; }
 
 		private void Start()
 		{
@@ -124,15 +126,25 @@ namespace RenSharpClient.Controllers
 			return transform.anchoredPosition.x;
 		}
 
-		internal void Hide(string name)
+		internal void Hide(string name, RenSharpCore core, Attributes attributes)
 		{
-			ActiveSprite character;
-			ActiveSprites.TryGetValue(name, out character);
+			ActiveSprite image;
+			ActiveSprites.TryGetValue(name, out image);
 
-			if (character == null)
+			if (image == null)
 				return;
 
-			Destroy(character.obj);
+			string effectMethod = attributes.GetValueOrNull("with");
+			if (effectMethod != null)
+			{
+				var effect = core.Context.Evaluate<Func<Image, EffectData, IEnumerator>>(effectMethod);
+				var effectData = new EffectData() { IsAppear = false };
+				StartCoroutine(effect(image.obj.GetComponent<Image>(), effectData));
+			}
+			else
+			{
+				Destroy(image.obj);
+			}
 			ActiveSprites.Remove(name);
 		}
 
