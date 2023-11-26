@@ -49,7 +49,7 @@ namespace RenSharpClient.Storage
 
 			IEnumerable<SpriteItem> images = Resources.LoadAll<Sprite>("")
 				.OfType<Sprite>()
-				.Where(x => x.name.StartsWith("bg") || x.name.StartsWith("cg"))
+				.Where(x => x.name.StartsWith("bg") || x.name.StartsWith("cg") || x.name == "base")
 				.Select(x => new SpriteItem() { Name = x.name, Sprite = x });
 
 			foreach (SpriteItem item in _spriteItems)
