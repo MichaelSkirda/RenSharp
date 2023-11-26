@@ -23,14 +23,17 @@ public class CommandProccessor : MonoBehaviour
 	private RenSharpCore RenSharp { get; set; }
 	public bool IsPaused { get; set; } = false;
 
-	private DateTime LastRollback { get; set; }
+	private DateTime LastRollback { get; set; } = DateTime.Now;
+	private DateTime LastFastForward { get; set; } = DateTime.Now;
 	private int RollbackCooldown { get; set; }
+	private int FastForwardDelay { get; set; }
 
 	void Start()
     {
 		string[] lines = RenSharpCode.text.Split('\n');
 		Configuration config = UnityConfigDefault.GetDefault(ImageController, SoundController, MenuController);
 		RollbackCooldown = config.GetValueOrDefault<int>("rollback_cooldown");
+		FastForwardDelay = config.GetValueOrDefault<int>("fast_forward_delay");
 
 		DialogWriter writer = new DialogWriter(Dialog);
 		config.Writer = writer;
@@ -40,10 +43,18 @@ public class CommandProccessor : MonoBehaviour
 
 	void Update()
     {
+		if(Input.GetKey(KeyCode.LeftControl))
+		{
+			TryReadNext();
+		}
 		if (Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Space))
+		{
 			ReadNext();
+		}
 		else if (Input.GetAxis("Mouse ScrollWheel") < 0f) // backwards
+		{
 			TryRollback();
+		}
 	}
 
 	private void TryRollback()
@@ -54,6 +65,13 @@ public class CommandProccessor : MonoBehaviour
 		bool hasRollback = RenSharp.Rollback();
 		if (hasRollback == false)
 			Debug.Log("No rollback.");
+	}
+
+	private void TryReadNext()
+	{
+		if ((DateTime.Now - LastFastForward).Milliseconds < RollbackCooldown)
+			return;
+		ReadNext();
 	}
 
 	private void ReadNext()

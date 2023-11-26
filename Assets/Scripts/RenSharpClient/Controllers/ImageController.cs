@@ -5,7 +5,6 @@ using RenSharp.Models;
 using RenSharpClient.Commands.Results;
 using RenSharpClient.Effects;
 using RenSharpClient.Models;
-using RenSharpClient.Models.Commands;
 using RenSharpClient.Models.Commands.Results;
 using RenSharpClient.Storage;
 using System;
@@ -29,11 +28,7 @@ namespace RenSharpClient.Controllers
 		private GameObject Parent;
 
 		internal Dictionary<string, ActiveSprite> ActiveSprites { get; set; }
-
-		private void Start()
-		{
-			ActiveSprites = new Dictionary<string, ActiveSprite>();
-		}
+			= new Dictionary<string, ActiveSprite>();
 
 		internal IEnumerable<ActiveSprite> GetActiveSprites()
 			=> ActiveSprites.Values;
@@ -83,7 +78,9 @@ namespace RenSharpClient.Controllers
 			{
 				var effect = core.Context.Evaluate<Func<Image, EffectData, IEnumerator>>(effectMethod);
 				var effectData = new EffectData() { IsAppear = true };
-				StartCoroutine(effect(image, effectData));
+
+				IEnumerator coroutine = effect(image, effectData);
+				ChangeEffect(activeSprite, coroutine);
 			}
 		}
 
@@ -128,10 +125,10 @@ namespace RenSharpClient.Controllers
 
 		internal void Hide(string name, RenSharpCore core, Attributes attributes)
 		{
-			ActiveSprite image;
-			ActiveSprites.TryGetValue(name, out image);
+			ActiveSprite activeSprite;
+			ActiveSprites.TryGetValue(name, out activeSprite);
 
-			if (image == null)
+			if (activeSprite == null)
 				return;
 
 			string effectMethod = attributes.GetValueOrNull("with");
@@ -139,11 +136,14 @@ namespace RenSharpClient.Controllers
 			{
 				var effect = core.Context.Evaluate<Func<Image, EffectData, IEnumerator>>(effectMethod);
 				var effectData = new EffectData() { IsAppear = false };
-				StartCoroutine(effect(image.obj.GetComponent<Image>(), effectData));
+
+				IEnumerator coroutine = effect(activeSprite.obj.GetComponent<Image>(), effectData);
+				ChangeEffect(activeSprite, coroutine);
 			}
 			else
 			{
-				Destroy(image.obj);
+				TryStopEffect(activeSprite);
+				Destroy(activeSprite.obj);
 			}
 			ActiveSprites.Remove(name);
 		}
@@ -153,9 +153,10 @@ namespace RenSharpClient.Controllers
 			foreach (KeyValuePair<string, ActiveSprite> character in ActiveSprites.ToList())
 			{
 				string name = character.Key;
-				GameObject obj = character.Value.obj;
+				ActiveSprite activeSprite = character.Value;
 
-				Destroy(obj);
+				TryStopEffect(activeSprite);
+				Destroy(activeSprite.obj);
 				ActiveSprites.Remove(name);
 			}
 		}
@@ -246,6 +247,23 @@ namespace RenSharpClient.Controllers
 				image.Width *= multiplier;
 				image.Height = height;
 			}
+		}
+
+		private void ChangeEffect(ActiveSprite activeSprite, IEnumerator effect)
+		{
+			TryStopEffect(activeSprite);
+			activeSprite.Effect = effect;
+			StartCoroutine(effect);
+		}
+
+		private void TryStopEffect(ActiveSprite activeSprite)
+		{
+			if (activeSprite == null)
+				return;
+			if (activeSprite.Effect == null)
+				return;
+
+			StopCoroutine(activeSprite.Effect);
 		}
 	}
 }

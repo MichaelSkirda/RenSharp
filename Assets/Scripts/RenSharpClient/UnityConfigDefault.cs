@@ -1,6 +1,7 @@
 using RenSharp;
 using RenSharpClient.Controllers;
 using RenSharpClient.Models.Commands;
+using RenSharpClient.Models.Models.Commands;
 using RenSharpClient.Parser.Complex;
 
 
@@ -35,6 +36,8 @@ public static class UnityConfigDefault
 		config.Skip<Hide>();
 
 		config.Skip<Play>();
+		config.Skip<StopMusic>();
+
 		config.Skip<ImageCommand>();
 		config.Skip<MenuRollback>();
 
@@ -45,6 +48,7 @@ public static class UnityConfigDefault
 		config.SetValue("gui_btn_gap", 50f);
 		config.SetValue("gui_btn_first_gap", 25f);
 		config.SetValue("rollback_cooldown", 300);
+		config.SetValue("fast_forward_delay", 200); // Ctrl makes 5 commands per sec. (1000ms / 200ms)
 
 		return config;
 	}

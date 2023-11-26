@@ -96,7 +96,7 @@ internal static class CommandParsers
 			throw new ArgumentException(" оманда 'hide' должна указывать какой спрайт спр€тать.");
 
 		string[] allowedAttributes = { "with" };
-		Attributes attributes = AttributeParser.ParseAttributes(words.Skip(2), allowedAttributes);
+		Attributes attributes = AttributeParser.ParseAttributes(allowedAttributes, words.Skip(2));
 		string name = words[1];
 		return new Hide(name, attributes, controller);
 	}
