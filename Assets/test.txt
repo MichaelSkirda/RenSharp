@@ -8,7 +8,6 @@ define cn = Character("Консультант")
 define un = Character("?")
 
 label start:
-	jump test
     stop music fadeout 1.0
 
     play music "audio/music/Beginning.ogg" fadein 10
@@ -275,8 +274,6 @@ label is_she_just_a_friend:
     jump open_it
 
 label open_it:
-	pass
-label test
     scene bg_1_1 with Dissolve(2.5)
 
     play sound "audio/sfx/ambience/room_ambience.ogg"
