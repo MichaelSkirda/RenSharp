@@ -2,7 +2,7 @@
 
 namespace RenSharp.Models
 {
-	internal class StackFrame
+	public class StackFrame
 	{
 		internal Stack<int> LevelStack = new Stack<int>();
 		internal int Line { get; set; }

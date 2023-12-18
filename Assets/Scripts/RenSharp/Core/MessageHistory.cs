@@ -13,6 +13,15 @@ namespace RenSharp.Core
 			Messages = new Stack<MessageResult>();
 		}
 
+		internal MessageHistory(IEnumerable<MessageResult> messages)
+		{
+			Messages = new Stack<MessageResult>();
+			foreach (var message in messages)
+			{
+				Messages.Push(message);
+			}
+		}
+
 		public void Push(MessageResult message)
 			=> Messages.Push(message);
 		public void Pop()

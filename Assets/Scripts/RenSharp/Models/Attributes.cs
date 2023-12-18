@@ -7,10 +7,24 @@ namespace RenSharp.Models
 {
 	public class Attributes
 	{
+		private Dictionary<string, string> values { get; set; } = new Dictionary<string, string>();
 		public string this[string key]
 		{
 			get => values[key];
 		}
+
+		public Attributes() { }
+		public Attributes(IEnumerable<string> attributes)
+		{
+			if (attributes == null)
+				attributes = new List<string>();
+			AddAttributes(attributes);
+		}
+		public Attributes(Dictionary<string, string> attributes)
+		{
+			AddAttributes(attributes);
+		}
+		public static Attributes Empty() => new Attributes();
 
 		public void Remove(string key)
 			=> values.Remove(key);
@@ -53,21 +67,6 @@ namespace RenSharp.Models
 			{
 				return null;
 			}
-		}
-
-		private Dictionary<string, string> values { get; set; } = new Dictionary<string, string>();
-
-		public Attributes() { }
-		public static Attributes Empty() => new Attributes();
-		public Attributes(IEnumerable<string> attributes)
-		{
-			if(attributes == null)
-				attributes = new List<string>();
-			AddAttributes(attributes);
-		}
-		public Attributes(Dictionary<string, string> attributes)
-		{
-			AddAttributes(attributes);
 		}
 
 		public void AddAttributes(Attributes attributes, bool rewrite = true) => AddAttributes(attributes.KeyValues(), rewrite);

@@ -13,7 +13,7 @@ namespace RenSharp.Models.Commands
 
 		public override void Execute(RenSharpCore core)
 		{
-			
+			// Ignore at runtime
 		}
 
 		public void ExecuteDefine(RenSharpCore core)

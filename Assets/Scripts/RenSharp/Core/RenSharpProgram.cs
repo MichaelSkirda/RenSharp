@@ -11,7 +11,9 @@ namespace RenSharp.Core
     public class RenSharpProgram : IEnumerator<Command>
     {
         private int Position = -1;
-        private List<Command> _program { get; set; }
+        internal int Line => Position + 2; // Look goto to understand
+
+		private List<Command> _program { get; set; }
 		internal Command this[int line] => _program[line - 1];
 		internal IReadOnlyList<Command> Code => _program.AsReadOnly();
         public Command Current => _program[Position];

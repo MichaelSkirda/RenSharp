@@ -14,7 +14,7 @@ namespace RenSharp.Core
 		internal PythonEvaluator PyEvaluator { get; set; }
 
 		public MessageHistory MessageHistory { get; private set; }
-		private Stack<StackFrame> CallStack { get; set; }
+		internal Stack<StackFrame> CallStack { get; private set; }
 		internal Stack<Command> RollbackStack { get; private set; }
 		internal StackFrame CurrentFrame { get; set; }
 

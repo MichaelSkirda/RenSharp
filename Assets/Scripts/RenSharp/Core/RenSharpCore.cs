@@ -45,6 +45,26 @@ namespace RenSharp.Core
 			Context.SetVariable("_rs_nobody_character", key);
 		}
 
+		public SaveModel Save()
+		{
+			var save = new SaveModel()
+			{
+				IsPaused = IsPaused,
+				HasStarted = HasStarted,
+				Line = Program.Line,
+				MessageHistory = Context.MessageHistory.All(),
+				CallStack = Context.CallStack
+			};
+
+			throw new NotImplementedException();
+			return save;
+		}
+
+		public void Load(SaveModel save)
+		{
+			throw new NotImplementedException();
+		}
+
 		public string AddCharacter(string name)
 		{
 			var character = new Character(name);
