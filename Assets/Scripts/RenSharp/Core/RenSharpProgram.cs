@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace RenSharp.Core
 {
-    internal class RenSharpProgram : IEnumerator<Command>
+    public class RenSharpProgram : IEnumerator<Command>
     {
         private int Position = -1;
         private List<Command> _program { get; set; }

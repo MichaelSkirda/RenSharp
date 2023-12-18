@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RenSharp.Core.Repositories
 {
-	internal class CharacterRepository
+	public class CharacterRepository
 	{
 		private Dictionary<string, Character> Characters { get; set; } = new Dictionary<string, Character>();
 		private static int AnonymousCharacterId { get; set; } = 0;
