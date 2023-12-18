@@ -35,12 +35,7 @@ namespace RenSharp.Core.Expressions
 		}
 		internal ScriptScope CopyScope()
 		{
-			IEnumerable<KeyValuePair<string, dynamic>> keyValues = Scope.GetItems();
-			Dictionary<string, object> variables = keyValues
-				.Where(kv => kv.Key.NotStartsWith("__"))
-				.GroupBy(kv => kv.Key)
-				.Select(kvs => kvs.First())
-				.ToDictionary(x => x.Key, x => x.Value);
+			Dictionary<string, object> variables = GetVariables();
 			return Engine.CreateScope(variables);
 		}
 
@@ -88,14 +83,16 @@ namespace RenSharp.Core.Expressions
 
 		internal Dictionary<string, object> GetVariables()
 		{
-			IEnumerable<string> keys = Scope.GetVariableNames();
-			var variables = new Dictionary<string, object>();
-
-			foreach(string key in keys)
+			var ignoreNames = new string[]
 			{
-				variables[key] = Scope.GetVariable(key);
-			}
-
+				"clr", "RenSharpWrapper", "Character", "config", "rsys", "rs"
+			};
+			IEnumerable<KeyValuePair<string, dynamic>> keyValues = Scope.GetItems();
+			Dictionary<string, object> variables = keyValues
+				.Where(kv => kv.Key.NotStartsWith("__") && ignoreNames.Contains(kv.Key) == false)
+				.GroupBy(kv => kv.Key)
+				.Select(kvs => kvs.First())
+				.ToDictionary(x => x.Key, x => x.Value);
 			return variables;
 		}
 	}
