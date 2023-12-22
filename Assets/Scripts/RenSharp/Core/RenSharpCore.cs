@@ -52,17 +52,27 @@ namespace RenSharp.Core
 				IsPaused = IsPaused,
 				HasStarted = HasStarted,
 				Line = Program.Line,
+				Program = Program.Code,
 				MessageHistory = Context.MessageHistory.All(),
-				CallStack = Context.CallStack
+				CallStack = Context.CallStack.ToList(),
+				RollbackStack = Context.RollbackStack.ToList(),
+				LevelStack = Context.LevelStack.ToList()
 			};
-
-			throw new NotImplementedException();
 			return save;
 		}
 
 		public void Load(SaveModel save)
 		{
-			throw new NotImplementedException();
+			SetupProgram(Configuration);
+			LoadProgram(save.Program.ToList(), saveScope: false);
+
+			// If save should be start
+			if (save.HasStarted) 
+				Start();
+
+			Program.Goto(save.Line);
+			IsPaused = save.IsPaused;
+
 		}
 
 		public string AddCharacter(string name)
@@ -96,11 +106,16 @@ namespace RenSharp.Core
 			=> LoadProgram(File.ReadAllLines(path), saveScope);
         public void LoadProgram(IEnumerable<string> code, bool saveScope = false)
         {
-			if (saveScope == false)
-				Context.PyEvaluator.RecreateScope();
-
 			var parser = new RenSharpParser(Configuration);
 			var program = parser.ParseCode(code);
+
+			LoadProgram(program, saveScope);
+		}
+
+		public void LoadProgram(List<Command> program, bool saveScope = false)
+		{
+			if (saveScope == false)
+				Context.PyEvaluator.RecreateScope();
 
 			Context.Program = new RenSharpProgram(program);
 			HasStarted = false;

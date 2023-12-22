@@ -11,7 +11,7 @@ namespace RenSharp.Core
     public class RenSharpProgram : IEnumerator<Command>
     {
         private int Position = -1;
-        internal int Line => Position + 2; // Look goto to understand
+        internal int Line => Position + 2; // Look 'Goto(int)' to understand
 
 		private List<Command> _program { get; set; }
 		internal Command this[int line] => _program[line - 1];
@@ -50,7 +50,7 @@ namespace RenSharp.Core
                 .Where(x => x.Name == name);
 
             if (labels.Count() > 1)
-                throw new ArgumentException($"There are two labels with name {name}");
+                throw new ArgumentException($"There are two labels with name '{name}'.");
 
             Label label = labels.FirstOrDefault();
 

@@ -23,6 +23,7 @@ internal class Program
 			{
 				try
 				{
+					renSharp.Save();
 					renSharp.Rollback();
 				}
 				catch

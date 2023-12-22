@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace RenSharp.Models
 {
@@ -11,16 +10,12 @@ namespace RenSharp.Models
 
 		// Program
 		public int Line { get; set; }
+		public IEnumerable<Command> Program { get; set; }
 
 		// Context
 		public IEnumerable<MessageResult> MessageHistory { get; set; }
 		public IEnumerable<StackFrame> CallStack { get; set; }
 		public IEnumerable<Command> RollbackStack { get; set; }
 		public IEnumerable<int> LevelStack { get; set; }
-
-		public string ToJson()
-		{
-			throw new NotImplementedException();
-		}
 	}
 }
