@@ -5,13 +5,14 @@ using System.Linq;
 using RenSharp.Core.Exceptions;
 using RenSharp.Core.Parse;
 using RenSharp.Core.Repositories;
+using RenSharp.Core.Save;
 using RenSharp.Interfaces;
 using RenSharp.Models;
 using RenSharp.Models.Commands;
 
 namespace RenSharp.Core
 {
-	public class RenSharpCore
+    public class RenSharpCore
 	{
 		public bool IsPaused { get; private set; } = false;
 		public Configuration Configuration { get; set; }
@@ -45,34 +46,51 @@ namespace RenSharp.Core
 			Context.SetVariable("_rs_nobody_character", key);
 		}
 
-		public SaveModel Save()
+		public SaveModel SaveRaw()
 		{
 			var save = new SaveModel()
 			{
 				IsPaused = IsPaused,
 				HasStarted = HasStarted,
 				Line = Program.Line,
-				Program = Program.Code,
-				MessageHistory = Context.MessageHistory.All(),
-				CallStack = Context.CallStack.ToList(),
-				RollbackStack = Context.RollbackStack.ToList(),
-				LevelStack = Context.LevelStack.ToList()
+				MessageHistory = Context.MessageHistory.Messages,
+				CallStack = Context.CallStack,
+				RollbackStack = Context.RollbackStack,
+				CurrentFrame = Context.CurrentFrame,
+				Variables = Context.PyEvaluator.GetVariables()
 			};
 			return save;
+		}
+
+		public string Save()
+		{
+			SaveModel save = SaveRaw();
+			string serialized = SaveSerializer.Serialize(save);
+			return serialized;
+		}
+
+		public void Load(string serializedSave)
+		{
+			SaveModel save = SaveSerializer.Deserialize(serializedSave);
+			Load(save);
 		}
 
 		public void Load(SaveModel save)
 		{
 			SetupProgram(Configuration);
-			LoadProgram(save.Program.ToList(), saveScope: false);
+			Context.PyEvaluator.RecreateScope();
 
 			// If save should be start
-			if (save.HasStarted) 
+			if (save.HasStarted)
+			{
+				HasStarted = false;
 				Start();
+			}
 
 			Program.Goto(save.Line);
 			IsPaused = save.IsPaused;
 
+			Context.Load(save);
 		}
 
 		public string AddCharacter(string name)

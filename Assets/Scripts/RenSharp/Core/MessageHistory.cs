@@ -1,25 +1,20 @@
 ﻿using RenSharp.Models;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace RenSharp.Core
 {
 	public class MessageHistory
 	{
-		private Stack<MessageResult> Messages {  get; set; }
+		internal Stack<MessageResult> Messages { get; private set; }
 
 		internal MessageHistory()
 		{
 			Messages = new Stack<MessageResult>();
 		}
 
-		internal MessageHistory(IEnumerable<MessageResult> messages)
+		internal MessageHistory(Stack<MessageResult> messages)
 		{
-			Messages = new Stack<MessageResult>();
-			foreach (var message in messages)
-			{
-				Messages.Push(message);
-			}
+			Messages = messages;
 		}
 
 		public void Push(MessageResult message)
@@ -28,8 +23,5 @@ namespace RenSharp.Core
 			=> Messages.Pop();
 		public void Clear()
 			=> Messages.Clear();
-
-		public IEnumerable<MessageResult> All()
-			=> Messages.ToList();
 	}
 }

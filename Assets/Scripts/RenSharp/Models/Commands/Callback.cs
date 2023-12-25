@@ -1,7 +1,5 @@
 ﻿using RenSharp.Core;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace RenSharp.Models.Commands
 {
@@ -9,8 +7,10 @@ namespace RenSharp.Models.Commands
 	{
 		public string Expression { get; set; }
 
+		[Obsolete("Replaced with IronPython and PyImport attribute")]
 		public Callback(string expression)
 		{
+			throw new NotImplementedException();
 			Expression = expression;
 		}
 

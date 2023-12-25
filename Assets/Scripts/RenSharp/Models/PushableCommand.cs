@@ -1,6 +1,5 @@
 ﻿using RenSharp.Core;
 using RenSharp.Interfaces;
-using RenSharp.Models;
 using System.Collections.Generic;
 
 namespace RenSharp.Models

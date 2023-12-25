@@ -5,13 +5,14 @@ using RenSharp.Models;
 using System.Text.RegularExpressions;
 using RenSharp.Interfaces;
 using RenSharp.Core.Expressions;
+using RenSharp.Core.Save;
 
 namespace RenSharp.Core
 {
     public class RenSharpContext
     {
 		internal RenSharpProgram Program { get; set; }
-		internal PythonEvaluator PyEvaluator { get; set; }
+		internal PythonEvaluator PyEvaluator { get; private set; }
 
 		public MessageHistory MessageHistory { get; private set; }
 		internal Stack<StackFrame> CallStack { get; private set; }
@@ -29,6 +30,19 @@ namespace RenSharp.Core
 
 			PyEvaluator = new PythonEvaluator();
 			CurrentFrame = new StackFrame();
+		}
+
+		public void Load(SaveModel save)
+		{
+			var messages = new Stack<MessageResult>(save.MessageHistory.Reverse());
+			var callStack = new Stack<StackFrame>(save.CallStack.Reverse());
+			var rollbackStack = new Stack<Command>(save.RollbackStack.Reverse());
+
+			MessageHistory = new MessageHistory(messages);
+			CallStack = callStack;
+			RollbackStack = rollbackStack;
+			CurrentFrame = save.CurrentFrame;
+			PyEvaluator.SetVariables(save.Variables);
 		}
 
 		internal void Goto(Command command)
