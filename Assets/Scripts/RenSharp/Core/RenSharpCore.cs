@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using RenSharp.Core.Exceptions;
+﻿using RenSharp.Core.Exceptions;
 using RenSharp.Core.Parse;
 using RenSharp.Core.Repositories;
 using RenSharp.Core.Save;
@@ -23,28 +19,37 @@ namespace RenSharp.Core
 
         public RenSharpCore(string path, Configuration config = null) => SetupProgram(File.ReadAllLines(path), config);
         public RenSharpCore(IEnumerable<string> code, Configuration config = null) => SetupProgram(code, config);
-		public RenSharpCore(Configuration config = null) => SetupProgram(config);
+		public RenSharpCore(Configuration config = null)
+		{
+			SetConfig(config);
+			SetupProgram();
+		}
 
 		private void SetupProgram(IEnumerable<string> code, Configuration config)
 		{
-			SetupProgram(config);
-			LoadProgram(code, saveScope: true);
-		}
+			SetConfig(config);
+            LoadProgram(code, saveScope: true);
+			SetupProgram();
+        }
 
-		private void SetupProgram(Configuration config)
-        {
-			CharacterRepository = new CharacterRepository();
-			string key = CharacterRepository.AddCharacter(new Character()); 
+		private void SetupProgram()
+		{
+            CharacterRepository = new CharacterRepository();
+            string key = CharacterRepository.AddCharacter(new Character());
 
-			if (config == null)
-				config = DefaultConfiguration.GetDefaultConfig();
+            PyImportAttribute.ReloadCallbacks();
+            Context = new RenSharpContext();
+            Context.SetVariable("rs", this);
+            Context.SetVariable("_rs_nobody_character", key);
+        }
 
-			PyImportAttribute.ReloadCallbacks();
-			Configuration = config;
-			Context = new RenSharpContext();
-			Context.SetVariable("rs", this);
-			Context.SetVariable("_rs_nobody_character", key);
-		}
+		private void SetConfig(Configuration config)
+		{
+            if (config == null)
+                Configuration = DefaultConfiguration.GetDefaultConfig();
+            else
+                Configuration = config;
+        }
 
 		public SaveModel SaveRaw()
 		{
@@ -77,7 +82,8 @@ namespace RenSharp.Core
 
 		public void Load(SaveModel save)
 		{
-			SetupProgram(Configuration);
+			SetConfig(Configuration);
+			SetupProgram();
 			Context.PyEvaluator.RecreateScope();
 
 			// If save should be start
@@ -133,9 +139,12 @@ namespace RenSharp.Core
 		public void LoadProgram(List<Command> program, bool saveScope = false)
 		{
 			if (saveScope == false)
-				Context.PyEvaluator.RecreateScope();
+			{
+                Context.PyEvaluator.RecreateScope();
+                SetupProgram();
+            }
 
-			Context.Program = new RenSharpProgram(program);
+            Context.Program = new RenSharpProgram(program);
 			HasStarted = false;
 		}
 
