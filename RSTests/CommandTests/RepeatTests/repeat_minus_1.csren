@@ -1,0 +1,4 @@
+label start:
+	repeat -1:
+		"Should not be printed"
+	Should not be printed"

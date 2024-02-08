@@ -19,7 +19,7 @@ namespace RSTests.CommandTests
             MessageResult message = Messages.First();
 
             Assert.Single(Messages);
-            Assert.Equal("nobody", message.Character);
+            Assert.Equal("_rs_nobody_character", message.Character);
             Assert.Equal("x bigger than 5", message.Speech);
         }
     }
