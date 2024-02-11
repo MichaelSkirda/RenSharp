@@ -1,4 +1,5 @@
 ﻿using RenSharp.Models.Parse;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace RenSharp.Core.Parse
@@ -14,7 +15,7 @@ namespace RenSharp.Core.Parse
 			return regex.IsMatch(name);
 		}
 
-		public static StringFirstQuotes BetweenQuotesFirst(string[] words)
+		public static StringFirstQuotes BetweenQuotesFirst(IEnumerable<string> words)
 			=> BetweenQuotesFirst(string.Join(' ', words));
 		public static StringFirstQuotes BetweenQuotesFirst(string text)
 		{

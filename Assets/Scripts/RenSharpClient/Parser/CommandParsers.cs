@@ -116,11 +116,11 @@ internal static class CommandParsers
 	internal static Play ParsePlay(string[] words, SoundController controller)
 	{
 		if (words.Count() < 3)
-			throw new ArgumentException($"Команда 'play' должна содержать минимум 2 аргумента. Команда должна быть формата:'play sound/music [name] fadein 1.5'. Текущее значение: '{words.ToWord()}'");
+			throw new ArgumentException($"Команда 'play' должна содержать минимум 2 аргумента. Команда должна быть формата:'play [channel] [name] [effect (опционально)]'. Текущее значение: '{words.ToWord()}'");
 
 		string channel = words[1];
 
-		StringFirstQuotes quotedValue = RegexMethods.BetweenQuotesFirst(words);
+		StringFirstQuotes quotedValue = RegexMethods.BetweenQuotesFirst(words.Skip(2)); // Skip keyword play and channel
 		string name = quotedValue.Between;
 		if (quotedValue == null || string.IsNullOrEmpty(name))
 			throw new ArgumentException(RSExceptionMessages.NoAudioPathSpecified);

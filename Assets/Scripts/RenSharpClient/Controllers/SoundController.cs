@@ -1,10 +1,12 @@
 ﻿using RenSharp.Models;
+using RenSharpClient.Models;
 using RenSharpClient.Models.Commands.Results;
 using RenSharpClient.Storage;
 using System;
 using System.Collections;
-using System.Linq;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace RenSharpClient.Controllers
 {
@@ -13,82 +15,131 @@ namespace RenSharpClient.Controllers
 		[SerializeField]
 		private SoundStorage SoundStorage;
 		[SerializeField]
-		private AudioSource MusicSource;
+		private AudioSource AudioSourcePrefab;
 		[SerializeField]
-		private AudioSource SoundSource;
+		private Transform NewSourcesParent;
 
-		public void AddAudio(string name, AudioClip clip)
-			=> SoundStorage.AddAudio(name, clip);
+		private AudioChannelController ChannelController = new AudioChannelController();
 
-		public AudioSource PlaySound(string name)
+
+        private void Update()
+        {
+            foreach (KeyValuePair<string, AudioChannel> kv in ChannelController.Channels)
+            {
+                AudioChannel channel = kv.Value;
+                if (channel.Paused)
+                    continue;
+
+                AudioSource audioSource = channel.AudioSource;
+                Queue<AudioClip> queue = channel.Queue;
+
+                if (audioSource.isPlaying || queue.Count <= 0)
+                    continue;
+
+                Attributes attributes = channel.Attributes;
+                AudioClip clip = queue.Dequeue();
+
+                Play(channel, clip, attributes, clearQueue: false);
+            }
+        }
+
+        internal void CreateChannel(string name, bool loop)
 		{
-			AudioClip clip = SoundStorage.GetAudio(name);
-			SoundSource.clip = clip;
-			return SoundSource;
-		}
+			AudioSource audioSource = Instantiate(AudioSourcePrefab, NewSourcesParent);
+			audioSource.loop = loop;
 
-		public AudioSource PlayMusic(string name)
-		{
-			AudioClip clip = SoundStorage.GetAudio(name);
-			MusicSource.clip = clip;
-			return MusicSource;
-		}
-
-		internal void Play(PlayResult audio)
-		{
-			string name = audio.Name;
-			string channel = audio.Channel;
-			Attributes attributes = audio.Attributes;
-
-			AudioSource audioSource;
-			if (channel == "music")
-				audioSource = PlayMusic(name);
-			else if (channel == "sound")
-				audioSource = PlaySound(name);
-			else
-				throw new InvalidOperationException($"Неизвестный аудио канал '{channel}'. Используйте 'play music' или 'play sound'.");
-
-			float? fadeIn = attributes.GetFloatOrNull("fadein");
-			if(fadeIn != null)
+			var channel = new AudioChannel(audioSource);
+			try
 			{
-				StartCoroutine(FadeIn(audioSource, fadeIn.Value, target: 1f));
+                ChannelController.CreateChannel(name, channel);
+            }
+			catch(Exception ex)
+			{
+				Destroy(audioSource);
+				throw ex;
 			}
 
-			audioSource.Play();
-		}
-		internal void Pause(StopResult audio)
+        }
+
+		internal void Play(PlayResult audio, bool clearQueue = false)
 		{
-			string channel = audio.Channel;
-			Attributes attributes = audio.Attributes;
-			AudioSource audioSource;
+			AudioChannel channel = ChannelController.GetChannel(audio.Channel);
+            AudioClip clip = SoundStorage.GetAudio(audio.Name);
+            Attributes attributes = audio.Attributes;
+            Play(channel, clip, attributes, clearQueue);
+		}
 
-			if (channel == "music")
-				audioSource = MusicSource;
-			else if (channel == "sound")
-				audioSource = SoundSource;
-			else
-				throw new InvalidOperationException($"Неизвестный аудио канал '{channel}'. Используйте 'play music' или 'play sound'.");
+        private void Play(AudioChannel channel, AudioClip clip, Attributes attributes, bool clearQueue = false)
+        {
+            AudioSource audioSource = channel.AudioSource;
+            channel.Attributes = attributes;
 
-			float? fadeOut = attributes.GetFloatOrNull("fadeout");
+            if (clearQueue)
+                channel.Queue.Clear();
+
+            channel.AudioSource.Stop();
+            channel.AudioSource.clip = clip;
+
+            float? fadeIn = attributes.GetFloatOrNull("fadein");
+            if (fadeIn != null)
+            {
+                StartCoroutine(Fade(audioSource, fadeIn.Value, start: 0f, target: 1f));
+            }
+            channel.Paused = false;
+            channel.AudioSource.Play();
+        }
+
+		internal void UnPause(string channelName)
+		{
+            AudioChannel channel = ChannelController.GetChannel(channelName);
+            AudioSource audioSource = channel.AudioSource;
+
+            float? fadeIn = channel.Attributes.GetFloatOrNull("fadein");
+            if (fadeIn != null)
+            {
+                StartCoroutine(Fade(audioSource, fadeIn.Value, start: 0f, target: 1f));
+            }
+
+            channel.Paused = false;
+			audioSource.UnPause();
+        }
+
+        internal void Pause(StopResult audio)
+		{
+            AudioChannel channel = ChannelController.GetChannel(audio.Channel);
+            channel.Paused = true; // Preventing turning on next from queue, but not stop clip
+
+            AudioSource audioSource = channel.AudioSource;
+
+            float? fadeOut = audio.Attributes.GetFloatOrNull("fadeout");
 			if (fadeOut != null)
 			{
-				StartCoroutine(FadeIn(audioSource, fadeOut.Value, target: 0f));
+				StartCoroutine(Fade(audioSource, fadeOut.Value, start: audioSource.volume, target: 0f, audio => audio.Pause()));
 			}
-		}
-
-		private IEnumerator FadeIn(AudioSource audioSource, float duration, float target)
-		{
-			float currentTime = 0f;
-			float start = 0f;
-			audioSource.volume = start;
-
-			while (currentTime < duration)
+			else
 			{
-				currentTime += Time.deltaTime;
-				audioSource.volume = Mathf.Lerp(start, target, currentTime / duration);
-				yield return null;
+				audioSource.Pause();
 			}
-			yield break;
 		}
-	}
+
+        public void AddAudio(string name, AudioClip clip)
+            => SoundStorage.AddAudio(name, clip);
+
+        private IEnumerator Fade(AudioSource audioSource, float duration, float start, float target,
+            Action<AudioSource> callback = null)
+        {
+            float currentTime = 0f;
+            audioSource.volume = start;
+
+            while (currentTime < duration)
+            {
+                currentTime += Time.deltaTime;
+                audioSource.volume = Mathf.Lerp(start, target, currentTime / duration);
+                yield return null;
+            }
+            if (callback != null)
+                callback(audioSource);
+            yield break;
+        }
+    }
 }
