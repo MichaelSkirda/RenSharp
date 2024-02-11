@@ -25,7 +25,7 @@ namespace RenSharpClient.Models.Models.Commands
 				Channel = Channel,
 				Attributes = Attributes
 			};
-			Controller.Pause(stop);
+			Controller.Stop(stop);
 		}
 	}
 }
