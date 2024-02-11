@@ -6,7 +6,12 @@ namespace RenSharpClient.Controllers
 {
     internal class AudioChannelController
     {
-        internal readonly Dictionary<string, AudioChannel> Channels = new Dictionary<string, AudioChannel>();
+        internal readonly Dictionary<string, AudioChannel> Channels;
+
+        public AudioChannelController()
+        {
+            Channels = new Dictionary<string, AudioChannel>();
+        }
 
         internal void CreateChannel(string name, AudioChannel channel)
         {

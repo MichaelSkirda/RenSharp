@@ -123,6 +123,16 @@ namespace RenSharp.Models
 			return Int32.Parse(delay);
 		}
 
+		public float GetVolume()
+		{
+			float volume = GetFloatOrNull("volume") ?? 1f;
+			if (volume < 0f)
+				volume = 0f;
+			else if (volume > 1f)
+				volume = 1f;
+			return volume;
+		}
+
 		public bool IsClear()
 		{
 			string str = GetAttributeValue("no-clear");

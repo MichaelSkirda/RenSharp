@@ -14,7 +14,9 @@ namespace RenSharpClient.Models
 
         internal AudioSource AudioSource { get; set; }
         internal Queue<AudioClip> Queue { get; set; }
+        internal Queue<AudioClip> PlayedQueue { get; set; }
         internal Attributes Attributes { get; set; }
         internal bool Paused { get; set; }
+        internal bool Loop { get; set; }
     }
 }

@@ -6,7 +6,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace RenSharpClient.Controllers
 {
@@ -19,8 +18,22 @@ namespace RenSharpClient.Controllers
 		[SerializeField]
 		private Transform NewSourcesParent;
 
-		private AudioChannelController ChannelController = new AudioChannelController();
+		private AudioChannelController ChannelController;
 
+
+        private void Start()
+        {
+            ChannelController = new AudioChannelController();
+
+            AudioSource musicSource = Instantiate(AudioSourcePrefab, NewSourcesParent);
+            AudioSource soundSource = Instantiate(AudioSourcePrefab, NewSourcesParent);
+
+            var musicChannel = new AudioChannel(musicSource) { Loop = true };
+            var soundChannel = new AudioChannel(soundSource);
+
+            ChannelController.CreateChannel("music", musicChannel);
+            ChannelController.CreateChannel("sound", soundChannel);
+        }
 
         private void Update()
         {
@@ -31,10 +44,25 @@ namespace RenSharpClient.Controllers
                     continue;
 
                 AudioSource audioSource = channel.AudioSource;
+                if (audioSource.isPlaying)
+                    continue;
+
+                channel.PlayedQueue.Enqueue(audioSource.clip);
                 Queue<AudioClip> queue = channel.Queue;
 
-                if (audioSource.isPlaying || queue.Count <= 0)
-                    continue;
+                if (queue.Count <= 0)
+                {
+                    if(channel.Loop)
+                    {
+                        channel.Queue = channel.PlayedQueue;
+                        channel.PlayedQueue.Clear();
+                    }
+                    else
+                    {
+                        channel.Paused = true;
+                        continue;
+                    }
+                }
 
                 Attributes attributes = channel.Attributes;
                 AudioClip clip = queue.Dequeue();
@@ -71,6 +99,7 @@ namespace RenSharpClient.Controllers
 
         private void Play(AudioChannel channel, AudioClip clip, Attributes attributes, bool clearQueue = false)
         {
+            channel.Paused = true;
             AudioSource audioSource = channel.AudioSource;
             channel.Attributes = attributes;
 
@@ -83,10 +112,30 @@ namespace RenSharpClient.Controllers
             float? fadeIn = attributes.GetFloatOrNull("fadein");
             if (fadeIn != null)
             {
-                StartCoroutine(Fade(audioSource, fadeIn.Value, start: 0f, target: 1f));
+                float volume = channel.Attributes.GetVolume();
+                StartCoroutine(Fade(audioSource, fadeIn.Value, start: 0f, target: volume));
             }
             channel.Paused = false;
             channel.AudioSource.Play();
+        }
+
+        internal void Stop(StopResult audio)
+        {
+            AudioChannel channel = ChannelController.GetChannel(audio.Channel);
+            channel.Paused = true; // Preventing turning on next from queue, but not stop clip
+            channel.Queue.Clear();
+
+            AudioSource audioSource = channel.AudioSource;
+
+            float? fadeOut = audio.Attributes.GetFloatOrNull("fadeout");
+            if (fadeOut != null)
+            {
+                StartCoroutine(Fade(audioSource, fadeOut.Value, start: audioSource.volume, target: 0f, audio => audio.Stop()));
+            }
+            else
+            {
+                audioSource.Stop();
+            }
         }
 
 		internal void UnPause(string channelName)
@@ -97,7 +146,8 @@ namespace RenSharpClient.Controllers
             float? fadeIn = channel.Attributes.GetFloatOrNull("fadein");
             if (fadeIn != null)
             {
-                StartCoroutine(Fade(audioSource, fadeIn.Value, start: 0f, target: 1f));
+                float volume = channel.Attributes.GetVolume();
+                StartCoroutine(Fade(audioSource, fadeIn.Value, start: 0f, target: volume));
             }
 
             channel.Paused = false;
