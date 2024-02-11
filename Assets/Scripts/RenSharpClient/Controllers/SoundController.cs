@@ -55,7 +55,7 @@ namespace RenSharpClient.Controllers
                     if(channel.Loop)
                     {
                         channel.Queue = channel.PlayedQueue;
-                        channel.PlayedQueue.Clear();
+                        channel.PlayedQueue = new Queue<AudioClip>();
                     }
                     else
                     {
@@ -69,24 +69,6 @@ namespace RenSharpClient.Controllers
 
                 Play(channel, clip, attributes, clearQueue: false);
             }
-        }
-
-        internal void CreateChannel(string name, bool loop)
-		{
-			AudioSource audioSource = Instantiate(AudioSourcePrefab, NewSourcesParent);
-			audioSource.loop = loop;
-
-			var channel = new AudioChannel(audioSource);
-			try
-			{
-                ChannelController.CreateChannel(name, channel);
-            }
-			catch(Exception ex)
-			{
-				Destroy(audioSource);
-				throw ex;
-			}
-
         }
 
 		internal void Play(PlayResult audio, bool clearQueue = false)
@@ -171,6 +153,24 @@ namespace RenSharpClient.Controllers
 				audioSource.Pause();
 			}
 		}
+
+        internal void CreateChannel(string name, bool loop)
+        {
+            AudioSource audioSource = Instantiate(AudioSourcePrefab, NewSourcesParent);
+            audioSource.loop = loop;
+
+            var channel = new AudioChannel(audioSource);
+            try
+            {
+                ChannelController.CreateChannel(name, channel);
+            }
+            catch (Exception ex)
+            {
+                Destroy(audioSource);
+                throw ex;
+            }
+
+        }
 
         public void AddAudio(string name, AudioClip clip)
             => SoundStorage.AddAudio(name, clip);
