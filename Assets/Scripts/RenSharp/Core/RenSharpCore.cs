@@ -5,6 +5,10 @@ using RenSharp.Core.Save;
 using RenSharp.Interfaces;
 using RenSharp.Models;
 using RenSharp.Models.Commands;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace RenSharp.Core
 {
@@ -22,12 +26,14 @@ namespace RenSharp.Core
 		public RenSharpCore(Configuration config = null)
 		{
 			SetConfig(config);
-			SetupProgram();
+            Context = new RenSharpContext();
+            SetupProgram();
 		}
 
 		private void SetupProgram(IEnumerable<string> code, Configuration config)
 		{
 			SetConfig(config);
+            Context = new RenSharpContext();
             LoadProgram(code, saveScope: true);
 			SetupProgram();
         }
@@ -35,10 +41,9 @@ namespace RenSharp.Core
 		private void SetupProgram()
 		{
             CharacterRepository = new CharacterRepository();
-            string key = CharacterRepository.AddCharacter(new Character());
+            string key = CharacterRepository.AddCharacter(new Character(name: "???"));
 
             PyImportAttribute.ReloadCallbacks();
-            Context = new RenSharpContext();
             Context.SetVariable("rs", this);
             Context.SetVariable("_rs_nobody_character", key);
         }
