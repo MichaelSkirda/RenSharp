@@ -2,7 +2,7 @@
 
 namespace Assets.Scripts.RenSharpClient.Functions
 {
-	[PyImport("Image")]
+	//[PyImport("Image")]
 	public class ImagesIronPython
 	{
 	}

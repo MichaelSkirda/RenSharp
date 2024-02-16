@@ -2,19 +2,20 @@
 using RenSharp.Models;
 using RenSharpClient.Controllers;
 using RenSharpClient.Models.Commands.Results;
+using System.Collections.Generic;
 
 namespace RenSharpClient.Models.Commands
 {
 	internal class Play : Command
 	{
-		public string Name { get; set; }
+		public IEnumerable<string> ClipNames { get; set; }
 		public string Channel { get; set; }
 		public Attributes Attributes { get; set; }
 		public SoundController Controller { get; set; }
 
-		public Play(string name, string channel, Attributes attributes, SoundController controller)
+		public Play(IEnumerable<string> clipNames, string channel, Attributes attributes, SoundController controller)
 		{
-			Name = name;
+            ClipNames = clipNames;
 			Channel = channel;
 			Controller = controller;
 			Attributes = attributes;
@@ -24,7 +25,7 @@ namespace RenSharpClient.Models.Commands
 		{
 			var playResult = new PlayResult()
 			{
-				Name = Name,
+				ClipNames = ClipNames,
 				Channel = Channel,
 				Attributes = Attributes
 			};

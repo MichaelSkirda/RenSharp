@@ -1,4 +1,10 @@
 label start:
-    "test123"
     "Hello"
+    play music "one" fadeout 1 fadein 1
+    "Pause"
+    play music "two"
+    "Pause"
+    play music "three" fadeout 1.33 fadein 1.33
+    "Pause"
+    play music "four"
     jump start

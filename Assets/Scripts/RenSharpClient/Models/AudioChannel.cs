@@ -13,10 +13,14 @@ namespace RenSharpClient.Models
         }
 
         internal AudioSource AudioSource { get; set; }
-        internal Queue<AudioClip> Queue { get; set; }
-        internal Queue<AudioClip> PlayedQueue { get; set; }
+        internal Queue<AudioClip> Queue { get; set; } = new Queue<AudioClip>();
+        internal Queue<AudioClip> PlayedQueue { get; set; } = new Queue<AudioClip>();
         internal Attributes Attributes { get; set; }
-        internal bool Paused { get; set; }
+
+        /// <summary>
+        /// This property does not belongs to AudioSource/AudioClip Paused, it is like mutex to pause queue
+        /// </summary>
+        internal bool Paused { get; set; } = true;
         internal bool Loop { get; set; }
     }
 }

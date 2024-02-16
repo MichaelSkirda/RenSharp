@@ -1,10 +1,12 @@
-﻿using RenSharp.Models;
+﻿using RenSharp.Core.Parse;
+using RenSharp.Models;
 using RenSharpClient.Models;
 using RenSharpClient.Models.Commands.Results;
 using RenSharpClient.Storage;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace RenSharpClient.Controllers
@@ -25,14 +27,9 @@ namespace RenSharpClient.Controllers
         {
             ChannelController = new AudioChannelController();
 
-            AudioSource musicSource = Instantiate(AudioSourcePrefab, NewSourcesParent);
-            AudioSource soundSource = Instantiate(AudioSourcePrefab, NewSourcesParent);
-
-            var musicChannel = new AudioChannel(musicSource) { Loop = true };
-            var soundChannel = new AudioChannel(soundSource);
-
-            ChannelController.CreateChannel("music", musicChannel);
-            ChannelController.CreateChannel("sound", soundChannel);
+            CreateChannel("music", loop: true);
+            CreateChannel("sound", loop: false);
+            CreateChannel("voice", loop: false);
         }
 
         private void Update()
@@ -44,14 +41,34 @@ namespace RenSharpClient.Controllers
                     continue;
 
                 AudioSource audioSource = channel.AudioSource;
+                Attributes attributes;
+
                 if (audioSource.isPlaying)
-                    continue;
-
-                channel.PlayedQueue.Enqueue(audioSource.clip);
-                Queue<AudioClip> queue = channel.Queue;
-
-                if (queue.Count <= 0)
                 {
+                    attributes = channel.Attributes;
+                    float? fadeout = attributes?.GetFloatOrNull("fadeout");
+                    if (fadeout == null || fadeout.Value <= 0)
+                        continue;
+
+                    float timeLeft = audioSource.clip.length - audioSource.time;
+
+                    if (timeLeft < fadeout)
+                    {
+                        float volume = attributes.GetVolume();
+                        audioSource.volume = timeLeft / fadeout.Value * volume;
+                    }
+
+                    continue;
+                }
+
+                if(audioSource.clip != null)
+                    channel.PlayedQueue.Enqueue(audioSource.clip);
+
+                if (channel.Queue.Count <= 0)
+                {
+                    if (channel.PlayedQueue.Any() == false)
+                        continue;
+
                     if(channel.Loop)
                     {
                         channel.Queue = channel.PlayedQueue;
@@ -64,34 +81,50 @@ namespace RenSharpClient.Controllers
                     }
                 }
 
-                Attributes attributes = channel.Attributes;
-                AudioClip clip = queue.Dequeue();
+                AudioClip clip = channel.Queue.Dequeue();
 
-                Play(channel, clip, attributes, clearQueue: false);
+                attributes = channel.Attributes;
+                audioSource.volume = attributes.GetVolume();
+
+                ReplaceCurrentPlaying(channel, clip, attributes);
             }
         }
 
-		internal void Play(PlayResult audio, bool clearQueue = false)
+		internal void Play(PlayResult audio)
 		{
-			AudioChannel channel = ChannelController.GetChannel(audio.Channel);
-            AudioClip clip = SoundStorage.GetAudio(audio.Name);
-            Attributes attributes = audio.Attributes;
-            Play(channel, clip, attributes, clearQueue);
+            AudioChannel channel = ChannelController.GetChannel(audio.Channel);
+            IEnumerable<AudioClip> clips = SoundStorage.GetAudio(audio.ClipNames);
+
+            AudioClip clip = clips.First();
+            Queue<AudioClip> queue = new Queue<AudioClip>(clips.Skip(1));
+
+            channel.Paused = true;
+            channel.Queue.Clear();
+            channel.Queue = queue;
+            ReplaceCurrentPlaying(channel, clip, audio.Attributes);
+            channel.Paused = false; // Actually not necessary, but I'm scared to delete this line
 		}
 
-        private void Play(AudioChannel channel, AudioClip clip, Attributes attributes, bool clearQueue = false)
+        internal void Enqueue(AudioChannel channel, IEnumerable<AudioClip> clips)
+        {
+            channel.Paused = true;
+            foreach(AudioClip clip in clips)
+            {
+                channel.Queue.Enqueue(clip);
+            }
+            channel.Paused = false;
+        }
+
+        private void ReplaceCurrentPlaying(AudioChannel channel, AudioClip clip, Attributes attributes)
         {
             channel.Paused = true;
             AudioSource audioSource = channel.AudioSource;
             channel.Attributes = attributes;
 
-            if (clearQueue)
-                channel.Queue.Clear();
-
             channel.AudioSource.Stop();
             channel.AudioSource.clip = clip;
 
-            float? fadeIn = attributes.GetFloatOrNull("fadein");
+            float? fadeIn = attributes?.GetFloatOrNull("fadein");
             if (fadeIn != null)
             {
                 float volume = channel.Attributes.GetVolume();
@@ -156,20 +189,25 @@ namespace RenSharpClient.Controllers
 
         internal void CreateChannel(string name, bool loop)
         {
+            if (RegexMethods.IsValidCharacterName(name) == false)
+                throw new ArgumentException("Name of new channel must be word without whitespace characters." +
+                    " You can use underscores ('_') as word delimeters.", nameof(name));
             AudioSource audioSource = Instantiate(AudioSourcePrefab, NewSourcesParent);
-            audioSource.loop = loop;
+            audioSource.loop = false; // SoundController have loop mechanism with queue
 
             var channel = new AudioChannel(audioSource);
+            channel.Loop = loop;
+            channel.Paused = false;
+
             try
             {
                 ChannelController.CreateChannel(name, channel);
             }
-            catch (Exception ex)
+            catch
             {
                 Destroy(audioSource);
-                throw ex;
+                throw;
             }
-
         }
 
         public void AddAudio(string name, AudioClip clip)

@@ -19,6 +19,14 @@ namespace RenSharpClient.Storage
 			return audio.AudioClip;
 		}
 
+		public IEnumerable<AudioClip> GetAudio(IEnumerable<string> names)
+		{
+            foreach(string name in names)
+			{
+				yield return GetAudio(name);
+			}
+        }
+
 		public void AddAudio(string name, AudioClip clip)
 		{
 			Data.RemoveAll(x =>  x.Name == name);

@@ -147,10 +147,10 @@ internal static class CommandParsers
 
 		IEnumerable<string> attributesWords = quotedValue.After.Split(' ');
 
-		var allowedAttributes = new string[] { "fadein" };
+		var allowedAttributes = new string[] { "fadein", "fadeout" };
 		Attributes attributes = AttributeParser.ParseAttributes(allowedAttributes, attributesWords);
 
-		return new Play(name, channel, attributes, controller);
+		return new Play(new List<string> { name }, channel, attributes, controller);
 	}
 
 	internal static Menu ParseMenu(MenuController controller) => new Menu(controller);
