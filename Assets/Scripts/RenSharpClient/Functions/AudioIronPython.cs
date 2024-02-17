@@ -1,4 +1,4 @@
-﻿namespace Assets.Scripts.RenSharpClient.Functions
+﻿namespace RenSharpClient.Functions
 {
     internal class AudioIronPython
     {

@@ -6,16 +6,15 @@ namespace RenSharpClient.Models
 {
     internal class AudioChannel
     {
-        public AudioChannel(AudioSource audioSource)
+        internal AudioChannel(AudioSource audioSource)
         {
             AudioSource = audioSource;
-            Queue = new Queue<AudioClip>();
         }
 
         internal AudioSource AudioSource { get; set; }
-        internal Queue<AudioClip> Queue { get; set; } = new Queue<AudioClip>();
-        internal Queue<AudioClip> PlayedQueue { get; set; } = new Queue<AudioClip>();
-        internal Attributes Attributes { get; set; }
+        internal AudioItem CurrentPlaying { get; set; }
+        internal Queue<AudioItem> Queue { get; set; } = new Queue<AudioItem>();
+        internal Queue<AudioItem> PlayedQueue { get; set; } = new Queue<AudioItem>();
 
         /// <summary>
         /// This property does not belongs to AudioSource/AudioClip Paused, it is like mutex to pause queue

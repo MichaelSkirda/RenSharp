@@ -1,4 +1,4 @@
-using Assets.Scripts.RenSharpClient;
+using RenSharpClient;
 using RenSharp;
 using RenSharp.Core.Parse;
 using RenSharp.Models;
@@ -147,7 +147,7 @@ internal static class CommandParsers
 
 		IEnumerable<string> attributesWords = quotedValue.After.Split(' ');
 
-		var allowedAttributes = new string[] { "fadein", "fadeout" };
+		var allowedAttributes = new string[] { "fadein", "fadeout", "volume" };
 		Attributes attributes = AttributeParser.ParseAttributes(allowedAttributes, attributesWords);
 
 		return new Play(new List<string> { name }, channel, attributes, controller);

@@ -1,6 +1,5 @@
-﻿using RenSharp.Core.Parse;
-using RenSharp.Models;
-using RenSharpClient.Models;
+﻿using RenSharpClient.Models;
+using RenSharp.Core.Parse;
 using RenSharpClient.Models.Commands.Results;
 using RenSharpClient.Storage;
 using System;
@@ -37,99 +36,118 @@ namespace RenSharpClient.Controllers
             foreach (KeyValuePair<string, AudioChannel> kv in ChannelController.Channels)
             {
                 AudioChannel channel = kv.Value;
-                if (channel.Paused)
-                    continue;
 
-                AudioSource audioSource = channel.AudioSource;
-                Attributes attributes;
+                if(channel.AudioSource.isPlaying == false && channel.Paused == false)
+                    NextTrack(channel);
 
-                if (audioSource.isPlaying)
-                {
-                    attributes = channel.Attributes;
-                    float? fadeout = attributes?.GetFloatOrNull("fadeout");
-                    if (fadeout == null || fadeout.Value <= 0)
-                        continue;
-
-                    float timeLeft = audioSource.clip.length - audioSource.time;
-
-                    if (timeLeft < fadeout)
-                    {
-                        float volume = attributes.GetVolume();
-                        audioSource.volume = timeLeft / fadeout.Value * volume;
-                    }
-
-                    continue;
-                }
-
-                if(audioSource.clip != null)
-                    channel.PlayedQueue.Enqueue(audioSource.clip);
-
-                if (channel.Queue.Count <= 0)
-                {
-                    if (channel.PlayedQueue.Any() == false)
-                        continue;
-
-                    if(channel.Loop)
-                    {
-                        channel.Queue = channel.PlayedQueue;
-                        channel.PlayedQueue = new Queue<AudioClip>();
-                    }
-                    else
-                    {
-                        channel.Paused = true;
-                        continue;
-                    }
-                }
-
-                AudioClip clip = channel.Queue.Dequeue();
-
-                attributes = channel.Attributes;
-                audioSource.volume = attributes.GetVolume();
-
-                ReplaceCurrentPlaying(channel, clip, attributes);
+                SetVolume(channel);
             }
         }
 
-		internal void Play(PlayResult audio)
+        private void NextTrack(AudioChannel channel)
+        {
+            if (channel.CurrentPlaying != null)
+                channel.PlayedQueue.Enqueue(channel.CurrentPlaying);
+
+            bool queueEmpty = !channel.Queue.Any();
+            bool playedEmpty = !channel.PlayedQueue.Any();
+            bool loop = channel.Loop;
+
+            if (queueEmpty && playedEmpty)
+                return; // Channel have no audio
+
+            if(queueEmpty && loop)
+            {
+                channel.Queue = channel.PlayedQueue;
+                channel.PlayedQueue = new Queue<AudioItem>();
+            }
+
+            AudioItem clip = channel.Queue.Dequeue();
+            ReplaceCurrentPlaying(channel, clip);
+        }
+
+        private void SetVolume(AudioChannel channel)
+        {
+            AudioSource audioSource = channel.AudioSource;
+            AudioItem clip = channel.CurrentPlaying;
+
+            float fadeout = clip?.Attributes?.GetFloatOrNull("fadeout") ?? 0;
+            float fadein = clip?.Attributes?.GetFloatOrNull("fadein") ?? 0;
+            float volume = clip?.Attributes?.GetVolume() ?? 1f;
+
+            if (fadein <= 0 && fadeout <= 0)
+            {
+                audioSource.volume = volume;
+                return;
+            }
+
+
+            float length = audioSource.clip.length;
+            float time = audioSource.time;
+            float timeLeft = length - time;
+
+
+            if (time < fadein)
+            {
+                audioSource.volume = Mathf.Lerp(0, volume, time / fadein);
+            }
+            else if (timeLeft < fadeout)
+            {
+                audioSource.volume = timeLeft / fadeout * volume;
+            }
+            else
+            {
+                audioSource.volume = volume;
+            }
+        }
+
+        internal void Play(PlayResult audio)
 		{
             AudioChannel channel = ChannelController.GetChannel(audio.Channel);
-            IEnumerable<AudioClip> clips = SoundStorage.GetAudio(audio.ClipNames);
 
-            AudioClip clip = clips.First();
-            Queue<AudioClip> queue = new Queue<AudioClip>(clips.Skip(1));
+            IEnumerable<AudioItem> clips = SoundStorage.GetAudio(audio.ClipNames)
+                .Select(x => new AudioItem() { Clip = x, Attributes = audio.Attributes });
+            AudioItem clip = clips.First();
 
             channel.Paused = true;
+
+            Queue<AudioItem> queue = new Queue<AudioItem>(clips.Skip(1));
+
             channel.Queue.Clear();
             channel.Queue = queue;
-            ReplaceCurrentPlaying(channel, clip, audio.Attributes);
+            ReplaceCurrentPlaying(channel, clip);
             channel.Paused = false; // Actually not necessary, but I'm scared to delete this line
 		}
 
-        internal void Enqueue(AudioChannel channel, IEnumerable<AudioClip> clips)
+        internal void Enqueue(PlayResult audio)
         {
+            AudioChannel channel = ChannelController.GetChannel(audio.Channel);
+
+            IEnumerable<AudioItem> clips = SoundStorage.GetAudio(audio.ClipNames)
+                .Select(x => new AudioItem() { Clip = x, Attributes = audio.Attributes });
+
             channel.Paused = true;
-            foreach(AudioClip clip in clips)
+            foreach(AudioItem clip in clips)
             {
                 channel.Queue.Enqueue(clip);
             }
             channel.Paused = false;
         }
 
-        private void ReplaceCurrentPlaying(AudioChannel channel, AudioClip clip, Attributes attributes)
+        private void ReplaceCurrentPlaying(AudioChannel channel, AudioItem clip)
         {
             channel.Paused = true;
-            AudioSource audioSource = channel.AudioSource;
-            channel.Attributes = attributes;
 
             channel.AudioSource.Stop();
-            channel.AudioSource.clip = clip;
+            channel.AudioSource.clip = clip.Clip;
+            channel.CurrentPlaying = clip;
 
-            float? fadeIn = attributes?.GetFloatOrNull("fadein");
-            if (fadeIn != null)
-            {
-                float volume = channel.Attributes.GetVolume();
-                StartCoroutine(Fade(audioSource, fadeIn.Value, start: 0f, target: volume));
-            }
+            float? fadeIn = clip.Attributes?.GetFloatOrNull("fadein");
+            if (fadeIn != null && fadeIn > 0)
+                channel.AudioSource.volume = 0;
+            else
+                channel.AudioSource.volume = clip.Attributes.GetVolume();
+
             channel.Paused = false;
             channel.AudioSource.Play();
         }
@@ -153,7 +171,7 @@ namespace RenSharpClient.Controllers
             }
         }
 
-		internal void UnPause(string channelName)
+		/* internal void UnPause(string channelName)
 		{
             AudioChannel channel = ChannelController.GetChannel(channelName);
             AudioSource audioSource = channel.AudioSource;
@@ -167,7 +185,7 @@ namespace RenSharpClient.Controllers
 
             channel.Paused = false;
 			audioSource.UnPause();
-        }
+        } */
 
         internal void Pause(StopResult audio)
 		{

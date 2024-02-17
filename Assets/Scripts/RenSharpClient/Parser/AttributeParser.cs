@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Assets.Scripts.RenSharpClient
+namespace RenSharpClient
 {
 	internal static class AttributeParser
 	{
