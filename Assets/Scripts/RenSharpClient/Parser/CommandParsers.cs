@@ -12,6 +12,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using IronPython.Runtime.Operations;
+using Assets.Scripts.RenSharp.Core.Parse;
 
 internal static class CommandParsers
 {
@@ -119,39 +121,46 @@ internal static class CommandParsers
 			throw new ArgumentException($"Команда 'play' должна содержать минимум 2 аргумента. Команда должна быть формата:'play [channel] [name] [effect (опционально)]'. Текущее значение: '{words.ToWord()}'");
 
 		string channel = words[1];
+		if (RegexMethods.IsValidCharacterName(channel) == false)
+			throw new ArgumentException("Звуковой канал не должен содержать специальный символы (кроме символа '_')." +
+				"Вы можете использовать один из стандартных каналов 'music', 'sound', 'voice'.");
 
-		StringFirstQuotes quotedValue = RegexMethods.BetweenQuotesFirst(words.Skip(2)); // Skip keyword play and channel
-		string name = quotedValue.Between;
-		if (quotedValue == null || string.IsNullOrEmpty(name))
-			throw new ArgumentException(RSExceptionMessages.NoAudioPathSpecified);
+		ArrayParsed parsed = ArrayParser.ParseArrayStrict(string.Join("", words.Skip(2)));
+        IEnumerable<string> names = parsed.Values;
 
-		string path = quotedValue.Between;
-		path = Path.ChangeExtension(path, extension: null);
-
-		var audioClips = Resources.LoadAll<AudioClip>(path).ToList();
-
-		try
+		foreach(string name in names)
 		{
-			if (audioClips.Count > 1)
-				throw new ArgumentException($"Найдена более одного звукового файла '{path}'. Поиск идет по всем папкам Resources не учитывая расширения файлов.");
-			else if (audioClips.Count <= 0)
-				throw new ArgumentException($"Звуковой файл '{path}' не найден. Путь надо указывать относительно папки Resources. Поиск идет по всем папкам Resources.");
-		}
-		catch
-		{
-			audioClips.ForEach(x => Resources.UnloadAsset(x));
-			throw;
-		}
+            string path = Path.ChangeExtension(name, extension: null);
 
-		controller.AddAudio(name, audioClips.First());
+            var audioClips = Resources.LoadAll<AudioClip>(path).ToList();
 
-		IEnumerable<string> attributesWords = quotedValue.After.Split(' ');
+            try
+            {
+                if (audioClips.Count > 1)
+                    throw new ArgumentException($"Найдена более одного звукового файла '{name}'. Поиск идет по всем папкам Resources не учитывая расширения файлов.");
+                else if (audioClips.Count <= 0)
+                    throw new ArgumentException($"Звуковой файл '{name}' не найден. Путь надо указывать относительно папки Resources. Поиск идет по всем папкам Resources.");
+            }
+            catch
+            {
+                audioClips.ForEach(x => Resources.UnloadAsset(x));
+                throw;
+            }
+            controller.AddAudio(path, audioClips.First());
+        }
+
+
+
+        IEnumerable<string> attributesWords = parsed.After.Split(' ');
 
 		var allowedAttributes = new string[] { "fadein", "fadeout", "volume" };
 		Attributes attributes = AttributeParser.ParseAttributes(allowedAttributes, attributesWords);
 
-		return new Play(new List<string> { name }, channel, attributes, controller);
+		return new Play(names, channel, attributes, controller);
 	}
 
 	internal static Menu ParseMenu(MenuController controller) => new Menu(controller);
+
+	
+
 }

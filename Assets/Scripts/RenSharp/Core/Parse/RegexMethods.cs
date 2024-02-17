@@ -1,5 +1,7 @@
 ﻿using RenSharp.Models.Parse;
+using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace RenSharp.Core.Parse
@@ -57,5 +59,5 @@ namespace RenSharp.Core.Parse
 				return match.Index;
 			return null;
 		}
-	}
+    }
 }

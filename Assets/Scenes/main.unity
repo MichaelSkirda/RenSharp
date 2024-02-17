@@ -1024,8 +1024,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SoundStorage: {fileID: 785729202}
-  AudioSourcePrefab: {fileID: 0}
-  NewSourcesParent: {fileID: 0}
+  AudioSourcePrefab: {fileID: 2768321894246283030, guid: c104c9a9cfeb0534aaf50c13af68f8c0, type: 3}
+  NewSourcesParent: {fileID: 258804829}
 --- !u!1 &1004272737
 GameObject:
   m_ObjectHideFlags: 0
