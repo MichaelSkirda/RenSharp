@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Assets.Scripts.RenSharp.Core.Parse
+namespace RenSharp.Core.Parse
 {
     public static class ArrayParser
     {

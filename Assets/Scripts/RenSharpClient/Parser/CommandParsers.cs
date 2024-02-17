@@ -6,14 +6,11 @@ using RenSharp.Models.Parse;
 using RenSharpClient.Controllers;
 using RenSharpClient.Models.Commands;
 using RenSharpClient.Models.Models.Commands;
-using Scripts.RenSharpClient;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
-using IronPython.Runtime.Operations;
-using Assets.Scripts.RenSharp.Core.Parse;
 
 internal static class CommandParsers
 {
@@ -125,7 +122,26 @@ internal static class CommandParsers
 			throw new ArgumentException("Звуковой канал не должен содержать специальный символы (кроме символа '_')." +
 				"Вы можете использовать один из стандартных каналов 'music', 'sound', 'voice'.");
 
-		ArrayParsed parsed = ArrayParser.ParseArrayStrict(string.Join("", words.Skip(2)));
+		ArrayParsed parsed;
+
+		try
+		{
+			parsed = ArrayParser.ParseArrayStrict(string.Join(" ", words.Skip(2)));
+        }
+		catch(ArgumentException)
+		{
+			StringFirstQuotes valueInQuotes = RegexMethods.BetweenQuotesFirst(words.Skip(2));
+			parsed = new ArrayParsed()
+			{
+				Values = new List<string>() { valueInQuotes.Between },
+				After = valueInQuotes.After
+			};
+		}
+		catch
+		{
+			throw;
+		}
+
         IEnumerable<string> names = parsed.Values;
 
 		foreach(string name in names)
