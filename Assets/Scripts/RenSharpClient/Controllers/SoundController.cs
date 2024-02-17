@@ -111,7 +111,7 @@ namespace RenSharpClient.Controllers
 
             channel.Paused = true;
 
-            Queue<AudioItem> queue = new Queue<AudioItem>(clips.Skip(1));
+            var queue = new Queue<AudioItem>(clips.Skip(1));
 
             channel.Queue.Clear();
             channel.Queue = queue;

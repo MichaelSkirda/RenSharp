@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using RenSharp.Core.Exceptions;
 
 internal static class CommandParsers
 {
@@ -115,7 +116,7 @@ internal static class CommandParsers
 	internal static Play ParsePlay(string[] words, SoundController controller)
 	{
 		if (words.Count() < 3)
-			throw new ArgumentException($"Команда 'play' должна содержать минимум 2 аргумента. Команда должна быть формата:'play [channel] [name] [effect (опционально)]'. Текущее значение: '{words.ToWord()}'");
+			throw new WrongArgumentNumberException($"Команда 'play' должна содержать минимум 2 аргумента. Команда должна быть формата:'play [channel] [name] [effect (опционально)]'. Текущее значение: '{words.ToWord()}'");
 
 		string channel = words[1];
 		if (RegexMethods.IsValidCharacterName(channel) == false)
@@ -165,14 +166,33 @@ internal static class CommandParsers
             controller.AddAudio(path, audioClips.First());
         }
 
-
-
         IEnumerable<string> attributesWords = parsed.After.Split(' ');
 
 		var allowedAttributes = new string[] { "fadein", "fadeout", "volume" };
 		Attributes attributes = AttributeParser.ParseAttributes(allowedAttributes, attributesWords);
 
 		return new Play(names, channel, attributes, controller);
+	}
+
+	internal static QueueCommand ParseQueue(string[] words, SoundController controller)
+	{
+		try
+		{
+            Play play = ParsePlay(words, controller);
+            var queue = new QueueCommand(play.ClipNames, play.Channel, play.Attributes, play.Controller);
+            return queue;
+        }
+		catch(WrongArgumentNumberException ex)
+		{
+			throw new WrongArgumentNumberException("Команда 'queue' должна иметь минимум 2 аргумента." +
+				" Команда должна быть формата:'queue [channel] [name] [effect (опционально)]'." +
+				$"Текущее значение: '{words.ToWord()}'", ex);
+		}
+		catch
+		{
+			throw;
+		}
+        
 	}
 
 	internal static Menu ParseMenu(MenuController controller) => new Menu(controller);

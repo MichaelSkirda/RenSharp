@@ -1,6 +1,7 @@
 label start:
     "Hello"
-    play music [ "one", "two", "three", "four" ] fadeout 1 fadein 1 volume 0.5
+    play music [ "one", "two" ] fadeout 1 fadein 1 volume 0.7
+    queue music [ "three", "four" ] volume 0.1
     "Pause"
     play music "two"
     "Pause"
