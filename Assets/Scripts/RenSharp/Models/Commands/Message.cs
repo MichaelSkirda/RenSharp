@@ -1,33 +1,33 @@
 ﻿using RenSharp.Core;
-using RenSharp.Interfaces;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace RenSharp.Models.Commands
 {
 	public class Message : Command
 	{
-		private string Speech { get; set; }
+		public string Speech { get; set; }
 		public string Character { get; set; }
 		public Attributes Attributes { get; set; }
-		public IEnumerable<string> RawAttributes { get; set; }
 
-		public Message(string speech, string character, IEnumerable<string> attributes = null)
+		public Message(string speech, string character, Attributes attributes)
 		{
 			Speech = speech;
 			Character = character;
-			Attributes = new Attributes(attributes);
-			RawAttributes = attributes;
+			Attributes = attributes;
 		}
 
-		public override void Execute(RenSharpCore core)
+        // TODO: bugfix!
+        // Message save into MessageHistory
+		// not interpolated value.
+		// Need to save preview or interpolated value.
+
+        public override void Execute(RenSharpCore core)
 		{
 			Configuration config = core.Configuration;
 			Attributes characterAttributes = Attributes;
 			characterAttributes.AddAttributes(core.GetCharacterAttributes(Character));
 			characterAttributes.AddDefaultAttributes(config);
 
-			MessageResult result = new MessageResult()
+			var result = new MessageResult()
 			{
 				Speech = core.Context.InterpolateString(Speech),
 				Character = Character,
@@ -35,21 +35,19 @@ namespace RenSharp.Models.Commands
 			};
 
 			core.Context.MessageHistory.Push(result);
-
-			IWriter writer = config.Writer;
-			if (writer != null)
-				writer.Write(result);
+            config?.Writer?.Write(result);
 		}
 
 		public override Command Rollback(RenSharpCore core)
 		{
-			var command = new MessageRollback(Speech, Character, RawAttributes);
+            var command = new MessageRollback(Speech, Character, Attributes)
+            {
+                Line = Line,
+                SourceLine = SourceLine,
+                Level = Level
+            };
 
-			command.Line = Line;
-			command.SourceLine = SourceLine;
-			command.Level = Level;
-
-			return command;
+            return command;
 		}
 	}
 }

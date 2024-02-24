@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using RenSharp.Models;
 
-namespace RenSharp.Core.Save
+namespace RenSharp.Models.Save
 {
-    public class SaveModel
+    public class SaveModelJson
     {
         // Core
         public bool IsPaused { get; set; }
@@ -14,11 +13,11 @@ namespace RenSharp.Core.Save
 
         // Context
         public IEnumerable<MessageResult> MessageHistory { get; set; }
-        public IEnumerable<Command> RollbackStack { get; set; }
+        public IEnumerable<object> RollbackStack { get; set; }
         public IEnumerable<StackFrame> CallStack { get; set; }
         public StackFrame CurrentFrame { get; set; }
 
         // PyEvaluator
-        public Dictionary<string, object> Variables { get; set; } 
+        public Dictionary<string, object> Variables { get; set; }
     }
 }

@@ -6,6 +6,8 @@
 		public string Label { get; set; }
 		public string Predicate { get; set; }
 
+		public MenuButton() { }
+
 		public MenuButton(string text, string label)
 		{
 			Text = text;

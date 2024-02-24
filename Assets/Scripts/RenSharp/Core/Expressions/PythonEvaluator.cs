@@ -33,11 +33,15 @@ namespace RenSharp.Core.Expressions
 				throw new ArgumentNullException("Нельзя установить 'null' как scope IronPython.");
 			Scope = scope;
 		}
+
 		internal ScriptScope CopyScope()
 		{
 			Dictionary<string, object> variables = GetVariables();
-			return Engine.CreateScope(variables);
+			return CreateScope(variables);
 		}
+
+		internal ScriptScope CreateScope(Dictionary<string, object> variables)
+			=> Engine.CreateScope(variables);
 
 		internal void Execute(IEnumerable<string> lines)
 		{
@@ -83,17 +87,22 @@ namespace RenSharp.Core.Expressions
 
 		internal Dictionary<string, object> GetVariables()
 		{
-			var ignoreNames = new string[]
-			{
-				"clr", "RenSharpWrapper", "Character", "config", "rsys", "rs"
-			};
-			IEnumerable<KeyValuePair<string, dynamic>> keyValues = Scope.GetItems();
-			Dictionary<string, object> variables = keyValues
-				.Where(kv => kv.Key.NotStartsWith("__") && ignoreNames.Contains(kv.Key) == false)
-				.GroupBy(kv => kv.Key)
-				.Select(kvs => kvs.First())
-				.ToDictionary(x => x.Key, x => x.Value);
-			return variables;
+			return GetVariables(Scope);
 		}
-	}
+
+        internal static Dictionary<string, object> GetVariables(ScriptScope scope)
+        {
+            var ignoreNames = new string[]
+            {
+                "clr", "RenSharpWrapper", "Character", "config", "rsys", "rs"
+            };
+            IEnumerable<KeyValuePair<string, dynamic>> keyValues = scope.GetItems();
+            Dictionary<string, object> variables = keyValues
+                .Where(kv => kv.Key.NotStartsWith("__") && ignoreNames.Contains(kv.Key) == false)
+                .GroupBy(kv => kv.Key)
+                .Select(kvs => kvs.First())
+                .ToDictionary(x => x.Key, x => x.Value);
+            return variables;
+        }
+    }
 }

@@ -1,5 +1,7 @@
-﻿using RenSharp.Models.Commands;
+﻿using RenSharp.Models;
+using RenSharp.Models.Commands;
 using RenSharp.Models.Parse;
+using RenSharpClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -73,16 +75,13 @@ namespace RenSharp.Core.Parse
             string text = quotes.Between;
             string attrs = quotes.After;
 
-            string[] attributes = attrs
-                .Split(' ')
-                .Where(x => string.IsNullOrWhiteSpace(x) == false)
-                .ToArray();   // 'no-clear delay=50' -> ['no-clear', 'delay=50']
+            Attributes attributes = AttributeParser.ParseAttributes(new string[] { "delay", "name" }, attrs.Split(' '));
             string character = command
                 .Split(' ')
                 .Skip(1)
                 .FirstOrDefault();
 
-            Message message = new Message(text, character, attributes);
+            var message = new Message(text, character, attributes);
 
             // They won't rewrite current attributes
             List<string> defaultAttributes = new List<string>()

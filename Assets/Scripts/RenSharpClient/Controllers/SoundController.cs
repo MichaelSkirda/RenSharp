@@ -171,6 +171,7 @@ namespace RenSharpClient.Controllers
             }
         }
 
+        // Well... Use this code late to pause/unpause logic
 		/* internal void UnPause(string channelName)
 		{
             AudioChannel channel = ChannelController.GetChannel(channelName);

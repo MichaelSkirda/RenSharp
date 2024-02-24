@@ -1,4 +1,5 @@
-﻿using RenSharp.Core.Parse;
+﻿using RenSharp.Core;
+using RenSharp.Core.Parse;
 using RenSharp.Interfaces;
 using RenSharp.Models;
 using System;
@@ -40,6 +41,9 @@ namespace RenSharp
 		internal List<Type> AllowedToPushStack { get; set; } = new List<Type>();
 
 		internal List<Type> MustPushStack { get; set; } = new List<Type>();
+
+		internal Dictionary<string, Func<string, RenSharpCore, Command>> DeserializeParsers
+			= new Dictionary<string, Func<string, RenSharpCore, Command>>();
 
 		public List<Command> ParseComplex(ParserContext ctx, Command command)
 			=> ComplexCommandParsers[command.GetType()](ctx, command);

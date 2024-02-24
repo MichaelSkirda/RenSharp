@@ -44,13 +44,31 @@ public static class UnityConfigDefault
 
 		config.MustPush<Menu>();
 
-		config.SetValue("screen_height", 1080);
-		config.SetValue("screen_width", 1920);
-		config.SetValue("gui_btn_gap", 50f);
-		config.SetValue("gui_btn_first_gap", 25f);
-		config.SetValue("rollback_cooldown", 300);
-		config.SetValue("fast_forward_delay", 200); // Ctrl makes 5 commands per sec. (1000ms / 200ms)
+		SetJsonParsers(config, imageController, soundController, menuController);
+		SetVariables(config);
 
 		return config;
 	}
+
+	private static void SetJsonParsers
+		(Configuration config, ImageController imageController, SoundController soundController, MenuController menuController)
+	{
+		config.DeserializeParsers.Add("show", (json, core) =>
+		{
+			return null;
+		});
+
+        
+    }
+
+	private static void SetVariables(Configuration config)
+	{
+        config.SetValue("screen_height", 1080);
+        config.SetValue("screen_width", 1920);
+        config.SetValue("gui_btn_gap", 50f);
+        config.SetValue("gui_btn_first_gap", 25f);
+        config.SetValue("rollback_cooldown", 300);
+        config.SetValue("fast_forward_delay", 200); // Ctrl makes 5 commands per sec. (1000ms / 200ms)
+    }
+
 }

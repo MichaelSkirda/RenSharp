@@ -7,7 +7,7 @@ namespace RenSharp.Models
 {
 	public class Attributes
 	{
-		private Dictionary<string, string> values { get; set; } = new Dictionary<string, string>();
+		public Dictionary<string, string> values { get; set; } = new Dictionary<string, string>();
 		public string this[string key]
 		{
 			get => values[key];

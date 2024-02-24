@@ -1,6 +1,9 @@
-﻿using RenSharp.Core.Parse;
+﻿using Microsoft.Scripting.Hosting;
+using Newtonsoft.Json;
+using RenSharp.Core.Parse;
 using RenSharp.Core.Parse.ComplexParsers;
 using RenSharp.Models.Commands;
+using RenSharp.Models.Commands.Json;
 using System;
 
 namespace RenSharp
@@ -8,7 +11,7 @@ namespace RenSharp
     public static class DefaultConfiguration
 	{
 		public static Configuration GetDefaultConfig()
-			=> new Configuration().UseDefault().UseCoreCommands();
+			=> new Configuration().UseDefault().UseCoreCommands().UseJsonParsers();
 
 		public static Configuration UseDefault(this Configuration config)
 		{
@@ -85,5 +88,28 @@ namespace RenSharp
 
 			return config;
 		}
+
+		public static Configuration UseJsonParsers(this Configuration config)
+		{
+            config.DeserializeParsers.Add("syssetscope", (json, core) =>
+            {
+				SysSetScopeJson commandParsed = JsonConvert.DeserializeObject<SysSetScopeJson>(json);
+				ScriptScope scope = core.Context.PyEvaluator.CreateScope(commandParsed.variables);
+				var command = new SysSetScope(scope);
+				command.SetPosition(commandParsed);
+                return command;
+            });
+
+            config.DeserializeParsers.Add("messagerollback", (json, core) =>
+            {
+                MessageRollbackJson commandParsed = JsonConvert.DeserializeObject<MessageRollbackJson>(json);
+                var command = new MessageRollback(commandParsed.Speech, commandParsed.Character, commandParsed.Attributes);
+                command.SetPosition(commandParsed);
+                return command;
+            });
+
+            return config;
+		}
+
 	}
 }

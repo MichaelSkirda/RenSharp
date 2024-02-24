@@ -22,7 +22,7 @@ internal static class CommandParsers
 		return $"_rs_anonymous_resource_{AnonymousId}";
 	}
 
-	private static List<string> ReservedWords = new List<string>()
+	private static List<string> ReservedWords { get; set; } = new List<string>()
 	{
 		// Control
 		"label",
@@ -37,9 +37,10 @@ internal static class CommandParsers
 		// Sound
 		"play",
 		"stop",
+		"queue"
 	};
 
-	private static List<string> AttributesNames = new List<string>()
+	private static List<string> AttributesNames { get; set; } = new List<string>()
 	{
 		// Attributes
 		"at",

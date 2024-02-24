@@ -1,11 +1,9 @@
+init:
+    $ i = 1
+    $ i += 1
+
 label start:
     "Hello"
-    play music [ "one", "two" ] fadeout 1 fadein 1 volume 0.7
-    queue music [ "three", "four" ] volume 0.1
-    "Pause"
-    play music "two"
-    "Pause"
-    play music "three" fadeout 1.33 fadein 1.33
-    "Pause"
-    play music "four"
-    jump start
+    $ i *= 2
+    "i is {i}" delay 100
+    call start

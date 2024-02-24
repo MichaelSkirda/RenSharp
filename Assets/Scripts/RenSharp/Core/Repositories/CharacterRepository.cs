@@ -6,7 +6,7 @@ namespace RenSharp.Core.Repositories
 	public class CharacterRepository
 	{
 		private Dictionary<string, Character> Characters { get; set; } = new Dictionary<string, Character>();
-		private static int AnonymousCharacterId { get; set; } = 0;
+		private int AnonymousCharacterId { get; set; } = 0;
 
 		internal Character this[string key]
 		{

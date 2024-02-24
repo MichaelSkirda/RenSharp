@@ -1,14 +1,17 @@
-﻿using RenSharp.Core.Exceptions;
+﻿using Newtonsoft.Json;
+using RenSharp.Core.Exceptions;
 using RenSharp.Core.Parse;
 using RenSharp.Core.Repositories;
 using RenSharp.Core.Save;
 using RenSharp.Interfaces;
 using RenSharp.Models;
 using RenSharp.Models.Commands;
+using RenSharp.Models.Save;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace RenSharp.Core
 {
@@ -75,15 +78,56 @@ namespace RenSharp.Core
 		public string Save()
 		{
 			SaveModel save = SaveRaw();
-			string serialized = SaveSerializer.Serialize(save);
+			string serialized = JsonConvert.SerializeObject(save);
 			return serialized;
 		}
 
 		public void Load(string serializedSave)
 		{
-			SaveModel save = SaveSerializer.Deserialize(serializedSave);
-			Load(save);
-		}
+			SaveModelJson savePreParsed = JsonConvert.DeserializeObject<SaveModelJson>(serializedSave);
+			IEnumerable<Type> commandTypes = Assembly
+				.GetAssembly(typeof(Command))
+				.GetTypes()
+				.Where(x => x.IsSubclassOf(typeof(Command)));
+
+			List<Command> RollbackStack = new List<Command>();
+
+			foreach(object commandJObject in savePreParsed.RollbackStack)
+			{
+				string commandJson = commandJObject.ToString();
+				string commandTypeName = JsonConvert.DeserializeObject<CommandTypeJson>(commandJson).TypeName;
+
+				Func<string, RenSharpCore, Command> parser;
+                bool hasParser = Configuration.DeserializeParsers.TryGetValue(commandTypeName, out parser);
+
+
+                if (hasParser == false || parser == null)
+					throw new ArgumentException($"По значению '{commandTypeName}' указан не валидный парсер.");
+
+				Command command = null;
+
+				try
+				{
+                    command = parser(commandJson, this);
+                }
+				catch
+				{
+					throw new ArgumentException("Can not parse command from save.");
+                }
+
+                if (command == null)
+					throw new ArgumentException("Can not parse command from save.");
+				else
+				{
+                    RollbackStack.Add(command);
+					continue;
+                }
+
+            }
+
+			var save = new SaveModel(savePreParsed, RollbackStack);
+            Load(save);
+        }
 
 		public void Load(SaveModel save)
 		{
