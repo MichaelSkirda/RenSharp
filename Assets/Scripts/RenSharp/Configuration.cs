@@ -10,7 +10,8 @@ namespace RenSharp
 {
     public class Configuration
 	{
-		private List<Type> SkipCommands = new List<Type>();
+		private Dictionary<Type, Predicate<Command>> SkipCommandPredicates { get; set; }
+			= new Dictionary<Type, Predicate<Command>>(); 
 		private Dictionary<string, string> DefaultAttributes { get; set; } = new Dictionary<string, string>();
 		private Dictionary<string, object> Values { get; set; } = new Dictionary<string, object>();
 		private List<string> Keywords { get; set; } = new List<string>();
@@ -96,13 +97,26 @@ namespace RenSharp
 		public void Skip<T>()
 		{
 			Type type = typeof(T);
-			SkipCommands.Add(type);
+            SkipCommandPredicates[type] = (command) => true;
+		}
+
+		public void Skip<T>(Predicate<T> predicate)
+			where T : Command
+		{
+			Type type = typeof(T);
+
+            // (╯°□°)╯︵ ┻━┻
+            // Generic moment
+			// T is Command
+			// But I cannot transform T into Command
+            SkipCommandPredicates[type] = (command) => predicate(command as T);
 		}
 
 		public bool IsSkip(Command command)
 		{
 			Type type = command.GetType();
-			return SkipCommands.Contains(type);
+			SkipCommandPredicates.TryGetValue(type, out var predicate);
+			return predicate?.Invoke(command) ?? false;
 		}
 
 		public bool IsNotSkip(Command command)

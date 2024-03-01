@@ -12,12 +12,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 
 namespace RenSharp.Core
 {
     public class RenSharpCore
 	{
 		public bool IsPaused { get; private set; } = false;
+		public Mutex Mutex { get; private set; } = new Mutex();
+
 		public Configuration Configuration { get; set; }
 		public RenSharpContext Context { get; set; }
 		private RenSharpProgram Program => Context.Program;
@@ -215,16 +218,34 @@ namespace RenSharp.Core
 
         public Command ReadNext(bool force = false)
         {
-			if (!HasStarted)
-				Start();
-			if (IsPaused && force == false)
-				throw new RenSharpPausedException("RenSharp находится на паузе.");
-
-            Command command;
-			bool skip;
-
-			do
+            try
 			{
+				bool isMutexFree = Mutex.WaitOne(millisecondsTimeout: 1000);
+				if (isMutexFree == false)
+					throw new RenSharpLockedException("RenSharp заблокирован. Скорее всего идет выполнение другой команды.");
+
+                if (!HasStarted)
+                    Start();
+                if (IsPaused && force == false)
+                    throw new RenSharpPausedException("RenSharp находится на паузе.");
+
+                Command command = ExecuteNext();
+                return command;
+            }
+            catch { throw; }
+			finally
+			{
+				Mutex.ReleaseMutex();
+			}
+        }
+
+		private Command ExecuteNext()
+		{
+            Command command;
+            bool skip;
+
+            do
+            {
                 skip = false;
                 bool hasNext = Program.MoveNext();
                 if (!hasNext)
@@ -234,16 +255,17 @@ namespace RenSharp.Core
                 if (command.Level > Context.Level)
                 {
                     skip = true;
-					continue;
-				}
+                    continue;
+                }
 
                 int cycleStart = 0;
-				while (command.Level < Context.Level)
+                while (command.Level < Context.Level)
                 {
                     cycleStart = Context.LevelStack.Pop();
                     if (cycleStart != 0)
                         break;
-				}
+                }
+
                 if (cycleStart != 0)
                 {
                     Program.Goto(cycleStart);
@@ -251,15 +273,15 @@ namespace RenSharp.Core
                     continue;
                 }
 
-				Command backwardCommand = command.Rollback(this);
-				if(backwardCommand != null)
-					Context.RollbackStack.Push(backwardCommand);
+                Command backwardCommand = command.Rollback(this);
+                if (backwardCommand != null)
+                    Context.RollbackStack.Push(backwardCommand);
 
                 command.Execute(this);
-				(command as IPushable)?.TryPush(Context);
-			} while (Configuration.IsSkip(command) || skip);
+                (command as IPushable)?.TryPush(Context);
+            } while (Configuration.IsSkip(command) || skip);
 
-            return command;
+			return command;
         }
 
 		public void ClearRollback()

@@ -34,8 +34,29 @@ namespace RenSharp.Models.Commands
 				Attributes = characterAttributes
 			};
 
-			core.Context.MessageHistory.Push(result);
-            config?.Writer?.Write(result);
+			float? delay = characterAttributes.GetNw();
+
+            core.Context.MessageHistory.Push(result);
+
+			if (delay == null || delay < 0)
+				config?.Writer?.Write(result);
+			else
+			{
+                config?.Writer?.Write(result, delay.Value, () =>
+                {
+                    try
+                    {
+                        core.ReadNext();
+                    }
+                    catch
+                    {
+                        // WARNING empty catch.
+                        // important to not fall!
+                        // because callback will be called from coroutine in Unity implemetantion
+                    }
+                });
+            }
+            
 		}
 
 		public override Command Rollback(RenSharpCore core)

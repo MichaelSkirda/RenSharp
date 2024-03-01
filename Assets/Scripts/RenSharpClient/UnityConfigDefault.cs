@@ -1,8 +1,10 @@
 using RenSharp;
+using RenSharp.Models.Commands;
 using RenSharpClient.Controllers;
 using RenSharpClient.Models.Commands;
 using RenSharpClient.Models.Models.Commands;
 using RenSharpClient.Parser.Complex;
+using System;
 
 
 public static class UnityConfigDefault

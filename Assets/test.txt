@@ -1,9 +1,10 @@
-init:
-    $ i = 1
-    $ i += 1
 
 label start:
-    "Hello"
-    $ i *= 2
-    "i is {i}" delay 100
-    call start
+    "Hello 1" nw 1
+    "Hello 2" nw 2
+    "Hello 3"
+    "Hello 4" nw
+    "Hello 5" nw
+    "Hello 6" nw 2
+    jump start
+    

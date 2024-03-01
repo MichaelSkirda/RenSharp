@@ -1,4 +1,5 @@
 using RenSharp.Models;
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -58,17 +59,15 @@ public class DialogController : MonoBehaviour
 	{
 		DisplayText = string.Empty;
 	}
-	public void SetText(string text, string character = "")
-	{
-		TryStopCoroutine();
-		DisplayText = text;
-	}
-	public void SetMessage(MessageResult message)
+
+
+    public void DrawText(MessageResult message, float delay, Action callback)
     {
         Message = message;
-	}
-    
-	public void DrawText(bool clear)
+        DrawText(clear: true, delay, callback);
+    }
+
+    public void DrawText(bool clear, float delay, Action callback)
     {
 		TryStopCoroutine();
 		Text = "";
@@ -76,61 +75,50 @@ public class DialogController : MonoBehaviour
 		if(clear)
 			ClearDialog();
 
-        Coroutine = AnimateText();
+        Coroutine = AnimateText(callback, delay);
         StartCoroutine(Coroutine);
 	}
-
-	public void DrawText(MessageResult message)
-	{
-		Message = message;
-		DrawText(clear: true);
-	}
-
-	public void AppendText(MessageResult message)
-	{
-		Message = message;
-		DrawText(clear: false);
-	}
-
+	
 	public void SetCharacterName(string name)
 	{
 		NameField.text = name;
 	}
 
-	private IEnumerator AnimateText()
-    {
+	private IEnumerator AnimateText(Action callback, float callbackDelay)
+	{
+
 		string message = Message.Speech;
-		for(int i = 0; i < message.Length; i++)
-        {
+		for (int i = 0; i < message.Length; i++)
+		{
 			char chr = message[i];
 
 			// Draw tag without animation
 			/*if(chr == '<')
-			{
-				DisplayText += chr;
-				Text += chr;
-				int attempt = 0;
-				try
-				{
-					do
-					{
-						i++;
-						attempt++;
-						chr = message[i];
-						DisplayText += chr;
-						Text += chr;
-						if (attempt > 20)
-							throw new System.Exception("Too many atempts");
-					} while (chr != '>');
-					continue;
-				}
-				catch
-				{
-					Debug.LogError("CANNOT DRAW TAG!!!");
-					SkipAnimation();
-					yield break;
-				}
-			} */
+            {
+                DisplayText += chr;
+                Text += chr;
+                int attempt = 0;
+                try
+                {
+                    do
+                    {
+                        i++;
+                        attempt++;
+                        chr = message[i];
+                        DisplayText += chr;
+                        Text += chr;
+                        if (attempt > 20)
+                            throw new System.Exception("Too many atempts");
+                    } while (chr != '>');
+                    continue;
+                }
+                catch
+                {
+                    Debug.LogError("CANNOT DRAW TAG!!!");
+                    SkipAnimation();
+                    yield break;
+                }
+            } */
 
 			// milliseconds to seconds
 			// TODO
@@ -140,7 +128,15 @@ public class DialogController : MonoBehaviour
 			DisplayText += chr;
 			Text += chr;
 		}
-	}
+
+		if(callback != null)
+		{
+			if(callbackDelay > 0)
+				yield return new WaitForSeconds(callbackDelay);
+            callback.Invoke();
+        }
+        
+    }
 
 	private void TryStopCoroutine()
 	{

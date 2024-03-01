@@ -69,6 +69,25 @@ namespace RenSharp.Models
 			}
 		}
 
+		public bool? GetBoolOrNull(string key)
+		{
+            bool notFound = !values.TryGetValue(key, out string value);
+            if (notFound)
+                return null;
+
+            try
+            {
+                bool result = bool.Parse(value);
+                return result;
+            }
+            catch
+            {
+				if (value == "1" || value.Trim() == string.Empty)
+					return true;
+                return null;
+            }
+        }
+
 		public void AddAttributes(Attributes attributes, bool rewrite = true) => AddAttributes(attributes.KeyValues(), rewrite);
 		public void AddDefaultAttributes(Configuration config)
 			=> AddAttributes(config.GetDefaultAttrbutes(), rewrite: false);
@@ -151,5 +170,15 @@ namespace RenSharp.Models
 			return !bool.Parse(str);
 		}
 		public string GetSpeaker() => GetAttributeValue("name");
-	}
+
+        internal float? GetNw()
+        {
+			float? delay = GetFloatOrNull("nw");
+
+			if (delay == null && values.ContainsKey("nw"))
+				delay = 1;
+
+			return delay;
+        }
+    }
 }

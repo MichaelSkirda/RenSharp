@@ -1,5 +1,6 @@
 ﻿using RenSharp.Interfaces;
 using RenSharp.Models;
+using System;
 
 namespace Assets.Scripts
 {
@@ -12,15 +13,18 @@ namespace Assets.Scripts
 			Dialog = dialog;
 		}
 
-		public void Write(MessageResult message)
-		{
-			string name = message.Attributes.GetValueOrNull("name");
+        public void Write(MessageResult message)
+            => Write(message, delay: 0, callback: null);
 
-			if (name == null || name == "_rs_nobody_name")
-				name = "";
+        public void Write(MessageResult message, float delay, Action callback)
+        {
+            string name = message.Attributes.GetValueOrNull("name");
 
-			Dialog.DrawText(message);
-			Dialog.SetCharacterName(name);
-		}
-	}
+            if (name == null || name == "_rs_nobody_name")
+                name = "";
+
+            Dialog.DrawText(message, delay, callback);
+            Dialog.SetCharacterName(name);
+        }
+    }
 }

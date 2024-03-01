@@ -75,7 +75,7 @@ namespace RenSharp.Core.Parse
             string text = quotes.Between;
             string attrs = quotes.After;
 
-            Attributes attributes = AttributeParser.ParseAttributes(new string[] { "delay", "name" }, attrs.Split(' '));
+            Attributes attributes = AttributeParser.ParseAttributes(new string[] { "delay", "name", "nw" }, attrs.Split(' '));
             string character = command
                 .Split(' ')
                 .Skip(1)
