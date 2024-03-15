@@ -1,7 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{0851A307-3AB8-3BF7-BAB7-B9D1B2432C06}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34525.116
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{7F5C80F9-A02C-416F-EFF5-2C17A0024129}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RenSharpConsole", "RenSharpConsole\RenSharpConsole.csproj", "{DC5EB352-5DBF-4A3E-A579-0B510DB0A8C1}"
 EndProject
@@ -15,10 +17,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{0851A307-3AB8-3BF7-BAB7-B9D1B2432C06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0851A307-3AB8-3BF7-BAB7-B9D1B2432C06}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0851A307-3AB8-3BF7-BAB7-B9D1B2432C06}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0851A307-3AB8-3BF7-BAB7-B9D1B2432C06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F5C80F9-A02C-416F-EFF5-2C17A0024129}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F5C80F9-A02C-416F-EFF5-2C17A0024129}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F5C80F9-A02C-416F-EFF5-2C17A0024129}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F5C80F9-A02C-416F-EFF5-2C17A0024129}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DC5EB352-5DBF-4A3E-A579-0B510DB0A8C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DC5EB352-5DBF-4A3E-A579-0B510DB0A8C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DC5EB352-5DBF-4A3E-A579-0B510DB0A8C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -34,5 +36,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {94221CB1-1FC8-4116-BAF7-6AF8324C8CBA}
 	EndGlobalSection
 EndGlobal

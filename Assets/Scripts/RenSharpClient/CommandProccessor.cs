@@ -35,11 +35,9 @@ public class CommandProccessor : MonoBehaviour
 		RollbackCooldown = config.GetValueOrDefault<int>("rollback_cooldown");
 		FastForwardDelay = config.GetValueOrDefault<int>("fast_forward_delay");
 
-		DialogWriter writer = new DialogWriter(Dialog);
+		var writer = new DialogWriter(Dialog);
 		config.Writer = writer;
-
 		RenSharp = new RenSharpCore(lines, config);
-
         /*string save = PlayerPrefs.GetString("save1");
 		if(string.IsNullOrWhiteSpace(save) == false)
 		{
