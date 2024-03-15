@@ -13,10 +13,10 @@ namespace RenSharpClient.Effects.ImageEffects
         {
             float time = 0;
             float duration = data.Duration;
-            float startX = data.PointStorage.Find("RightOutScreen").Point.anchoredPosition.x;
+            float startX = data.PointStorage.Find("rightOutScreen").Point.position.x;
             float targetX = data.targetX;
             float deltaX = startX - targetX;
-            float currentX = startX;
+            float currentX;
 
             Image sprite = data.Image;
 
@@ -27,18 +27,16 @@ namespace RenSharpClient.Effects.ImageEffects
             rect.anchorMin = new Vector2(0.5f, 0f);
             rect.anchorMax = new Vector2(0.5f, 0f);
 
-            rect.anchoredPosition = new Vector2(startX, y);
-
             while (time < duration)
             {
-                currentX = startX + (time / duration * deltaX);
-                rect.anchoredPosition = new Vector2(currentX, y);
+                currentX = startX - (time / duration * deltaX);
+                rect.position = new Vector2(currentX, y);
 
                 time += Time.deltaTime;
                 yield return null;
             }
-
-            rect.anchoredPosition = new Vector2(targetX, y);
+            Debug.Log("Finished!");
+            rect.position = new Vector2(targetX, y);
         }
 
 

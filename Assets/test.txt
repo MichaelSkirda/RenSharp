@@ -1,7 +1,7 @@
 
 label start:
     "Hello 1"
-    show eileen happy with dissolve(0.5)
+    show eileen happy with moveinright(1.5)
     "Hello 3"
     jump start
     

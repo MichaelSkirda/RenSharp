@@ -66,9 +66,6 @@ namespace RenSharpClient.Controllers
 			float targetX = GetX(show);
 			float y = rect.rect.height / 2;
 
-			rect.anchoredPosition = new Vector2(targetX, y);
-
-
 			Image image = activeSprite.obj.GetComponent<Image>();
 			image.sprite = toSet.Sprite;
 			ActiveSprites[show.Name] = activeSprite;
@@ -83,12 +80,17 @@ namespace RenSharpClient.Controllers
                     targetX = targetX,
                     Image = image,
 					Core = core,
+					PointStorage = Points
 				};
 
 				IEnumerator coroutine = effect(effectData);
 				ChangeEffect(activeSprite, coroutine);
 			}
-		}
+			else
+			{
+                rect.position = new Vector2(targetX, y);
+            }
+        }
 
 		private Vector2 GetSize(ShowResult show, RenSharpImage image, Configuration config)
 		{
@@ -126,7 +128,7 @@ namespace RenSharpClient.Controllers
 			string showAt = show.attributes["at"];
 			RectTransform transform = Points.Find(showAt).Point;
 
-			return transform.anchoredPosition.x;
+			return transform.position.x;
 		}
 
 		internal void Hide(string name, RenSharpCore core, Attributes attributes)
