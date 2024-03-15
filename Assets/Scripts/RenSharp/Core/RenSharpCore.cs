@@ -27,29 +27,28 @@ namespace RenSharp.Core
 		private bool HasStarted { get; set; } = false;
 		private CharacterRepository CharacterRepository { get; set; }
 
-        public RenSharpCore(string path, Configuration config = null) => SetupProgram(File.ReadAllLines(path), config);
-        public RenSharpCore(IEnumerable<string> code, Configuration config = null) => SetupProgram(code, config);
+        public RenSharpCore(string path, Configuration config = null) => SetupProgramWithCode(File.ReadAllLines(path), config);
+        public RenSharpCore(IEnumerable<string> code, Configuration config = null) => SetupProgramWithCode(code, config);
 		public RenSharpCore(Configuration config = null)
 		{
 			SetConfig(config);
-            Context = new RenSharpContext();
             SetupProgram();
 		}
 
-		private void SetupProgram(IEnumerable<string> code, Configuration config)
+		private void SetupProgramWithCode(IEnumerable<string> code, Configuration config)
 		{
 			SetConfig(config);
-            Context = new RenSharpContext();
+            SetupProgram();
             LoadProgram(code, saveScope: true);
-			SetupProgram();
         }
 
 		private void SetupProgram()
 		{
+            PyImportAttribute.ReloadCallbacks();
+            Context = new RenSharpContext();
             CharacterRepository = new CharacterRepository();
             string key = CharacterRepository.AddCharacter(new Character(name: "???"));
 
-            PyImportAttribute.ReloadCallbacks();
             Context.SetVariable("rs", this);
             Context.SetVariable("_rs_nobody_character", key);
         }
