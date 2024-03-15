@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace RenSharpClient.Storage
 {
-	internal class PointStorage : MonoBehaviour
+    public class PointStorage : MonoBehaviour
 	{
 		[SerializeField]
 		private PointItem[] pointItems;

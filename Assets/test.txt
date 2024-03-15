@@ -1,10 +1,7 @@
 
 label start:
-    "Hello 1" nw 1
-    "Hello 2" nw 2
+    "Hello 1"
+    show eileen happy with dissolve(0.5)
     "Hello 3"
-    "Hello 4" nw
-    "Hello 5" nw
-    "Hello 6" nw 2
     jump start
     

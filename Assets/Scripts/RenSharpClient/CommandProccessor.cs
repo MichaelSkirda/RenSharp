@@ -40,7 +40,7 @@ public class CommandProccessor : MonoBehaviour
 
 		RenSharp = new RenSharpCore(lines, config);
 
-        string save = PlayerPrefs.GetString("save1");
+        /*string save = PlayerPrefs.GetString("save1");
 		if(string.IsNullOrWhiteSpace(save) == false)
 		{
             RenSharp.Load(save);
@@ -49,7 +49,7 @@ public class CommandProccessor : MonoBehaviour
 		else
 		{
             Debug.Log("No save");
-        }
+        } */
     }
 
 	void Update()

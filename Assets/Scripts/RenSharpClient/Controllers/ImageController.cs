@@ -63,10 +63,10 @@ namespace RenSharpClient.Controllers
 
 			rect.sizeDelta = GetSize(show, toSet, config);
 
-			float x = GetX(show);
+			float targetX = GetX(show);
 			float y = rect.rect.height / 2;
 
-			rect.anchoredPosition = new Vector2(x, y);
+			rect.anchoredPosition = new Vector2(targetX, y);
 
 
 			Image image = activeSprite.obj.GetComponent<Image>();
@@ -76,10 +76,16 @@ namespace RenSharpClient.Controllers
 			string effectMethod = show.attributes.GetValueOrNull("with");
 			if(effectMethod != null)
 			{
-				var effect = core.Context.Evaluate<Func<Image, EffectData, IEnumerator>>(effectMethod);
-				var effectData = new EffectData() { IsAppear = true };
+                Func<EffectData, IEnumerator> effect = core.Context.Evaluate<Func<EffectData, IEnumerator>>(effectMethod);
+				var effectData = new EffectData()
+				{
+					IsAppear = true,
+                    targetX = targetX,
+                    Image = image,
+					Core = core,
+				};
 
-				IEnumerator coroutine = effect(image, effectData);
+				IEnumerator coroutine = effect(effectData);
 				ChangeEffect(activeSprite, coroutine);
 			}
 		}
@@ -258,9 +264,7 @@ namespace RenSharpClient.Controllers
 
 		private void TryStopEffect(ActiveSprite activeSprite)
 		{
-			if (activeSprite == null)
-				return;
-			if (activeSprite.Effect == null)
+			if (activeSprite?.Effect == null)
 				return;
 
 			StopCoroutine(activeSprite.Effect);
