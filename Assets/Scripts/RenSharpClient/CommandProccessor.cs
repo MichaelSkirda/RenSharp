@@ -66,7 +66,7 @@ public class CommandProccessor : MonoBehaviour
 		}
 		else if(Input.GetKeyDown(KeyCode.Mouse1))
 		{
-			string serialized = RenSharp.Save();
+			string serialized = RenSharp.SaveJson();
 			DateTime start = DateTime.Now;
 			Debug.Log(serialized);
 			double delta = (DateTime.Now - start).TotalMilliseconds;
@@ -74,7 +74,7 @@ public class CommandProccessor : MonoBehaviour
 		}
 		else if(Input.GetKeyDown(KeyCode.LeftShift))
 		{
-            string serialized = RenSharp.Save();
+            string serialized = RenSharp.SaveJson();
 			PlayerPrefs.SetString("save1", serialized);
 			Debug.Log("Saved!");
 		}

@@ -43,7 +43,7 @@ namespace RenSharp
 
 		internal List<Type> MustPushStack { get; set; } = new List<Type>();
 
-		internal Dictionary<string, Func<string, RenSharpCore, Command>> DeserializeParsers
+		internal Dictionary<string, Func<string, RenSharpCore, Command>> DeserializeParsers { get; set; }
 			= new Dictionary<string, Func<string, RenSharpCore, Command>>();
 
 		public List<Command> ParseComplex(ParserContext ctx, Command command)

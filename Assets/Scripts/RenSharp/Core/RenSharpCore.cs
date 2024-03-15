@@ -78,7 +78,7 @@ namespace RenSharp.Core
 			return save;
 		}
 
-		public string Save()
+		public string SaveJson()
 		{
 			SaveModel save = SaveRaw();
 			string serialized = JsonConvert.SerializeObject(save);
