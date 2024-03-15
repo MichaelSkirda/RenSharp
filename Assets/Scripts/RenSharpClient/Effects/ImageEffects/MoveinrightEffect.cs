@@ -35,7 +35,6 @@ namespace RenSharpClient.Effects.ImageEffects
                 time += Time.deltaTime;
                 yield return null;
             }
-            Debug.Log("Finished!");
             rect.position = new Vector2(targetX, y);
         }
 

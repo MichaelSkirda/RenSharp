@@ -26,6 +26,8 @@ namespace RenSharp.Core
 		private RenSharpProgram Program => Context.Program;
 		private bool HasStarted { get; set; } = false;
 		private CharacterRepository CharacterRepository { get; set; }
+		private Stack<Action> InsteadNextCommandCallbacks { get; set; } = new Stack<Action>();
+		private Stack<Action> Callbacks { get; set; } = new Stack<Action>();
 
         public RenSharpCore(string path, Configuration config = null) => SetupProgramWithCode(File.ReadAllLines(path), config);
         public RenSharpCore(IEnumerable<string> code, Configuration config = null) => SetupProgramWithCode(code, config);
@@ -150,6 +152,12 @@ namespace RenSharp.Core
 			Context.Load(save);
 		}
 
+		public void AddCallbackInsteadNextCommand(Action action)
+			=> InsteadNextCommandCallbacks.Push(action);
+
+		public void AddCallback(Action action)
+			=> Callbacks.Push(action);
+
 		public string AddCharacter(string name)
 		{
 			var character = new Character(name);
@@ -228,6 +236,16 @@ namespace RenSharp.Core
                 if (IsPaused && force == false)
                     throw new RenSharpPausedException("RenSharp находится на паузе.");
 
+				if(InsteadNextCommandCallbacks.Any())
+				{
+					ExecuteCallbacks();
+					return new Nop("Callbacks executed instead of command.");
+				}
+				else if(Callbacks.Any())
+				{
+					ExecuteCallbacks();
+				}
+
                 Command command = ExecuteNext();
                 return command;
             }
@@ -237,6 +255,19 @@ namespace RenSharp.Core
 				Mutex.ReleaseMutex();
 			}
         }
+
+		private void ExecuteCallbacks()
+		{
+			while(InsteadNextCommandCallbacks.Any())
+			{
+				InsteadNextCommandCallbacks.Pop()?.Invoke();
+			}
+
+			while(Callbacks.Any())
+			{
+				Callbacks.Pop()?.Invoke();
+			}
+		}
 
 		private Command ExecuteNext()
 		{

@@ -85,12 +85,19 @@ namespace RenSharpClient.Controllers
 
 				IEnumerator coroutine = effect(effectData);
 				ChangeEffect(activeSprite, coroutine);
+				core.AddCallback(() =>
+				{
+					TryStopEffect(activeSprite);
+					if(rect != null)
+						rect.position = new Vector2(targetX, y);
+                });
 			}
 			else
 			{
                 rect.position = new Vector2(targetX, y);
             }
         }
+
 
 		private Vector2 GetSize(ShowResult show, RenSharpImage image, Configuration config)
 		{
