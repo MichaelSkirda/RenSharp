@@ -30,7 +30,7 @@ namespace RenSharpClient.Models.Commands
 			Controller.Show(character, config, core);
 		}
 
-		public Command Rollback(RenSharpCore core)
+		public virtual Command Rollback(RenSharpCore core)
 		{
 			Attributes attributes = Attributes.Empty();
 			var hide = new Hide(Name, attributes, Controller);

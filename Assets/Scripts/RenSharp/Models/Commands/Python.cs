@@ -1,12 +1,11 @@
 ﻿using Microsoft.Scripting.Hosting;
 using RenSharp.Core;
-using RenSharp.Models.Commands.Abstract;
 using System.Collections.Generic;
 
 namespace RenSharp.Models.Commands
 {
 	// Contains whole 'python:' block
-	public class Python : CommandRollbackable
+	public class Python : Command, IRollbackable
 	{
 		public List<string> Commands { get; set; } = new List<string>();
 		public Python() { }
@@ -16,7 +15,7 @@ namespace RenSharp.Models.Commands
 			core.Context.ExecutePython(Commands);
 		}
 
-		public override Command Rollback(RenSharpCore core)
+		public Command Rollback(RenSharpCore core)
 		{
 			ScriptScope scope = core.Context.PyEvaluator.CopyScope();
 			if (scope == null)
