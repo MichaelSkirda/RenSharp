@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RenSharp.Models.Commands
 {
-	public class Repeat : PushableCommand
+	public class Repeat : CommandPushable
 	{
 		public string Expression { get; set; }
 		public int? Times { get; private set; } = null;

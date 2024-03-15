@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace RenSharpClient.Models.Commands
 {
-	internal class Hide : Command
+	internal class Hide : Command, IRollbackable
 	{
 		public string Name { get; set; }
 		Attributes Attributes { get; set; }
@@ -23,7 +23,7 @@ namespace RenSharpClient.Models.Commands
 			Controller.Hide(Name, core, Attributes);
 		}
 
-		public override Command Rollback(RenSharpCore core)
+		public Command Rollback(RenSharpCore core)
 		{
 			Attributes attributes = Attributes.Empty();
 			ActiveSprite sprite = Controller.ActiveSprites

@@ -1,4 +1,6 @@
-﻿namespace RenSharp.Models
+﻿using RenSharp.Core;
+
+namespace RenSharp.Models
 {
 	/// <summary>
 	/// Rollbackable commands способны создавать обратную команду
@@ -21,6 +23,6 @@
 		6|  del y                | y = 42
 
 		*/
-		Command Rollback();
+		Command Rollback(RenSharpCore core);
 	}
 }

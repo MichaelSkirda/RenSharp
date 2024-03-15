@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace RenSharp.Models
 {
-	public abstract class PushableCommand : Command, IPushable
+	public abstract class CommandPushable : Command, IPushable
 	{
 		public void Push(RenSharpContext ctx)
 			=> Push(ctx.LevelStack, ctx);

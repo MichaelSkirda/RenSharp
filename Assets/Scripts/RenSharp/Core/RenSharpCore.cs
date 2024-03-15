@@ -273,9 +273,13 @@ namespace RenSharp.Core
                     continue;
                 }
 
-                Command backwardCommand = command.Rollback(this);
-                if (backwardCommand != null)
-                    Context.RollbackStack.Push(backwardCommand);
+				if(command is IRollbackable)
+				{
+                    Command backwardCommand = (command as IRollbackable)?.Rollback(this);
+                    if (backwardCommand != null)
+                        Context.RollbackStack.Push(backwardCommand);
+                }
+                
 
                 command.Execute(this);
                 (command as IPushable)?.TryPush(Context);

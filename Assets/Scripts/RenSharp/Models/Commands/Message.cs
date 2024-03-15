@@ -2,7 +2,7 @@
 
 namespace RenSharp.Models.Commands
 {
-	public class Message : Command
+	public class Message : Command, IRollbackable
 	{
 		public string Speech { get; set; }
 		public string Character { get; set; }
@@ -59,7 +59,7 @@ namespace RenSharp.Models.Commands
             
 		}
 
-		public override Command Rollback(RenSharpCore core)
+		public Command Rollback(RenSharpCore core)
 		{
             var command = new MessageRollback(Speech, Character, Attributes)
             {

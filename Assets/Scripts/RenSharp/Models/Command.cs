@@ -11,7 +11,6 @@ namespace RenSharp.Models
 		public int Line { get; set; }
 		public int SourceLine { get; set; }
 		public abstract void Execute(RenSharpCore core);
-		public virtual Command Rollback(RenSharpCore core) => null;
 
 		public bool Is<T>() where T : Command => this is T;
 		public bool IsNot<T>() where T : Command => this is not T;

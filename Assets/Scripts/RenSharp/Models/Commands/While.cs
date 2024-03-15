@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RenSharp.Models.Commands
 {
-	public class While : PushableCommand
+	public class While : CommandPushable
 	{
 		public string Expression { get; set; }
 		public While(string expression)

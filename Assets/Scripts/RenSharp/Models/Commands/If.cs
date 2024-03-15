@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RenSharp.Models.Commands
 {
-	public class If : PushableCommand
+	public class If : CommandPushable
 	{
 		public string Expression { get; set; }
 		public int EndIfLine { get; set; }

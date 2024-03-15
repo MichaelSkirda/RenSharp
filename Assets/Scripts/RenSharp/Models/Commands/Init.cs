@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RenSharp.Models.Commands
 {
-	public class Init : PushableCommand
+	public class Init : CommandPushable
 	{
 		public int Priority { get; set; }
 		public bool IsPython { get; set; }

@@ -3,7 +3,7 @@ using RenSharp.Core;
 
 namespace RenSharp.Models.Commands
 {
-    public class Label : PushableCommand
+    public class Label : CommandPushable
 	{
 		public string Name { get; set; }
 

@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace RenSharpClient.Models.Commands
 {
-	public class Menu : PushableCommand
+	public class Menu : CommandPushable, IRollbackable
 	{
 		public ICollection<MenuButton> Buttons { get; set; } = new List<MenuButton>();
 		public Message Message { get; set; }
@@ -47,11 +47,12 @@ namespace RenSharpClient.Models.Commands
 			return true;
 		}
 
-		public override Command Rollback(RenSharpCore core)
+		public Command Rollback(RenSharpCore core)
 		{
 			var rollback = new MenuRollback(Controller);
 			rollback.SetPosition(this);
 			return rollback;
 		}
-	}
+
+    }
 }

@@ -6,7 +6,7 @@ using RenSharpClient.Controllers;
 
 namespace RenSharpClient.Models.Commands
 {
-	public class Show : Command
+	public class Show : Command, IRollbackable
 	{
 		public string Name { get; set; }
 		public string Details { get; set; }
@@ -30,7 +30,7 @@ namespace RenSharpClient.Models.Commands
 			Controller.Show(character, config, core);
 		}
 
-		public override Command Rollback(RenSharpCore core)
+		public Command Rollback(RenSharpCore core)
 		{
 			Attributes attributes = Attributes.Empty();
 			var hide = new Hide(Name, attributes, Controller);

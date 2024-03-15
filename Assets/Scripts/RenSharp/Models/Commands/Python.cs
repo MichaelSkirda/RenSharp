@@ -1,11 +1,12 @@
 ﻿using Microsoft.Scripting.Hosting;
 using RenSharp.Core;
+using RenSharp.Models.Commands.Abstract;
 using System.Collections.Generic;
 
 namespace RenSharp.Models.Commands
 {
 	// Contains whole 'python:' block
-	public class Python : Command
+	public class Python : CommandRollbackable
 	{
 		public List<string> Commands { get; set; } = new List<string>();
 		public Python() { }
