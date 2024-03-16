@@ -3,6 +3,8 @@ using RenSharp.Core;
 using RenSharp.Models;
 using RenSharpClient.Commands.Results;
 using RenSharpClient.Controllers;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace RenSharpClient.Models.Commands
 {
@@ -32,10 +34,16 @@ namespace RenSharpClient.Models.Commands
 
 		public virtual Command Rollback(RenSharpCore core)
 		{
-			Attributes attributes = Attributes.Empty();
+            IEnumerable<ShowResult> imagesBeforeScene = Controller.GetActiveSprites()
+                .Select(x => new ShowResult(x.Name, x.Details, x.Attributes))
+				.ToList();
+            var sceneRollback = new SceneRollback(Controller, imagesBeforeScene);
+            sceneRollback.SetPosition(this);
+            return sceneRollback;
+            /* Attributes attributes = Attributes.Empty();
 			var hide = new Hide(Name, attributes, Controller);
 			hide.SetPosition(this);
-			return hide;
-		}
+			return hide; */
+        }
 	}
 }

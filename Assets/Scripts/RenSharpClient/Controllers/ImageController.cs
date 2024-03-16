@@ -1,4 +1,3 @@
-using Assets.Scripts.RenSharpClient.Models;
 using RenSharp;
 using RenSharp.Core;
 using RenSharp.Models;
@@ -47,6 +46,10 @@ namespace RenSharpClient.Controllers
 					Attributes = show.attributes
 				};
 				activeSprite.obj = Instantiate(SpritePrefab, Parent.transform);
+			}
+			else
+			{
+				activeSprite.Attributes = show.attributes;
 			}
 
 			RenSharpImage toSet;

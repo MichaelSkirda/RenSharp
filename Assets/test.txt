@@ -1,9 +1,9 @@
 
 label start:
     "Hello 1"
-    show eileen happy with moveinright(1.5)
+    show eileen happy with moveinright(1.5) at right
     "Hello 2"
-    show eileen happy with moveinleft(1.5)
+    show eileen happy with moveinleft(1.5) at left
     "Hello 3"
     jump start
     

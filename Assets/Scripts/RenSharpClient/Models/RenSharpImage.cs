@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Assets.Scripts.RenSharpClient.Models
+namespace RenSharpClient.Models
 {
 	internal class RenSharpImage
 	{
