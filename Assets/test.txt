@@ -2,6 +2,8 @@
 label start:
     "Hello 1"
     show eileen happy with moveinright(1.5)
+    "Hello 2"
+    show eileen happy with moveinleft(1.5)
     "Hello 3"
     jump start
     
