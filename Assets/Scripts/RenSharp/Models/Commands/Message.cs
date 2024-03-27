@@ -22,6 +22,12 @@ namespace RenSharp.Models.Commands
 
         public override void Execute(RenSharpCore core)
 		{
+			MessageResult result = WriteMessage(core);
+			core.Context.MessageHistory.Push(result);
+		}
+
+		protected MessageResult WriteMessage(RenSharpCore core)
+		{
 			Configuration config = core.Configuration;
 			Attributes characterAttributes = Attributes;
 			characterAttributes.AddAttributes(core.GetCharacterAttributes(Character));
@@ -34,29 +40,30 @@ namespace RenSharp.Models.Commands
 				Attributes = characterAttributes
 			};
 
-			float? delay = characterAttributes.GetNw();
 
-            core.Context.MessageHistory.Push(result);
+			float? delay = characterAttributes.GetNw();
 
 			if (delay == null || delay < 0)
 				config?.Writer?.Write(result);
 			else
 			{
-                config?.Writer?.Write(result, delay.Value, () =>
-                {
-                    try
-                    {
-                        core.ReadNext();
-                    }
-                    catch
-                    {
-                        // WARNING empty catch.
-                        // important to not fall!
-                        // because callback will be called from coroutine in Unity implemetantion
-                    }
-                });
-            }
-            
+				// Auto after writen read next command
+				config?.Writer?.Write(result, delay.Value, () =>
+				{
+					try
+					{
+						core.ReadNext();
+					}
+					catch
+					{
+						// WARNING empty catch.
+						// important to not fall!
+						// because callback will be called from coroutine in Unity implemetantion
+					}
+				});
+			}
+
+			return result;
 		}
 
 		public Command Rollback(RenSharpCore core)
