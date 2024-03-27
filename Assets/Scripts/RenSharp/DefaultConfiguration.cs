@@ -5,6 +5,7 @@ using RenSharp.Core.Parse.ComplexParsers;
 using RenSharp.Models.Commands;
 using RenSharp.Models.Commands.Json;
 using System;
+using System.Linq;
 
 namespace RenSharp
 {
@@ -107,6 +108,14 @@ namespace RenSharp
                 command.SetPosition(commandParsed);
                 return command;
             });
+
+			config.DeserializeParsers.Add("python", (json, core) =>
+			{
+				PythonJson commandParsed = JsonConvert.DeserializeObject<PythonJson>(json);
+				var command = new Python() { Commands = commandParsed.Commands.ToList() };
+				command.SetPosition(commandParsed);
+				return command;
+			});
 
             return config;
 		}
