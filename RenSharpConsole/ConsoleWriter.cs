@@ -22,5 +22,11 @@ namespace RenSharpConsole
 
 			Console.WriteLine($"{speaker}: {speech}");
         }
+
+		public void Write(MessageResult message, float delay, Action Callback)
+		{
+			Write(message);
+			Callback();
+		}
 	}
 }

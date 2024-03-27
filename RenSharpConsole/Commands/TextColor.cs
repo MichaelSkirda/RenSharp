@@ -3,7 +3,7 @@ using RenSharp.Models;
 
 namespace RenSharpConsole.Commands
 {
-	public class TextColor : Command
+	public class TextColor : Command, IRollbackable
 	{
 		string ColorCode { get; set; }
 		IFormatter Formatter { get; set; }
@@ -19,7 +19,7 @@ namespace RenSharpConsole.Commands
 			Formatter.SetFormat(ColorCode);
 		}
 
-		public override Command Rollback(RenSharpCore core)
+		public Command Rollback(RenSharpCore core)
 		{
 			string currentColor = Formatter.GetCurrentColor();
 			TextColor command = new TextColor(currentColor, Formatter);

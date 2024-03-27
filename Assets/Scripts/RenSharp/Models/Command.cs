@@ -13,7 +13,7 @@ namespace RenSharp.Models
 		public abstract void Execute(RenSharpCore core);
 
 		public bool Is<T>() where T : Command => this is T;
-		public bool IsNot<T>() where T : Command => this is not T;
+		public bool IsNot<T>() where T : Command => !Is<T>();
 
 		public void SetLine(ParserContext ctx)
 		{

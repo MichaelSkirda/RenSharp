@@ -1,7 +1,6 @@
 ﻿using RenSharp;
 using RenSharp.Core;
 using RenSharp.Interfaces;
-using RenSharp.Models;
 using RenSharpConsole;
 
 internal class Program
@@ -23,7 +22,6 @@ internal class Program
 			{
 				try
 				{
-					renSharp.Save();
 					renSharp.Rollback();
 				}
 				catch
