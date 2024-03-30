@@ -5,6 +5,7 @@ using RenSharp.Core.Repositories;
 using RenSharp.Core.Save;
 using RenSharp.Interfaces;
 using RenSharp.Models;
+using RenSharp.Models.Callback;
 using RenSharp.Models.Commands;
 using RenSharp.Models.Save;
 using System;
@@ -26,8 +27,9 @@ namespace RenSharp.Core
 		private RenSharpProgram Program => Context.Program;
 		private bool HasStarted { get; set; } = false;
 		private CharacterRepository CharacterRepository { get; set; }
-		private Stack<Action> InsteadNextCommandCallbacks { get; set; } = new Stack<Action>();
-		private Stack<Action> Callbacks { get; set; } = new Stack<Action>();
+
+		private Stack<RenSharpCallback> InsteadNextCommandCallbacks { get; set; } = new Stack<RenSharpCallback>();
+        private Stack<RenSharpCallback> Callbacks { get; set; } = new Stack<RenSharpCallback>();
 
         public RenSharpCore(string path, Configuration config = null) => SetupProgramWithCode(File.ReadAllLines(path), config);
         public RenSharpCore(IEnumerable<string> code, Configuration config = null) => SetupProgramWithCode(code, config);
@@ -152,13 +154,14 @@ namespace RenSharp.Core
 			Context.Load(save);
 		}
 
-		public void AddCallbackInsteadNextCommand(Action action)
-			=> InsteadNextCommandCallbacks.Push(action);
+		public void AddCallbackInsteadNextCommand(RenSharpCallback callback)
+			=> InsteadNextCommandCallbacks.Push(callback);
 
-		public void AddCallback(Action action)
-			=> Callbacks.Push(action);
+		public void AddCallback(RenSharpCallback callback)
+			=> Callbacks.Push(callback);
 
-		public string AddCharacter(string name)
+
+        public string AddCharacter(string name)
 		{
 			var character = new Character(name);
 			string key = CharacterRepository.AddCharacter(character);
@@ -260,12 +263,12 @@ namespace RenSharp.Core
 		{
 			while(InsteadNextCommandCallbacks.Any())
 			{
-				InsteadNextCommandCallbacks.Pop()?.Invoke();
+				InsteadNextCommandCallbacks.Pop()?.Callback?.Invoke();
 			}
 
 			while(Callbacks.Any())
 			{
-				Callbacks.Pop()?.Invoke();
+				Callbacks.Pop()?.Callback?.Invoke();
 			}
 		}
 

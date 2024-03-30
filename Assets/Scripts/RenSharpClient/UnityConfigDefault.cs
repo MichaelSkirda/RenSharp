@@ -1,10 +1,15 @@
+using Newtonsoft.Json;
 using RenSharp;
+using RenSharp.Core.Parse;
 using RenSharp.Models.Commands;
+using RenSharp.Models.Commands.Json;
 using RenSharpClient.Controllers;
 using RenSharpClient.Models.Commands;
+using RenSharpClient.Models.Commands.Json;
 using RenSharpClient.Models.Models.Commands;
 using RenSharpClient.Parser.Complex;
 using System;
+using System.Linq;
 
 
 public static class UnityConfigDefault
@@ -57,10 +62,37 @@ public static class UnityConfigDefault
 	{
 		config.DeserializeParsers.Add("show", (json, core) =>
 		{
-			return null;
+			var jsonParsed = JsonConvert.DeserializeObject<ShowJson>(json);
+            var command = new Show(jsonParsed.Name, jsonParsed.Details, jsonParsed.Attributes, imageController);
+            command.SetPosition(jsonParsed);
+            return command;
 		});
 
-        
+        config.DeserializeParsers.Add("scene", (json, core) =>
+        {
+            var jsonParsed = JsonConvert.DeserializeObject<ShowJson>(json);
+            var command = new Scene(jsonParsed.Name, jsonParsed.Details, jsonParsed.Attributes, imageController);
+            command.SetPosition(jsonParsed);
+            return command;
+        });
+
+        config.DeserializeParsers.Add("hide", (json, core) =>
+        {
+			var jsonParsed = JsonConvert.DeserializeObject<HideJson>(json);
+			var command = new Hide(jsonParsed.Name, jsonParsed.Attributes, imageController);
+            command.SetPosition(jsonParsed);
+            return command;
+        });
+
+        config.DeserializeParsers.Add("menu", (json, core) =>
+        {
+            var jsonParsed = JsonConvert.DeserializeObject<MenuJson>(json);
+            var command = new Menu(menuController) { Buttons = jsonParsed.Buttons.ToList() };
+            command.SetPosition(jsonParsed);
+            return command;
+        });
+
+
     }
 
 	private static void SetVariables(Configuration config)

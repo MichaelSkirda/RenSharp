@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace RenSharpClient.Models.Commands
 {
-	internal class Play : Command
+	internal class Play : Command, IRollbackable
 	{
 		public IEnumerable<string> ClipNames { get; set; }
 		public string Channel { get; set; }
@@ -31,5 +31,10 @@ namespace RenSharpClient.Models.Commands
 			};
 			Controller.Play(playResult);
 		}
-	}
+
+        public Command Rollback(RenSharpCore core)
+        {
+			return null;
+        }
+    }
 }

@@ -1,6 +1,7 @@
 using RenSharp;
 using RenSharp.Core;
 using RenSharp.Models;
+using RenSharp.Models.Callback;
 using RenSharpClient.Commands.Results;
 using RenSharpClient.Effects;
 using RenSharpClient.Models;
@@ -12,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.GraphicsBuffer;
 
 namespace RenSharpClient.Controllers
 {
@@ -88,12 +90,9 @@ namespace RenSharpClient.Controllers
 
 				IEnumerator coroutine = effect(effectData);
 				ChangeEffect(activeSprite, coroutine);
-				core.AddCallback(() =>
-				{
-					TryStopEffect(activeSprite);
-					if(rect != null)
-						rect.position = new Vector2(targetX, y);
-                });
+
+				var skipCallback = new RenSharpCallback(callIfRollbackUsed: false, () => SkipEffect(activeSprite, rect, targetX, y));
+				core.AddCallback(skipCallback);
 			}
 			else
 			{
@@ -101,6 +100,12 @@ namespace RenSharpClient.Controllers
             }
         }
 
+		private void SkipEffect(ActiveSprite activeSprite, RectTransform rect, float targetX, float y)
+		{
+            TryStopEffect(activeSprite);
+            if (rect != null)
+                rect.position = new Vector2(targetX, y);
+        }
 
 		private Vector2 GetSize(ShowResult show, RenSharpImage image, Configuration config)
 		{

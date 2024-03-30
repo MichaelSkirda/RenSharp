@@ -4,6 +4,7 @@ using RenSharp.Core.Parse;
 using RenSharp.Core.Parse.ComplexParsers;
 using RenSharp.Models.Commands;
 using RenSharp.Models.Commands.Json;
+using RenSharpClient.Models.Commands.Json;
 using System;
 using System.Linq;
 
@@ -116,6 +117,7 @@ namespace RenSharp
 				command.SetPosition(commandParsed);
 				return command;
 			});
+
 
             return config;
 		}

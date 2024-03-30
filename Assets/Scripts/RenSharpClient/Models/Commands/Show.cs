@@ -40,10 +40,6 @@ namespace RenSharpClient.Models.Commands
             var sceneRollback = new SceneRollback(Controller, imagesBeforeScene);
             sceneRollback.SetPosition(this);
             return sceneRollback;
-            /* Attributes attributes = Attributes.Empty();
-			var hide = new Hide(Name, attributes, Controller);
-			hide.SetPosition(this);
-			return hide; */
         }
 	}
 }
