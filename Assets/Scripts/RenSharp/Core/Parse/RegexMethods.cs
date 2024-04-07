@@ -1,12 +1,10 @@
 ﻿using RenSharp.Models.Parse;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace RenSharp.Core.Parse
 {
-	public static class RegexMethods
+    public static class RegexMethods
 	{
 		// All values between quotes. Ignores escaped \" quotes.
 		private static Regex ValueInQuotes = new Regex(@"""(?:[^""\\]|\\.)*""");

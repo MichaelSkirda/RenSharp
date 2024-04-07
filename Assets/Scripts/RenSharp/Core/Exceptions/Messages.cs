@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace RenSharp.Core.Exceptions
 {
-	internal class Messages
+    internal class Messages
 	{
 		internal static string ReapitingLabelNames(IEnumerable<string> names)
 			=> $"Лейбл(ы) с именем ({string.Join(", ", names)}) повторяются. Имя лейбла должно быть уникальным или переопределять системное.";

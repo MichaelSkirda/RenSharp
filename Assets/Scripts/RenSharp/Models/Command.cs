@@ -34,6 +34,5 @@ namespace RenSharp.Models
 			SourceLine = command.SourceLine;
 			Level = command.Level;
 		}
-
 	}
 }

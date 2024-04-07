@@ -30,6 +30,7 @@ namespace RenSharp.Core
 
 		private Stack<RenSharpCallback> InsteadNextCommandCallbacks { get; set; } = new Stack<RenSharpCallback>();
         private Stack<RenSharpCallback> Callbacks { get; set; } = new Stack<RenSharpCallback>();
+        private Stack<(RenSharpCallback, Func<bool>)> InsteadNextCommandIfPredicateCallbacks { get; set; } = new Stack<(RenSharpCallback, Func<bool>)>();
 
         public RenSharpCore(string path, Configuration config = null) => SetupProgramWithCode(File.ReadAllLines(path), config);
         public RenSharpCore(IEnumerable<string> code, Configuration config = null) => SetupProgramWithCode(code, config);
@@ -160,6 +161,10 @@ namespace RenSharp.Core
 		public void AddCallback(RenSharpCallback callback)
 			=> Callbacks.Push(callback);
 
+		public void AddInsteadNextCommandIfPredicateCallbacks(RenSharpCallback callback, Func<bool> predicate)
+
+			=> InsteadNextCommandIfPredicateCallbacks.Push((callback, predicate));
+
 
         public string AddCharacter(string name)
 		{
@@ -246,8 +251,11 @@ namespace RenSharp.Core
 				}
 				else if(Callbacks.Any())
 				{
-					ExecuteCallbacks();
-				}
+					bool containsInsteadNextCommandCallback = ExecuteCallbacks();
+					if(containsInsteadNextCommandCallback)
+						return new Nop("Callbacks executed instead of command.");
+
+                }
 
                 Command command = ExecuteNext();
                 return command;
@@ -259,18 +267,36 @@ namespace RenSharp.Core
 			}
         }
 
-		private void ExecuteCallbacks()
+		private bool ExecuteCallbacks()
 		{
+			bool containsInsteadNextCommandCallback = false;
+
 			while(InsteadNextCommandCallbacks.Any())
 			{
 				InsteadNextCommandCallbacks.Pop()?.Callback?.Invoke();
-			}
+				containsInsteadNextCommandCallback = true;
+
+            }
 
 			while(Callbacks.Any())
 			{
 				Callbacks.Pop()?.Callback?.Invoke();
 			}
-		}
+
+			while(InsteadNextCommandIfPredicateCallbacks.Any())
+			{
+                (RenSharpCallback, Func<bool>) callbackPredicate = InsteadNextCommandIfPredicateCallbacks.Pop();
+				Func<bool> predicate = callbackPredicate.Item2;
+				if (predicate?.Invoke() == true)
+				{
+					containsInsteadNextCommandCallback = true;
+					callbackPredicate.Item1?.Callback?.Invoke();
+                }
+            }
+
+			return containsInsteadNextCommandCallback;
+
+        }
 
 		private Command ExecuteNext()
 		{

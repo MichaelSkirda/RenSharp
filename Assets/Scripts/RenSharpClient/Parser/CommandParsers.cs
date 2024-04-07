@@ -1,4 +1,3 @@
-using RenSharpClient;
 using RenSharp;
 using RenSharp.Core.Parse;
 using RenSharp.Models;

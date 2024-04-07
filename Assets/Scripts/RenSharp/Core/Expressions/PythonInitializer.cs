@@ -1,6 +1,4 @@
-﻿using IronPython.Hosting;
-using IronPython.Runtime;
-using Microsoft.Scripting.Hosting;
+﻿using Microsoft.Scripting.Hosting;
 using RenSharp.Models;
 using System;
 using System.Collections.Generic;
@@ -9,7 +7,7 @@ using System.Reflection;
 
 namespace RenSharp.Core.Expressions
 {
-	internal class PythonInitializer
+    internal class PythonInitializer
 	{
 		internal ScriptEngine Engine { get; set; }
 		internal ScriptScope Scope { get; set; }

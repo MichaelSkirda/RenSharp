@@ -13,11 +13,10 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEngine.GraphicsBuffer;
 
 namespace RenSharpClient.Controllers
 {
-	public class ImageController : MonoBehaviour
+    public class ImageController : MonoBehaviour
 	{
 		[SerializeField]
 		private SpriteStorage Sprites;
@@ -92,7 +91,7 @@ namespace RenSharpClient.Controllers
 				ChangeEffect(activeSprite, coroutine);
 
 				var skipCallback = new RenSharpCallback(callIfRollbackUsed: false, () => SkipEffect(activeSprite, rect, targetX, y));
-				core.AddCallback(skipCallback);
+				core.AddInsteadNextCommandIfPredicateCallbacks(skipCallback, () => true);
 			}
 			else
 			{

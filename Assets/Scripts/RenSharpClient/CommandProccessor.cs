@@ -1,4 +1,3 @@
-using Assets.Scripts;
 using RenSharp;
 using RenSharp.Core;
 using RenSharp.Core.Exceptions;

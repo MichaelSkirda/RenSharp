@@ -2,7 +2,6 @@
 using RenSharp.Models;
 using System;
 
-
 internal class DialogWriter : IWriter
 {
 	private DialogController Dialog { get; set; }

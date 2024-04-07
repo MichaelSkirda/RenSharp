@@ -1,5 +1,4 @@
-﻿using RenSharp.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace RenSharpClient.Models

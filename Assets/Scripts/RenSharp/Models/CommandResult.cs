@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace RenSharp.Models
+﻿namespace RenSharp.Models
 {
-	internal class CommandResult
+    internal class CommandResult
 	{
 		public CommandResult() { }
 	}
