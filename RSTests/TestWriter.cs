@@ -11,5 +11,11 @@ namespace RSTests
 		{
 			WritedMessage.Add(message);
 		}
+
+		public void Write(MessageResult message, float delay, Action Callback)
+		{
+			Write(message);
+			Callback();
+		}
 	}
 }

@@ -22,9 +22,8 @@ namespace RenSharp.Models.Commands
 				return null;
 
 			Command command = new SysSetScope(scope);
-			command.Line = Line;
-			command.SourceLine = SourceLine;
-			command.Level = Level;
+			command.SetPosition(this);
+
 			return command;
 		}
 
