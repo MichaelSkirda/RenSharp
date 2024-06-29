@@ -13,6 +13,7 @@ namespace RenSharp.Core.Parse
         internal static Label ParseLabel(string[] args) => new Label(args[1]);
         internal static Pass ParsePass(string[] args) => args.Length == 1 && args[0] == "pass"
             ? new Pass() : throw new ArgumentException($"Can not parse pass at line '{string.Join(" ", args)}'");
+        [Obsolete]
         internal static Callback ParseCallback(string[] args) => new Callback(string.Join(" ", args.Skip(1)));
         internal static While ParseWhile(string[] args) => new While(string.Join(" ", args.Skip(1)));
         internal static Python ParsePythonStart(string[] args)
