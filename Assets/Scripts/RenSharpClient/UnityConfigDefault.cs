@@ -45,6 +45,8 @@ public static class UnityConfigDefault
 		config.Skip<ImageCommand>();
 		config.Skip<MenuRollback>();
 
+		config.Skip<SceneRollback>();
+
 		config.MustPush<Menu>();
 
 		SetJsonParsers(config, imageController, soundController, menuController);
