@@ -8,18 +8,22 @@ using RenSharp.Models;
 using RenSharp.Models.Callback;
 using RenSharp.Models.Commands;
 using RenSharp.Models.Save;
+using RenSharp.Core.Enums;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 
 namespace RenSharp.Core
 {
     public class RenSharpCore
 	{
-		public bool IsPaused { get; private set; } = false;
+		public bool _isPaused { get; private set; } = false;
+		// TODO: add NopSavePreviousCommand
+		// TODO: execute on LOAD command queue
+		private  Stack<Func<RenSharpCore, PausePredicateAction>> PausePredicates { get; set; } = new Stack<Func<RenSharpCore, PausePredicateAction>>();
+
 		public Mutex Mutex { get; private set; } = new Mutex();
 
 		public Configuration Configuration { get; set; }
@@ -52,7 +56,9 @@ namespace RenSharp.Core
             PyImportAttribute.ReloadCallbacks();
             Context = new RenSharpContext();
             CharacterRepository = new CharacterRepository();
-            string key = CharacterRepository.AddCharacter(new Character(name: "???"));
+
+			string defaultName = Configuration.GetValueOrDefault<string>("default_character_name");
+            string key = CharacterRepository.AddCharacter(new Character(name: defaultName));
 
             Context.SetVariable("rs", this);
             Context.SetVariable("_rs_nobody_character", key);
@@ -66,11 +72,33 @@ namespace RenSharp.Core
                 Configuration = config;
         }
 
+		public void LoadProgram(string path, bool saveScope = false)
+			=> LoadProgram(File.ReadAllLines(path), saveScope);
+		public void LoadProgram(IEnumerable<string> code, bool saveScope = false)
+		{
+			var parser = new RenSharpParser(Configuration);
+			var program = parser.ParseCode(code);
+
+			LoadProgram(program, saveScope);
+		}
+
+		public void LoadProgram(List<Command> program, bool saveScope = false)
+		{
+			if (saveScope == false)
+			{
+				Context.PyEvaluator.RecreateScope();
+				SetupProgram();
+			}
+
+			Context.Program = new RenSharpProgram(program);
+			HasStarted = false;
+		}
+
 		public SaveModel SaveRaw()
 		{
 			var save = new SaveModel()
 			{
-				IsPaused = IsPaused,
+				IsPaused = IsPaused(),
 				HasStarted = HasStarted,
 				Line = Program.Line,
 				MessageHistory = Context.MessageHistory.Messages,
@@ -92,10 +120,6 @@ namespace RenSharp.Core
 		public void Load(string serializedSave)
 		{
 			SaveModelJson savePreParsed = JsonConvert.DeserializeObject<SaveModelJson>(serializedSave);
-			IEnumerable<Type> commandTypes = Assembly
-				.GetAssembly(typeof(Command))
-				.GetTypes()
-				.Where(x => x.IsSubclassOf(typeof(Command)));
 
 			List<Command> RollbackStack = new List<Command>();
 
@@ -150,7 +174,7 @@ namespace RenSharp.Core
 			}
 
 			Program.Goto(save.Line);
-			IsPaused = save.IsPaused;
+			_isPaused = save.IsPaused;
 
 			Context.Load(save);
 		}
@@ -193,28 +217,6 @@ namespace RenSharp.Core
 			return true;
 		}
 
-		public void LoadProgram(string path, bool saveScope = false)
-			=> LoadProgram(File.ReadAllLines(path), saveScope);
-        public void LoadProgram(IEnumerable<string> code, bool saveScope = false)
-        {
-			var parser = new RenSharpParser(Configuration);
-			var program = parser.ParseCode(code);
-
-			LoadProgram(program, saveScope);
-		}
-
-		public void LoadProgram(List<Command> program, bool saveScope = false)
-		{
-			if (saveScope == false)
-			{
-                Context.PyEvaluator.RecreateScope();
-                SetupProgram();
-            }
-
-            Context.Program = new RenSharpProgram(program);
-			HasStarted = false;
-		}
-
 		/// <summary>
 		/// Запускает все блоки init и переводит курсор на блок 'start'
 		/// </summary>
@@ -241,7 +243,7 @@ namespace RenSharp.Core
 
                 if (!HasStarted)
                     Start();
-                if (IsPaused && force == false)
+                if (IsPaused() && force == false)
                     throw new RenSharpPausedException("RenSharp находится на паузе.");
 
 				if(InsteadNextCommandCallbacks.Any())
@@ -384,8 +386,34 @@ namespace RenSharp.Core
 		public void SetVariable(string name, object value)
 			=> Context.SetVariable(name, value);
 
-		public void Pause() => IsPaused = true;
-		public void Resume() => IsPaused = false;
+		public void Pause() => _isPaused = true;
+		public void Resume() => _isPaused = false;
+
+		private bool IsPaused()
+		{
+			bool isPausedByPredicate = false;
+			var nextPausePredicates = new Stack<Func<RenSharpCore, PausePredicateAction>>();
+
+			while (PausePredicates.Any())
+			{
+				Func<RenSharpCore, PausePredicateAction> pausePredicate = PausePredicates.Pop();
+				PausePredicateAction pausePredicateActions = pausePredicate?.Invoke(this)
+					?? throw new InvalidOperationException("Pause predicate was null.");
+
+				if(pausePredicateActions.HasFlag(PausePredicateAction.Pause))
+					isPausedByPredicate = true;
+
+				if(pausePredicateActions.HasFlag(PausePredicateAction.Unsubscribe) == false)
+					nextPausePredicates.Push(pausePredicate);
+			}
+
+			PausePredicates = nextPausePredicates;
+
+			return _isPaused || isPausedByPredicate;
+		}
+
+		public void AddPausePredicate(Func<RenSharpCore, PausePredicateAction> pausePredicate)
+			=> PausePredicates.Push(pausePredicate);
 
 		private void ExecuteInits()
         {

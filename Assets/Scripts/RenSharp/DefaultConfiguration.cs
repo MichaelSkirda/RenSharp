@@ -46,6 +46,8 @@ namespace RenSharp
 			config.SetDefault("loop", "false");
 			config.SetDefault("name", "_rs_nobody_name");
 
+			config.SetValue("default_character_name", "???");
+
 			return config;
 		}
 
