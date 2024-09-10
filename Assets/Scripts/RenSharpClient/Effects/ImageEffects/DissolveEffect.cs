@@ -39,6 +39,8 @@ namespace RenSharpClient.Effects.ImageEffects
 
             if (data.IsAppear == false)
                 UnityEngine.Object.Destroy(sprite);
+
+            data.FinishCallback?.Invoke();
         }
 
 

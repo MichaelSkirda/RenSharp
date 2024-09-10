@@ -32,6 +32,8 @@ namespace RenSharpClient.Effects.ImageEffects
                 yield return null;
             }
             rect.position = new Vector2(targetX, y);
+
+            data.FinishCallback?.Invoke();
         }
     }
 }

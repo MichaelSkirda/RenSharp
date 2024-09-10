@@ -185,7 +185,7 @@ internal static class CommandParsers
 		catch(WrongArgumentNumberException ex)
 		{
 			throw new WrongArgumentNumberException("Команда 'queue' должна иметь минимум 2 аргумента." +
-				" Команда должна быть формата:'queue [channel] [name] [effect (опционально)]'." +
+				" Команда должна быть формата: 'queue [channel] [name] [effect (опционально)]'." +
 				$"Текущее значение: '{words.ToWord()}'", ex);
 		}
 		catch
@@ -196,7 +196,4 @@ internal static class CommandParsers
 	}
 
 	internal static Menu ParseMenu(MenuController controller) => new Menu(controller);
-
-	
-
 }

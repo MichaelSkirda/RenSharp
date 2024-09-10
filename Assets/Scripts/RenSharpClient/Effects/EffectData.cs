@@ -1,5 +1,6 @@
 ﻿using RenSharp.Core;
 using RenSharpClient.Storage;
+using System;
 using UnityEngine.UI;
 
 namespace RenSharpClient.Effects
@@ -12,5 +13,6 @@ namespace RenSharpClient.Effects
         public Image Image { get; set; }
         public RenSharpCore Core { get; set; }
         public PointStorage PointStorage { get; set; }
+        public Action FinishCallback { get; set; }
     }
 }

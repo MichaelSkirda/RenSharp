@@ -5,6 +5,7 @@ using RenSharp.Models.Callback;
 using RenSharpClient.Commands.Results;
 using RenSharpClient.Effects;
 using RenSharpClient.Models;
+using RenSharpClient.Models.Commands;
 using RenSharpClient.Models.Commands.Results;
 using RenSharpClient.Storage;
 using System;
@@ -35,24 +36,8 @@ namespace RenSharpClient.Controllers
 
 		internal void Show(ShowResult show, Configuration config, RenSharpCore core)
 		{
-			ActiveSprite activeSprite;
-			bool isExist = ActiveSprites.TryGetValue(show.Name, out activeSprite);
-
-			if (!isExist)
-			{
-				activeSprite = new ActiveSprite()
-				{
-					Name = show.Name,
-					Details = show.Details,
-					Attributes = show.attributes
-				};
-				activeSprite.obj = Instantiate(SpritePrefab, Parent.transform);
-			}
-			else
-			{
-				activeSprite.Attributes = show.attributes;
-			}
-
+			ActiveSprite activeSprite = GetOrCreateActiveSprite(show);
+			
 			RenSharpImage toSet;
 
 			if (string.IsNullOrWhiteSpace(show.Details))
@@ -78,20 +63,29 @@ namespace RenSharpClient.Controllers
 			if(effectMethod != null)
 			{
                 Func<EffectData, IEnumerator> effect = core.Context.Evaluate<Func<EffectData, IEnumerator>>(effectMethod);
-				var effectData = new EffectData()
+				bool finished = false;
+
+                var effectData = new EffectData()
 				{
 					IsAppear = true,
                     targetX = targetX,
                     Image = image,
 					Core = core,
-					PointStorage = Points
+					PointStorage = Points,
+					FinishCallback = () => finished = true
 				};
 
 				IEnumerator coroutine = effect(effectData);
 				ChangeEffect(activeSprite, coroutine);
 
-				var skipCallback = new RenSharpCallback(callIfRollbackUsed: false, () => SkipEffect(activeSprite, rect, targetX, y));
-				core.AddInsteadNextCommandIfPredicateCallbacks(skipCallback, () => true);
+                var skipCallback = new RenSharpCallback(callIfRollbackUsed: false, () => SkipEffect(activeSprite, rect, targetX, y));
+				core.AddInsteadNextCommandIfPredicateCallbacks(skipCallback, () =>
+				{
+					// If finished - next click won't try skip animation
+					if (finished)
+						return false;
+					return true;
+				});
 			}
 			else
 			{
@@ -99,8 +93,29 @@ namespace RenSharpClient.Controllers
             }
         }
 
+
+		private ActiveSprite GetOrCreateActiveSprite(ShowResult show)
+		{
+            bool isExist = ActiveSprites.TryGetValue(show.Name, out ActiveSprite activeSprite);
+
+            if (!isExist)
+            {
+                activeSprite = new ActiveSprite()
+                {
+                    Name = show.Name,
+                    Details = show.Details,
+                };
+                activeSprite.obj = Instantiate(SpritePrefab, Parent.transform);
+            }
+
+            activeSprite.Attributes = show.attributes;
+
+            return activeSprite;
+        }
+
 		private void SkipEffect(ActiveSprite activeSprite, RectTransform rect, float targetX, float y)
 		{
+			Debug.Log("Effected skipped");
             TryStopEffect(activeSprite);
             if (rect != null)
                 rect.position = new Vector2(targetX, y);
