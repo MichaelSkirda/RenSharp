@@ -203,11 +203,13 @@ namespace RenSharp.Core
 
 			while(true)
 			{
-				bool hasRollback = Context.RollbackStack.TryPop(out command);
+                bool hasRollback = Context.RollbackStack.TryPop(out command);
 				if (hasRollback == false)
 					return false;
 
-				Goto(command);
+                ClearCallbacksWithoutCallIfRollbackUsed();
+
+                Goto(command);
 
 				command.Execute(this);
 
@@ -216,6 +218,20 @@ namespace RenSharp.Core
 			}
 			return true;
 		}
+
+		private void ClearCallbacksWithoutCallIfRollbackUsed()
+		{
+			ClearCallbacksWithoutCallIfRollbackUsed(Callbacks);
+			ClearCallbacksWithoutCallIfRollbackUsed(InsteadNextCommandCallbacks);
+			ClearCallbacksWithoutCallIfRollbackUsed(InsteadNextCommandIfPredicateCallbacks.Select(x => x.Item1));
+
+        }
+
+		private void ClearCallbacksWithoutCallIfRollbackUsed(IEnumerable<RenSharpCallback> callbacks)
+		{
+			callbacks = callbacks.Where(x => x.CallIfRollbackUsed).ToList();
+		}
+
 
 		/// <summary>
 		/// Запускает все блоки init и переводит курсор на блок 'start'
@@ -246,18 +262,10 @@ namespace RenSharp.Core
                 if (IsPaused() && force == false)
                     throw new RenSharpPausedException("RenSharp находится на паузе.");
 
-				if(InsteadNextCommandCallbacks.Any())
-				{
-					ExecuteCallbacks();
-					return new Nop("Callbacks executed instead of command.");
-				}
-				else if(Callbacks.Any())
-				{
-					bool containsInsteadNextCommandCallback = ExecuteCallbacks();
-					if(containsInsteadNextCommandCallback)
-						return new Nop("Callbacks executed instead of command.");
+                bool containsInsteadNextCommandCallback = ExecuteCallbacks();
 
-                }
+                if (containsInsteadNextCommandCallback)
+					return new Nop("Callbacks executed instead of command.");
 
                 Command command = ExecuteNext();
                 return command;
@@ -277,7 +285,6 @@ namespace RenSharp.Core
 			{
 				InsteadNextCommandCallbacks.Pop()?.Callback?.Invoke();
 				containsInsteadNextCommandCallback = true;
-
             }
 
 			while(Callbacks.Any())
@@ -291,7 +298,7 @@ namespace RenSharp.Core
 				Func<bool> predicate = callbackPredicate.Item2;
 				if (predicate?.Invoke() == true)
 				{
-					containsInsteadNextCommandCallback = true;
+                    containsInsteadNextCommandCallback = true;
 					callbackPredicate.Item1?.Callback?.Invoke();
                 }
             }
