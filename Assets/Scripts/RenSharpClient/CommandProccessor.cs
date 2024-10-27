@@ -19,7 +19,7 @@ public class CommandProccessor : MonoBehaviour
 	[SerializeField]
 	private MenuController MenuController;
 
-	private RenSharpCore RenSharp { get; set; }
+	public RenSharpCore RenSharp { get; private set; }
 	public bool IsPaused { get; set; } = false;
 
 	private DateTime LastRollback { get; set; } = DateTime.Now;
@@ -27,7 +27,7 @@ public class CommandProccessor : MonoBehaviour
 	private int RollbackCooldown { get; set; }
 	private int FastForwardDelay { get; set; }
 
-	void Start()
+	void Awake()
     {
 		string[] lines = RenSharpCode.text.Split('\n');
 		Configuration config = UnityConfigDefault.GetDefault(ImageController, SoundController, MenuController);

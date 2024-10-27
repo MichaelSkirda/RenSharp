@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using Assets.Scripts.RenSharp.Core;
 
 namespace RenSharp.Core
 {
@@ -392,6 +393,9 @@ namespace RenSharp.Core
 
 		public void SetVariable(string name, object value)
 			=> Context.SetVariable(name, value);
+
+		public ReactiveRS<T> CreateReactive<T>(string name, T value)
+			=> new ReactiveRS<T>(this, name, value);
 
 		public void Pause() => _isPaused = true;
 		public void Resume() => _isPaused = false;
