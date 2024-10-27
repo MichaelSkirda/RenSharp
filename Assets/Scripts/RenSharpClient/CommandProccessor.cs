@@ -29,7 +29,7 @@ public class CommandProccessor : MonoBehaviour
 
 	void Awake()
     {
-		string[] lines = RenSharpCode.text.Split('\n');
+        string[] lines = RenSharpCode.text.Split('\n');
 		Configuration config = UnityConfigDefault.GetDefault(ImageController, SoundController, MenuController);
 		RollbackCooldown = config.GetValueOrDefault<int>("rollback_cooldown");
 		FastForwardDelay = config.GetValueOrDefault<int>("fast_forward_delay");
@@ -37,7 +37,8 @@ public class CommandProccessor : MonoBehaviour
 		var writer = new DialogWriter(Dialog);
 		config.Writer = writer;
 		RenSharp = new RenSharpCore(lines, config);
-        /*string save = PlayerPrefs.GetString("save1");
+
+        string save = PlayerPrefs.GetString("save1");
 		if(string.IsNullOrWhiteSpace(save) == false)
 		{
             RenSharp.Load(save);
@@ -46,7 +47,7 @@ public class CommandProccessor : MonoBehaviour
 		else
 		{
             Debug.Log("No save");
-        } */
+        }
     }
 
 	void Update()
@@ -92,9 +93,11 @@ public class CommandProccessor : MonoBehaviour
 
 	private void TryRollback()
 	{
-		if ((DateTime.Now - LastRollback).Milliseconds < RollbackCooldown)
+        DateTime now = DateTime.Now;
+        if ((now - LastRollback).Milliseconds < RollbackCooldown)
 			return;
 
+		LastRollback = now;
 		bool hasRollback = RenSharp.Rollback();
 		if (hasRollback == false)
 			Debug.Log("No rollback.");
@@ -102,8 +105,11 @@ public class CommandProccessor : MonoBehaviour
 
 	private void TryReadNext()
 	{
-		if ((DateTime.Now - LastFastForward).Milliseconds < RollbackCooldown)
+		DateTime now = DateTime.Now;
+		if ((now - LastFastForward).Milliseconds < FastForwardDelay)
 			return;
+
+		LastFastForward = now;
 		ReadNext();
 	}
 
